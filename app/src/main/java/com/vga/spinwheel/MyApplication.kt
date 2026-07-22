@@ -6,6 +6,7 @@ import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
+import com.vga.spinwheel.core.InstallReferrerHelper
 import com.vga.spinwheel.core.MainActivity
 import dagger.hilt.android.HiltAndroidApp
 
@@ -13,8 +14,9 @@ import dagger.hilt.android.HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
-        primeAdsRemoteConfigDefaults()
         super.onCreate()
+        registerRemoteConfigDefaults()
+        InstallReferrerHelper.resolve(this)
     }
 
     override fun getHomeActivity(): Class<out Activity> = MainActivity::class.java
@@ -141,13 +143,9 @@ class MyApplication : BaseApplication() {
 
     override fun getResumeAdId(): String = GOOGLE_TEST_APP_OPEN_ID
 
-    private fun primeAdsRemoteConfigDefaults() {
+    private fun registerRemoteConfigDefaults() {
         runCatching {
-            val adsConfigJson = assets.open(DEFAULT_ADS_CONFIG_ASSET)
-                .bufferedReader()
-                .use { it.readText() }
-            FirebaseRemoteConfigUtil.getInstance().setDefaultAdsConfigJson(adsConfigJson)
-            FirebaseRemoteConfigUtil.getInstance().setAppDefaults(emptyMap())
+            FirebaseRemoteConfigUtil.getInstance().setAppDefaultsFromXml(R.xml.config)
         }
     }
 
@@ -155,7 +153,6 @@ class MyApplication : BaseApplication() {
         const val KEY_LANGUAGE = "language_pres"
         const val NOTIFICATION_CHANNEL_PREFIX = "SpinWheel"
         const val GOOGLE_TEST_APP_OPEN_ID = "ca-app-pub-3940256099942544/9257395921"
-        const val DEFAULT_ADS_CONFIG_ASSET = "default_ads_config.json"
         const val MOCK_KEY_PREFIX = "mock_"
     }
 }

@@ -3,38 +3,51 @@ package com.vga.spinwheel.core
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.vga.spinwheel.data.model.AppSettingKeys
-import com.vga.spinwheel.data.model.RandomFeature
-import com.vga.spinwheel.data.repo.SettingsRepository
+import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.ui.nav.AppNavHost
 import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var settingsRepository: SettingsRepository
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val startRoute = if (settingsRepository.getBoolean(
-                feature = RandomFeature.APP,
-                key = AppSettingKeys.INTRO_DONE,
-                defaultValue = false,
-            )
-        ) {
-            Screen.Home.route
-        } else {
-            Screen.Intro.route
-        }
+        val startRoute = resolveStartRoute(advanceLaunchCounter = savedInstanceState == null)
 
         setContent {
             AppTheme {
                 AppNavHost(startDestination = startRoute)
             }
         }
+    }
+
+    private fun resolveStartRoute(advanceLaunchCounter: Boolean): String {
+        val launchNumber = AppStorage.goToHomeNumber(this)
+        if (advanceLaunchCounter) {
+            AppStorage.setGoToHomeNumber(this, launchNumber + 1)
+        }
+
+        val remote = Remote.instance
+        val countAppOpen = IntroGate.sanitizeCountAppOpen(
+            remote.getInt(
+                key = Remote.KEY_COUNT_APP_OPEN,
+                defaultValue = IntroGate.DEFAULT_COUNT_APP_OPEN,
+            ),
+        )
+        val organicNumberNotGuide = IntroGate.sanitizeOrganicNumberNotGuide(
+            remote.getInt(
+                key = Remote.KEY_ORGANIC_NUMBER_NOT_GUIDE,
+                defaultValue = IntroGate.DEFAULT_ORGANIC_NUMBER_NOT_GUIDE,
+            ),
+        )
+        val goHome = IntroGate.shouldGoHome(
+            launchNumber = launchNumber,
+            isAdsCampaign = InstallReferrerHelper.isAdsCampaign(this),
+            countAppOpen = countAppOpen,
+            organicNumberNotGuide = organicNumberNotGuide,
+        )
+        return if (goHome) Screen.Home.route else Screen.Intro.route
     }
 }

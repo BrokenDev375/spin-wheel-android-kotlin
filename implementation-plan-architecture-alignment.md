@@ -81,7 +81,7 @@ Quy uoc trang thai:
 - Chua test bam tung tile tren may that vi khong co ADB device dang ket noi.
 - Da duoc nguoi dung phe duyet ket qua va yeu cau commit.
 
-## [ ] Chang 2 - Nen Remote Config, AppStorage va gate Intro
+## [x] Chang 2 - Nen Remote Config, AppStorage va gate Intro
 
 ### Pham vi
 
@@ -112,6 +112,26 @@ Quy uoc trang thai:
 
 - Trinh bang chan tri test va diff cua `MyApplication`, `MainActivity`, storage, Remote.
 - Dung lai de nguoi dung phe duyet luong Intro.
+
+### Ket qua thuc hien - Da phe duyet
+
+- Da them facade `firebase/Remote.kt`, uy quyen sang `FirebaseRemoteConfigUtil.getInstance()`.
+- Da them `res/xml/config.xml` cho placement enable, ratio/max, `positionIntrol`,
+  `count_app_open` va `organic_number_not_guide`.
+- Da chuyen dang ky app Remote Config defaults sang sau `super.onCreate()`.
+- Da them `AppStorage` voi `goToHomeNumber`, `is_ads_campaign` va
+  `ads_campaign_resolved`.
+- Da them `InstallReferrerHelper` query async, cache in-memory + SharedPreferences,
+  fallback ads campaign khi chua resolve hoac loi.
+- Da thay `INTRO_DONE` trong route start bang bang chan tri ads/organic tai
+  `MainActivity.resolveStartRoute()`.
+- Da them unit test cho bang chan tri Intro va phan loai Install Referrer.
+- `testDebugUnitTest`: 31/31 test pass.
+- `lintDebug`: pass, 0 error (con 26 warning va 3 hint).
+- `assembleDebug`: pass.
+- `assembleRelease`: pass, van tao APK unsigned nhu baseline.
+- Da duoc nguoi dung phe duyet ket qua va yeu cau commit truoc khi sang Chang 3.
+- Commit Chang 2 trong commit rieng.
 
 ## [ ] Chang 3 - Xay loi Ads tai su dung
 
@@ -293,8 +313,8 @@ Quy uoc trang thai:
 | Chang | Trang thai | Phe duyet bat dau | Phe duyet ket qua | Commit |
 |---|---|---|---|---|
 | 1. Navigation + lint | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
-| 2. Remote + Intro gate | Chua lam | Chua | Chua | Chua |
-| 3. Ads core | Chua lam | Chua | Chua | Chua |
+| 2. Remote + Intro gate | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
+| 3. Ads core | Chua lam | Da phe duyet | Chua | Chua |
 | 4. Ads UI/flow | Chua lam | Chua | Chua | Chua |
 | 5. IAP | Chua lam | Chua | Chua | Chua |
 | 6. Language + i18n | Chua lam | Chua | Chua | Chua |
@@ -325,5 +345,5 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Cho phe duyet **Chang 1 - On dinh Navigation va lint blocker**. Sau khi duoc phe duyet,
-chi thuc hien pham vi Chang 1 va dung lai bao cao ket qua.
+Sau khi commit **Chang 2 - Nen Remote Config, AppStorage va gate Intro**, bat dau
+**Chang 3 - Xay loi Ads tai su dung** theo phe duyet cua nguoi dung.
