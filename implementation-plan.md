@@ -286,6 +286,35 @@ Test:
 - Tao wheel -> restart app -> wheel con ton tai.
 - Sua/xoa/nhan ban hoat dong dung.
 
+## [x] Phase 4.0 - Skeleton dieu huong cho Phase 4 va Phase 5
+
+Muc tieu: tao khung route truoc de agent Phase 5 co the implement `Banh Xe` song song ma it conflict voi Phase 4.
+
+Cong viec:
+
+1. Them route skeleton cho Intro, Settings, Language, Payment.
+2. Tach route khung cua `Banh Xe` sang nav graph rieng.
+3. Dinh nghia route contract cho cac man Phase 5:
+   - Danh sach banh xe.
+   - Them banh xe.
+   - Sua banh xe.
+   - Quay banh xe.
+   - Cai dat banh xe.
+   - Ket qua.
+   - Lich su.
+4. Build debug de xac nhan navigation skeleton compile.
+
+Output:
+
+- Agent Phase 5 co the implement trong `ui/screen/wheel/` va `ui/nav/WheelNavGraph.kt`.
+- Phase 4 chinh van chua implement day du Intro/Settings/Language/Payment.
+
+Test:
+
+- Build debug.
+- Home -> route Wheel skeleton.
+- Home -> Settings/Payment skeleton.
+
 ## [ ] Phase 4 - Home, Intro, Setting, Language, Payment
 
 Tai lieu tham chieu: `feature/Home.md`.
