@@ -561,7 +561,7 @@ Test:
 - Reset dua ve angle 0.
 - Theme bottle update dung.
 
-## [ ] Phase 12 - Xuc Xac
+## [x] Phase 12 - Xuc Xac
 
 Tai lieu tham chieu: `feature/Dice.md`.
 
