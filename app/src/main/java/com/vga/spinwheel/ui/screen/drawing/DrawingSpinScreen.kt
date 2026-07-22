@@ -170,9 +170,7 @@ fun DrawingSpinScreen(
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
                         .clickable(enabled = !isSpinning) {
-                            if (!isSpinning) {
-                                showTempResult = false
-                            }
+                            showTempResult = false
                         },
                     contentAlignment = Alignment.Center
                 ) {
