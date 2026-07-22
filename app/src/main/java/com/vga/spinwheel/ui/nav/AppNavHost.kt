@@ -6,7 +6,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,7 +15,6 @@ import com.vga.spinwheel.ui.screen.finger.FingerScreen
 import com.vga.spinwheel.ui.screen.finger.FingerViewModel
 import com.vga.spinwheel.ui.screen.language.LanguageScreen
 import com.vga.spinwheel.ui.screen.payment.PaymentScreen
-import com.vga.spinwheel.ui.screen.placeholder.PlaceholderScreen
 import com.vga.spinwheel.ui.screen.settings.SettingsScreen
 
 @Composable
@@ -80,23 +78,13 @@ fun AppNavHost(
                 },
             )
         }
-        placeholder(Screen.Coin) { navController.popBackStack() }
-        placeholder(Screen.Number) { navController.popBackStack() }
-        placeholder(Screen.Drawing) { navController.popBackStack() }
-        placeholder(Screen.Dice) { navController.popBackStack() }
         coinGraph(
-            navController = navController,
-            onBack = { navController.popBackStack() },
-        )
-        teamNavGraph(
             navController = navController,
             onBack = { navController.popBackStack() },
         )
         numberGraph(navController = navController)
         drawingNavGraph(navController = navController)
-        placeholder(Screen.Bottle) { navController.popBackStack() }
         diceGraph(navController = navController)
-        placeholder(Screen.Card) { navController.popBackStack() }
 
         composable(Screen.Settings.route) {
             SettingsScreen(
@@ -129,17 +117,5 @@ fun AppNavHost(
                 },
             )
         }
-    }
-}
-
-private fun NavGraphBuilder.placeholder(
-    screen: Screen,
-    onBack: () -> Unit,
-) {
-    composable(screen.route) {
-        PlaceholderScreen(
-            title = screen.title,
-            onBack = onBack,
-        )
     }
 }

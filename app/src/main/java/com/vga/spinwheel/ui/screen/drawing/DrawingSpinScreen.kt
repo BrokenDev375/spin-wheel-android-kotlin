@@ -224,7 +224,6 @@ fun DrawingSpinScreen(
             }
             
             if (showTempResult) {
-                val winner = viewModel.lastResult.value
                 Text(
                     text = "Đang mở thẻ...",
                     color = Color.White,
