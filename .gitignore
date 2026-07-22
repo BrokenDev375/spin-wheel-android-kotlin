@@ -1,0 +1,35 @@
+# Built artifacts & Gradle
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+**/build/
+.gradle/
+buildOutputCleanup/
+
+# Local configuration & SDK path
+local.properties
+
+# Android Studio & IntelliJ IDEA
+.idea/
+*.iml
+
+# Keystores & Signing files
+*.jks
+*.keystore
+*.pepk
+
+# Log files
+*.log
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*~
+*.bak
+
+# Temporary project inspection files
+.tmp-aar-inspect/

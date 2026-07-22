@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Spin Wheel</string>
+
+    <string name="app_flyer_id" translatable="false">mock_appsflyer_dev_key</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="facebook_app_id" translatable="false">123456789012345</string>
+    <string name="facebook_client_token" translatable="false">mock_facebook_client_token</string>
+    <string name="public_license_key" translatable="false">MOCK_PUBLIC_LICENSE_KEY</string>
+
+    <string name="iap_feature_1">Unlimited wheels</string>
+    <string name="iap_feature_2">More random tools</string>
+    <string name="iap_feature_3">Save custom lists</string>
+    <string name="iap_feature_4">Remove ads</string>
+    <string name="iap_feature_5">Premium themes</string>
+
+    <string name="notification_permission_title">Stay updated</string>
+    <string name="notification_permission_content">Get useful random reminders from Spin Wheel.</string>
+    <string name="notification_new_random_content">A new random pick is ready.</string>
+    <string name="notification_screenshot_title">Save this result</string>
+    <string name="notification_recent_title">Recent random tools</string>
+    <string name="notification_open">Open</string>
+    <string name="notification_spin_now">Spin now</string>
+    <string name="notification_daily_content">Make a quick decision with Spin Wheel.</string>
+    <string name="notification_check_now">Check now</string>
+    <string name="notification_fullscreen_1">Ready to decide?</string>
+    <string name="notification_fullscreen_2">Open Spin Wheel and pick a winner.</string>
+    <string name="notification_out_app_title">Spin Wheel is ready</string>
+    <string name="notification_out_app_content">Come back for a quick random choice.</string>
+
+    <string-array name="notification_title2">
+        <item>Spin a wheel</item>
+        <item>Pick a team</item>
+        <item>Roll dice</item>
+        <item>Flip a coin</item>
+        <item>Draw a card</item>
+    </string-array>
+
+    <string-array name="notification_message2">
+        <item>Choose an option in seconds.</item>
+        <item>Split players into fair groups.</item>
+        <item>Generate a lucky roll.</item>
+        <item>Let heads or tails decide.</item>
+        <item>Reveal a random card.</item>
+    </string-array>
+
+    <string-array name="notification_button2">
+        <item>Open</item>
+        <item>Start</item>
+        <item>Roll</item>
+        <item>Flip</item>
+        <item>Reveal</item>
+    </string-array>
+</resources>
