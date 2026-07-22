@@ -59,7 +59,7 @@ fun AppNavHost(
         )
         placeholder(Screen.Team) { navController.popBackStack() }
         numberGraph(navController = navController)
-        placeholder(Screen.Drawing) { navController.popBackStack() }
+        drawingNavGraph(navController = navController)
         placeholder(Screen.Bottle) { navController.popBackStack() }
         placeholder(Screen.Dice) { navController.popBackStack() }
         placeholder(Screen.Card) { navController.popBackStack() }
