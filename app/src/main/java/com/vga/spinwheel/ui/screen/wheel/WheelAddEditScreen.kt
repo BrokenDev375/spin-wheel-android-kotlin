@@ -161,7 +161,7 @@ fun WheelAddEditScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Thêm mục", fontSize = 15.sp)
+                            Text("Thêm mục", fontSize = 13.sp, maxLines = 1)
                         }
                     }
 
@@ -183,7 +183,7 @@ fun WheelAddEditScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Thêm nhiều", fontSize = 15.sp)
+                            Text("Thêm nhiều", fontSize = 13.sp, maxLines = 1)
                         }
                     }
                 }

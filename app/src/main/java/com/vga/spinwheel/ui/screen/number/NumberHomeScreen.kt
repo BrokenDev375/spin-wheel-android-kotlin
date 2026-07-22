@@ -283,6 +283,21 @@ fun NumberHomeScreen(
                         fontWeight = FontWeight.Black
                     )
                 }
+
+                Box(
+                    modifier = Modifier
+                        .size(58.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xFF393347))
+                        .clickable { if (!isSpinning) viewModel.clearHistory() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.Reset,
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
             }
         }
     }
