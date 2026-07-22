@@ -35,6 +35,7 @@ import com.nlbn.ads.callback.NativeCallback
 import com.nlbn.ads.util.Admob
 import com.vga.spinwheel.R
 import kotlinx.coroutines.delay
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Composable
 fun NativeAdsFull(
@@ -42,6 +43,7 @@ fun NativeAdsFull(
     modifier: Modifier = Modifier,
     preloadedNativeAd: NativeAd? = null,
     closeDelaySeconds: Int = 3,
+    loadTimeoutMillis: Long = 5_000L,
     onClose: () -> Unit,
     onError: () -> Unit,
 ) {
@@ -49,6 +51,9 @@ fun NativeAdsFull(
     var nativeAd by remember(preloadedNativeAd) { mutableStateOf(preloadedNativeAd) }
     var isLoading by remember(preloadedNativeAd) { mutableStateOf(preloadedNativeAd == null) }
     var closeEnabled by remember { mutableStateOf(closeDelaySeconds <= 0) }
+    val loadResolved = remember(unitId, preloadedNativeAd) {
+        AtomicBoolean(preloadedNativeAd != null)
+    }
 
     LaunchedEffect(closeDelaySeconds) {
         if (closeDelaySeconds > 0) {
@@ -71,18 +76,34 @@ fun NativeAdsFull(
             unitId,
             object : NativeCallback() {
                 override fun onNativeAdLoaded(loadedAd: NativeAd) {
+                    if (!loadResolved.compareAndSet(false, true)) {
+                        loadedAd.destroy()
+                        return
+                    }
                     println("ADS native full loaded ad=true")
                     isLoading = false
                     nativeAd = loadedAd
                 }
 
                 override fun onAdFailedToLoad() {
+                    if (!loadResolved.compareAndSet(false, true)) return
                     println("ADS native full ERR failed")
                     isLoading = false
                     onError()
                 }
             },
         )
+    }
+
+    LaunchedEffect(unitId, preloadedNativeAd, loadTimeoutMillis) {
+        if (preloadedNativeAd == null && loadTimeoutMillis > 0) {
+            delay(loadTimeoutMillis)
+            if (loadResolved.compareAndSet(false, true)) {
+                println("ADS native full ERR timeout unit=$unitId")
+                isLoading = false
+                onError()
+            }
+        }
     }
 
     DisposableEffect(nativeAd) {

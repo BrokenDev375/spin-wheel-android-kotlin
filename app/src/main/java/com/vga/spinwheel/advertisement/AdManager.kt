@@ -9,6 +9,41 @@ import com.vga.spinwheel.firebase.Remote
 
 object AdManager {
 
+    fun showNativeInter(
+        activity: Activity?,
+        placement: String,
+        onNext: () -> Unit,
+    ) {
+        val nextAction = OnceAction(onNext)
+        if (activity == null) {
+            nextAction.run()
+            return
+        }
+
+        val remote = Remote.instance
+        if (!remote.isAdEnabled(placement)) {
+            nextAction.run()
+            return
+        }
+
+        val shouldShow = AdScenario.from(activity).shouldShow(
+            placement = placement,
+            ratio = placementInt(remote, placement, "ratio", "showRatio", defaultValue = 1),
+            maxPerDay = placementInt(remote, placement, "max", "maxShowPerDay", defaultValue = 20),
+        )
+        val unitId = remote.adUnit(placement)
+        if (!shouldShow || unitId.isBlank()) {
+            nextAction.run()
+            return
+        }
+
+        NativeInterController.show(
+            placement = placement,
+            unitId = unitId,
+            onFinished = nextAction::run,
+        )
+    }
+
     fun showInter(
         activity: Activity?,
         placement: String,

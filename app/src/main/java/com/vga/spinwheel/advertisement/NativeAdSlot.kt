@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -21,19 +22,32 @@ fun NativeAdSlot(
     placement: String,
     modifier: Modifier = Modifier,
     isSmall: Boolean = false,
+    onResolved: () -> Unit = {},
     viewModel: AdsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val currentOnResolved = rememberUpdatedState(onResolved)
     val enabled = remember(placement) { Remote.instance.isAdEnabled(placement) }
-    if (!enabled) return
+    if (!enabled) {
+        LaunchedEffect(placement) { currentOnResolved.value() }
+        return
+    }
 
     val unitId = remember(placement) { Remote.instance.adUnit(placement) }
-    if (unitId.isBlank()) return
+    if (unitId.isBlank()) {
+        LaunchedEffect(placement) { currentOnResolved.value() }
+        return
+    }
 
     val state = viewModel.stateFor(placement)
     LaunchedEffect(placement, unitId) {
         viewModel.prepareForEntry(placement)
         viewModel.loadNativeAd(context, placement, unitId)
+    }
+    LaunchedEffect(state.nativeAd, state.failed) {
+        if (state.nativeAd != null || state.failed) {
+            currentOnResolved.value()
+        }
     }
 
     when {

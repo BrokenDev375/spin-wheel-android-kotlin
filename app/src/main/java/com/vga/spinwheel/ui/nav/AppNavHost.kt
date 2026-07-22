@@ -1,6 +1,7 @@
 package com.vga.spinwheel.ui.nav
 
 import android.content.Intent
+import android.app.Activity
 import android.widget.Toast
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import com.vga.spinwheel.ui.screen.finger.FingerViewModel
 import com.vga.spinwheel.ui.screen.language.LanguageScreen
 import com.vga.spinwheel.ui.screen.payment.PaymentScreen
 import com.vga.spinwheel.ui.screen.settings.SettingsScreen
+import com.vga.spinwheel.advertisement.AdManager
 
 @Composable
 fun AppNavHost(
@@ -42,7 +44,14 @@ fun AppNavHost(
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onFeatureClick = { screen -> navController.navigate(screen.route) },
+                onFeatureClick = { screen ->
+                    AdManager.showInter(
+                        activity = context as? Activity,
+                        placement = "inter_home",
+                    ) {
+                        navController.navigate(screen.route)
+                    }
+                },
                 onSettingsClick = { navController.navigate(Screen.Settings.route) },
                 onPaymentClick = { navController.navigate(Screen.Payment.route) },
             )

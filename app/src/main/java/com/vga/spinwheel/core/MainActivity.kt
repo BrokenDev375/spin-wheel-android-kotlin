@@ -3,6 +3,7 @@ package com.vga.spinwheel.core
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.vga.spinwheel.advertisement.NativeInterHost
 import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.ui.nav.AppNavHost
 import com.vga.spinwheel.ui.nav.Screen
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 AppNavHost(startDestination = startRoute)
+                NativeInterHost()
             }
         }
     }

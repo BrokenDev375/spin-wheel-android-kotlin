@@ -1,5 +1,6 @@
 package com.vga.spinwheel.ui.screen.intro
 
+import android.app.Activity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,8 +20,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,14 +35,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vga.spinwheel.advertisement.AdManager
+import com.vga.spinwheel.advertisement.AdPositions
+import com.vga.spinwheel.advertisement.NativeAdSlot
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
 import kotlin.math.sin
+import kotlinx.coroutines.delay
 
 @Composable
 fun IntroScreen(
@@ -47,8 +55,23 @@ fun IntroScreen(
     modifier: Modifier = Modifier,
     viewModel: IntroViewModel = hiltViewModel(),
 ) {
+    val activity = LocalContext.current as? Activity
+    val adPositions = remember { AdPositions.current() }
     var pageIndex by remember { mutableIntStateOf(0) }
+    var continueEnabled by remember { mutableStateOf(false) }
+    var advancePending by remember { mutableStateOf(false) }
     val page = introPages[pageIndex]
+    val slideNumber = pageIndex + 1
+    val hasInlineAd = adPositions.hasInline(slideNumber)
+
+    LaunchedEffect(pageIndex, hasInlineAd) {
+        continueEnabled = !hasInlineAd
+        advancePending = false
+        if (hasInlineAd) {
+            delay(INTRO_AD_TIMEOUT_MS)
+            continueEnabled = true
+        }
+    }
 
     Column(
         modifier = modifier
@@ -58,14 +81,26 @@ fun IntroScreen(
             .padding(top = 24.dp, bottom = 22.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        IntroVisual(
-            type = page.type,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clip(RoundedCornerShape(SpinRadius.Sheet))
                 .background(SpinColors.BackgroundDeep),
-        )
+            contentAlignment = Alignment.Center,
+        ) {
+            if (hasInlineAd) {
+                NativeAdSlot(
+                    placement = "native_intro$slideNumber",
+                    onResolved = { continueEnabled = true },
+                )
+            } else {
+                IntroVisual(
+                    type = page.type,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(22.dp))
 
@@ -95,13 +130,28 @@ fun IntroScreen(
         SpinPrimaryButton(
             text = if (pageIndex == introPages.lastIndex) "BẮT ĐẦU" else "TIẾP TỤC",
             onClick = {
-                if (pageIndex == introPages.lastIndex) {
-                    viewModel.markIntroDone(onSaved = onFinished)
-                } else {
-                    pageIndex += 1
+                if (!advancePending) {
+                    advancePending = true
+                    val advance = {
+                        if (pageIndex == introPages.lastIndex) {
+                            viewModel.markIntroDone(onSaved = onFinished)
+                        } else {
+                            pageIndex += 1
+                        }
+                    }
+                    if (adPositions.hasModalAfter(slideNumber)) {
+                        AdManager.showNativeInter(
+                            activity = activity,
+                            placement = "native_inter_intro",
+                            onNext = advance,
+                        )
+                    } else {
+                        advance()
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth(),
+            enabled = continueEnabled && !advancePending,
         )
     }
 }
@@ -306,3 +356,5 @@ private val introPages = listOf(
         type = IntroVisualType.AI,
     ),
 )
+
+private const val INTRO_AD_TIMEOUT_MS = 5_000L

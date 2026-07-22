@@ -5,13 +5,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.advertisement.NativeAdSlot
+import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.ui.components.SpinFeatureCard
 import com.vga.spinwheel.ui.components.SpinFeatureCardStyle
 import com.vga.spinwheel.ui.components.SpinFeatureVisual
@@ -29,6 +36,9 @@ fun HomeScreen(
     onPaymentClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var navigationPending by remember { mutableStateOf(false) }
+    val showNativeHome = remember { Remote.instance.isAdEnabled("native_home") }
+
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -64,11 +74,25 @@ fun HomeScreen(
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(SpinSpacing.CardGap),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(SpinSpacing.CardGap),
         ) {
+            if (showNativeHome) {
+                item(
+                    key = "ad_native_home",
+                    span = { GridItemSpan(maxLineSpan) },
+                ) {
+                    NativeAdSlot(placement = "native_home")
+                }
+            }
+
             items(homeFeatures, key = { it.screen.route }) { item ->
                 SpinFeatureCard(
                     title = item.screen.title,
                     style = item.style,
-                    onClick = { onFeatureClick(item.screen) },
+                    onClick = {
+                        if (!navigationPending) {
+                            navigationPending = true
+                            onFeatureClick(item.screen)
+                        }
+                    },
                     modifier = Modifier.aspectRatio(1.18f),
                 )
             }

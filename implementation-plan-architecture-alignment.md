@@ -187,7 +187,7 @@ Quy uoc trang thai:
 - Da duoc nguoi dung phe duyet ket qua va yeu cau commit.
 - Commit Chang 3 trong commit rieng.
 
-## [ ] Chang 4 - Tich hop Ads vao Home, Intro va dieu huong
+## [x] Chang 4 - Tich hop Ads vao Home, Intro va dieu huong
 
 ### Pham vi
 
@@ -217,6 +217,26 @@ Quy uoc trang thai:
 
 - Bao cao log cho cac nhanh fill, fail, premium va fallback.
 - Dung lai de nguoi dung test UI/UX Ads.
+
+### Ket qua thuc hien - Da phe duyet
+
+- Da dat `NativeInterHost()` tai root `MainActivity` qua import.
+- Da them `native_home` vao Home voi key on dinh; premium/config tat Ads thi khong tao
+  item va khong de lai khoang trong.
+- Da boc dieu huong tile Home qua `AdManager.showInter("inter_home")`; khoa double-click
+  trong luc cho chuoi inter -> native-inter -> navigate.
+- Da tich hop `positionIntrol`: 1..9 la native inline theo slide, 11/22/33/44 la
+  native modal sau slide tuong ung.
+- Nut Next/Continue cua Intro mo khi native load thanh cong, fail, bi tat/khong co unit,
+  hoac timeout sau 5 giay.
+- Native full/modal tu dong fallback sau timeout 5 giay va callback dieu huong van exactly-once.
+- Da them unit test cho mapping inline/modal cua `IntroAdPositions`.
+- `testDebugUnitTest`: 37/37 test pass.
+- `lintDebug`: pass, 0 error (con 30 warning va 3 hint).
+- `assembleDebug`: pass.
+- `assembleRelease`: pass, van tao APK unsigned nhu baseline.
+- Chua test runtime fill/fail/premium tren may that vi moi truong khong co lenh `adb`.
+- Da duoc nguoi dung phe duyet ket qua va yeu cau commit rieng.
 
 ## [ ] Chang 5 - Thay Payment mock bang IAP that
 
@@ -337,7 +357,7 @@ Quy uoc trang thai:
 | 1. Navigation + lint | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 2. Remote + Intro gate | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 3. Ads core | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
-| 4. Ads UI/flow | Chua lam | Chua | Chua | Chua |
+| 4. Ads UI/flow | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 5. IAP | Chua lam | Chua | Chua | Chua |
 | 6. Language + i18n | Chua lam | Chua | Chua | Chua |
 | 7. Release config | Chua lam | Chua | Chua | Chua |
@@ -367,5 +387,5 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Cho phe duyet bat dau **Chang 4 - Tich hop Ads vao Home, Intro va dieu huong**.
-Neu duoc phe duyet, commit Chang 4 rieng sau khi hoan tat.
+Cho phe duyet bat dau **Chang 5 - Thay Payment mock bang IAP that** va cung cap cac
+product/subscription id cung Google Play public license key truoc khi implement.
