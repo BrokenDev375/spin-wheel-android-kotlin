@@ -23,17 +23,33 @@ fun NavGraphBuilder.numberGraph(
         startDestination = NumberRoutes.HOME,
         route = Screen.Number.route
     ) {
-        composable(NumberRoutes.HOME) {
-            NumberHomeScreen(navController)
+        composable(NumberRoutes.HOME) { backStackEntry ->
+            val parentEntry = androidx.compose.runtime.remember(backStackEntry) {
+                navController.getBackStackEntry(Screen.Number.route)
+            }
+            val viewModel: com.vga.spinwheel.ui.screen.number.NumberViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+            NumberHomeScreen(navController, viewModel)
         }
-        composable(NumberRoutes.SETTINGS) {
-            NumberSettingsScreen(navController)
+        composable(NumberRoutes.SETTINGS) { backStackEntry ->
+            val parentEntry = androidx.compose.runtime.remember(backStackEntry) {
+                navController.getBackStackEntry(Screen.Number.route)
+            }
+            val viewModel: com.vga.spinwheel.ui.screen.number.NumberViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+            NumberSettingsScreen(navController, viewModel)
         }
-        composable(NumberRoutes.RESULT) {
-            NumberResultScreen(navController)
+        composable(NumberRoutes.RESULT) { backStackEntry ->
+            val parentEntry = androidx.compose.runtime.remember(backStackEntry) {
+                navController.getBackStackEntry(Screen.Number.route)
+            }
+            val viewModel: com.vga.spinwheel.ui.screen.number.NumberViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+            NumberResultScreen(navController, viewModel)
         }
-        composable(NumberRoutes.HISTORY) {
-            NumberHistoryScreen(navController)
+        composable(NumberRoutes.HISTORY) { backStackEntry ->
+            val parentEntry = androidx.compose.runtime.remember(backStackEntry) {
+                navController.getBackStackEntry(Screen.Number.route)
+            }
+            val viewModel: com.vga.spinwheel.ui.screen.number.NumberViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+            NumberHistoryScreen(navController, viewModel)
         }
     }
 }
