@@ -447,7 +447,7 @@ Test:
 - Doi coin theme.
 - Duration thay doi thoi gian animation.
 
-## [ ] Phase 8 - Doi
+## [x] Phase 8 - Doi
 
 Tai lieu tham chieu: `feature/Team.md`.
 
