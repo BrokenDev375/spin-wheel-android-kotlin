@@ -3,6 +3,7 @@ package com.vga.spinwheel
 import android.app.Activity
 import android.content.Context
 import com.brian.base_application.BaseApplication
+import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
 import com.vga.spinwheel.core.MainActivity
@@ -12,6 +13,7 @@ import dagger.hilt.android.HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
+        primeAdsRemoteConfigDefaults()
         super.onCreate()
     }
 
@@ -26,9 +28,14 @@ class MyApplication : BaseApplication() {
     override fun hasForegroundServicePermission(): Boolean = true
 
     override fun initAppFlyerId() {
+        val appFlyerId = getString(R.string.app_flyer_id)
+        if (appFlyerId.isBlank() || appFlyerId.startsWith(MOCK_KEY_PREFIX, ignoreCase = true)) {
+            return
+        }
+
         AppFlyer.getInstance().initAppFlyer(
             this,
-            getString(R.string.app_flyer_id),
+            appFlyerId,
             BuildConfig.DEBUG,
             false,
             true
@@ -134,9 +141,21 @@ class MyApplication : BaseApplication() {
 
     override fun getResumeAdId(): String = GOOGLE_TEST_APP_OPEN_ID
 
+    private fun primeAdsRemoteConfigDefaults() {
+        runCatching {
+            val adsConfigJson = assets.open(DEFAULT_ADS_CONFIG_ASSET)
+                .bufferedReader()
+                .use { it.readText() }
+            FirebaseRemoteConfigUtil.getInstance().setDefaultAdsConfigJson(adsConfigJson)
+            FirebaseRemoteConfigUtil.getInstance().setAppDefaults(emptyMap())
+        }
+    }
+
     private companion object {
         const val KEY_LANGUAGE = "language_pres"
         const val NOTIFICATION_CHANNEL_PREFIX = "SpinWheel"
         const val GOOGLE_TEST_APP_OPEN_ID = "ca-app-pub-3940256099942544/9257395921"
+        const val DEFAULT_ADS_CONFIG_ASSET = "default_ads_config.json"
+        const val MOCK_KEY_PREFIX = "mock_"
     }
 }
