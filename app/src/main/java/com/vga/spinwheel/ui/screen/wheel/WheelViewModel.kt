@@ -140,13 +140,12 @@ class WheelViewModel @Inject constructor(
     }
 
     fun changeItemPriority(itemId: String, delta: Int) {
-        val updated = _formState.value.items.map { item ->
-            if (item.id == itemId) {
-                val newPriority = (item.priority + delta).coerceIn(1, 10)
-                item.copy(priority = newPriority)
-            } else item
-        }
-        _formState.value = _formState.value.copy(items = updated)
+        val updated = WheelFormRules.changePriority(
+            items = _formState.value.items,
+            itemId = itemId,
+            delta = delta,
+        )
+        _formState.value = _formState.value.copy(items = updated, itemError = null)
     }
 
     fun addSingleItem() {

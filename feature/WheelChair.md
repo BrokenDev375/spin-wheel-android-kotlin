@@ -35,14 +35,16 @@ Trang thai tai lieu: Draft - cho duyet.
 3. Nguoi dung nhap `Ten banh xe`.
 4. Nguoi dung nhap toi thieu 2 muc trong danh sach `Muc`.
 5. Voi moi muc, nguoi dung co the tang/giam `Uu tien`.
-6. Neu can them dong rieng le, nguoi dung bam `Them muc`.
-7. Neu can nhap nhieu muc nhanh, nguoi dung bam `Them nhieu`.
-8. Popup `Them nhieu tuy chon` hien textarea.
-9. Nguoi dung nhap moi tuy chon tren mot dong, bam `Xong`.
-10. Ung dung them cac dong hop le vao danh sach muc.
-11. Nguoi dung bam `Luu`.
-12. Ung dung validate du lieu va luu banh xe vao storage.
-13. Ung dung quay lai man hinh danh sach banh xe.
+6. Hai muc dau tien la bat buoc; khi `Uu tien` dang la 1, bam giam tiep khong dua ve 0 va khong xoa muc.
+7. Cac muc them phia duoi hai muc dau, neu `Uu tien` dang la 1 ma bam giam tiep thi xem nhu giam ve 0 va ung dung xoa muc do khoi danh sach.
+8. Neu can them dong rieng le, nguoi dung bam `Them muc`.
+9. Neu can nhap nhieu muc nhanh, nguoi dung bam `Them nhieu`.
+10. Popup `Them nhieu tuy chon` hien textarea.
+11. Nguoi dung nhap moi tuy chon tren mot dong, bam `Xong`.
+12. Ung dung them cac dong hop le vao danh sach muc.
+13. Nguoi dung bam `Luu`.
+14. Ung dung validate du lieu va luu banh xe vao storage.
+15. Ung dung quay lai man hinh danh sach banh xe.
 
 ## Validate khi tao/sua banh xe
 
@@ -138,6 +140,8 @@ Trang thai tai lieu: Draft - cho duyet.
 
 - Can toi thieu 2 muc hop le de luu banh xe.
 - `Uu tien` anh huong den xac suat chien thang cua tung muc.
+- Hai muc dau tien trong form luon giu `Uu tien` toi thieu la 1.
+- Voi cac muc them sau hai muc dau, thao tac giam `Uu tien` tu 1 ve 0 se xoa muc do thay vi luu priority 0.
 - Neu bat `Xoa nguoi thang`, can dam bao banh xe van con du muc de quay tiep.
 - Lich su quay chi gan voi phien quay hien tai, khong phai lich su toan app.
 - Luong AI trong mockup dang la mo phong, chua the hien ket noi backend that.

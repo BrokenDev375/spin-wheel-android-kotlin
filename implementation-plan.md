@@ -397,7 +397,7 @@ Test:
 - Remove winner hoat dong.
 - Palette update UI.
 
-## [ ] Phase 6 - Chon Ngon Tay
+## [x] Phase 6 - Chon Ngon Tay
 
 Tai lieu tham chieu: `feature/Finger.md`.
 
@@ -447,7 +447,7 @@ Test:
 - Doi coin theme.
 - Duration thay doi thoi gian animation.
 
-## [ ] Phase 8 - Doi
+## [x] Phase 8 - Doi
 
 Tai lieu tham chieu: `feature/Team.md`.
 
