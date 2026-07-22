@@ -86,12 +86,12 @@ fun DiceHomeScreen(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (i in 1..6) {
                     val isSelected = uiState.diceCount == i
                     Box(
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(32.dp)
                             .clip(CircleShape)
                             .background(if (isSelected) Color(0xFFE4F0FF) else Color.Transparent)
                             .border(
