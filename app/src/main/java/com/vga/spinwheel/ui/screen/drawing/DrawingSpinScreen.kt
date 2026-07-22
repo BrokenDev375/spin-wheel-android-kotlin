@@ -95,21 +95,43 @@ fun DrawingSpinScreen(
             )
         },
         bottomBar = {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = SpinSpacing.ScreenHorizontal, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
-                    onClick = {
-                        if (!isSpinning && !showTempResult) {
+                // Tùy chỉnh (Settings) button
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xFF393347))
+                        .clickable { onOpenSettings() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.Settings,
+                        tint = Color.White,
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
+
+                // Nhấn để ghép nối (Main action) button
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(if (!isSpinning && !showTempResult) Color(0xFFEC9213) else Color(0xFFEC9213).copy(alpha = 0.5f))
+                        .clickable(enabled = !isSpinning && !showTempResult) {
                             isSpinning = true
                             scope.launch {
                                 // Horizontal alternating shake
                                 val shakeDuration = duration * 1000L
                                 val endTime = System.currentTimeMillis() + shakeDuration
-                                
+
                                 while (System.currentTimeMillis() < endTime) {
                                     shakeOffset.animateTo(
                                         targetValue = 25f,
@@ -121,47 +143,43 @@ fun DrawingSpinScreen(
                                     )
                                 }
                                 shakeOffset.animateTo(0f)
-                                
+
                                 viewModel.drawItem()
                                 isSpinning = false
                                 showTempResult = true
-                                
+
                                 delay(1000)
                                 onResult(wheelId)
                                 showTempResult = false
                             }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFEF6C00),
-                        contentColor = Color.White,
-                    ),
-                    enabled = !isSpinning && !showTempResult
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "Nhấn để ghép nối",
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.ExtraBold, // 900
+                        color = Color(0xFF111111)
                     )
                 }
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.Reset,
-                        contentDescription = "Reset",
-                        onClick = {
+
+                // Quay lại từ đầu (Reset) button
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xFF393347))
+                        .clickable(enabled = !isSpinning) {
                             if (!isSpinning) {
                                 showTempResult = false
                             }
                         },
-                        tint = SpinColors.TextMuted
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.Reset,
+                        tint = Color.White,
+                        modifier = Modifier.size(26.dp)
                     )
                 }
             }
