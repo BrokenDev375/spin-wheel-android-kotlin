@@ -2,6 +2,7 @@ package com.vga.spinwheel.ui.nav
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -11,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.vga.spinwheel.ui.screen.home.HomeScreen
 import com.vga.spinwheel.ui.screen.intro.IntroScreen
+import com.vga.spinwheel.ui.screen.finger.FingerScreen
+import com.vga.spinwheel.ui.screen.finger.FingerViewModel
 import com.vga.spinwheel.ui.screen.language.LanguageScreen
 import com.vga.spinwheel.ui.screen.payment.PaymentScreen
 import com.vga.spinwheel.ui.screen.placeholder.PlaceholderScreen
@@ -52,12 +55,24 @@ fun AppNavHost(
             onBack = { navController.popBackStack() },
         )
 
-        placeholder(Screen.Finger) { navController.popBackStack() }
+        composable(Screen.Finger.route) {
+            val viewModel: FingerViewModel = hiltViewModel()
+            FingerScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onHome = {
+                    navController.popBackStack(Screen.Home.route, inclusive = false)
+                },
+            )
+        }
         coinGraph(
             navController = navController,
             onBack = { navController.popBackStack() },
         )
-        placeholder(Screen.Team) { navController.popBackStack() }
+        teamNavGraph(
+            navController = navController,
+            onBack = { navController.popBackStack() },
+        )
         numberGraph(navController = navController)
         drawingNavGraph(navController = navController)
         placeholder(Screen.Bottle) { navController.popBackStack() }
