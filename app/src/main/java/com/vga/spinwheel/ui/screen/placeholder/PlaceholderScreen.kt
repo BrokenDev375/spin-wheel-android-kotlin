@@ -1,18 +1,18 @@
 package com.vga.spinwheel.ui.screen.placeholder
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
 fun PlaceholderScreen(
@@ -21,22 +21,17 @@ fun PlaceholderScreen(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(SpinColors.Background),
+        containerColor = SpinColors.Background,
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-                OutlinedButton(onClick = onBack) {
-                    Text("Back")
-                }
-            }
+            SpinTopBar(
+                title = title,
+                navigationIcon = SpinIconGlyph.Back,
+                navigationDescription = "Quay lai",
+                onNavigationClick = onBack,
+            )
         },
     ) { innerPadding ->
         Column(
@@ -44,10 +39,11 @@ fun PlaceholderScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(20.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Text(
                 text = title,
+                color = SpinColors.TextPrimary,
                 style = MaterialTheme.typography.displaySmall,
             )
         }
