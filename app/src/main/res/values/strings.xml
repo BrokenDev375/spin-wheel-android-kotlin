@@ -7,6 +7,10 @@
     <string name="facebook_client_token" translatable="false">mock_facebook_client_token</string>
     <string name="public_license_key" translatable="false">MOCK_PUBLIC_LICENSE_KEY</string>
 
+    <string name="ad_label">Ad</string>
+    <string name="ad_loading">Loading ad...</string>
+    <string name="ad_cta_default">Open</string>
+
     <string name="iap_feature_1">Unlimited wheels</string>
     <string name="iap_feature_2">More random tools</string>
     <string name="iap_feature_3">Save custom lists</string>

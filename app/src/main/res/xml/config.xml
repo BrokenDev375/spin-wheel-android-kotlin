@@ -17,6 +17,18 @@
         <value>20</value>
     </entry>
     <entry>
+        <key>native_inter_home_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>native_inter_home_ratio</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>native_inter_home_max</key>
+        <value>20</value>
+    </entry>
+    <entry>
         <key>native_intro1_enable</key>
         <value>true</value>
     </entry>

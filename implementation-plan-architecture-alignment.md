@@ -133,7 +133,7 @@ Quy uoc trang thai:
 - Da duoc nguoi dung phe duyet ket qua va yeu cau commit truoc khi sang Chang 3.
 - Commit Chang 2 trong commit rieng.
 
-## [ ] Chang 3 - Xay loi Ads tai su dung
+## [x] Chang 3 - Xay loi Ads tai su dung
 
 ### Pham vi
 
@@ -164,6 +164,28 @@ Quy uoc trang thai:
 
 - Review rieng loi Ads truoc khi chen vao UI.
 - Dung lai de nguoi dung phe duyet placement va tan suat.
+
+### Ket qua thuc hien - Da phe duyet
+
+- Da them package `advertisement/` gom `AdsViewModel`, `NativeAdSlot`, `AdManager`,
+  `AdScenario`, `NativeInter`, `NativeAdsFull`, `AdPositions` va `OnceAction`.
+- Da them `res/layout/ad_native_full.xml` cho native full-screen/modal.
+- Native load/inter show deu di qua `Admob.getInstance()` cua lib.
+- Native slot co cache theo `AdsViewModel`, bind mot lan trong `AndroidView.factory`,
+  an slot khi load fail va khong retry/shimmer vo han.
+- `AdScenario` dem ratio/max theo ngay va don key cu hon 7 ngay.
+- `AdManager.showInter()` co fallback native-inter va callback final exactly-once.
+- Debug placement tra Google test unit qua `Remote.adUnit()`; release doc tu `ads_config`.
+- Da bo sung placement app vao `default_ads_config.json` va `res/xml/config.xml`.
+- Khong tim thay `AdLoader`, `AdRequest`, `InterstitialAd.load`, `AppOpenAd`,
+  `MobileAds.initialize` hoac `android.util.Log` trong code app.
+- `testDebugUnitTest`: 36/36 test pass.
+- `lintDebug`: pass, 0 error (con 30 warning va 3 hint).
+- `assembleDebug`: pass.
+- `assembleRelease`: pass, van tao APK unsigned nhu baseline.
+- Chua chen Ads vao man hinh that; phan do thuoc Chang 4.
+- Da duoc nguoi dung phe duyet ket qua va yeu cau commit.
+- Commit Chang 3 trong commit rieng.
 
 ## [ ] Chang 4 - Tich hop Ads vao Home, Intro va dieu huong
 
@@ -314,7 +336,7 @@ Quy uoc trang thai:
 |---|---|---|---|---|
 | 1. Navigation + lint | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 2. Remote + Intro gate | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
-| 3. Ads core | Chua lam | Da phe duyet | Chua | Chua |
+| 3. Ads core | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 4. Ads UI/flow | Chua lam | Chua | Chua | Chua |
 | 5. IAP | Chua lam | Chua | Chua | Chua |
 | 6. Language + i18n | Chua lam | Chua | Chua | Chua |
@@ -345,5 +367,5 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Sau khi commit **Chang 2 - Nen Remote Config, AppStorage va gate Intro**, bat dau
-**Chang 3 - Xay loi Ads tai su dung** theo phe duyet cua nguoi dung.
+Cho phe duyet bat dau **Chang 4 - Tich hop Ads vao Home, Intro va dieu huong**.
+Neu duoc phe duyet, commit Chang 4 rieng sau khi hoan tat.
