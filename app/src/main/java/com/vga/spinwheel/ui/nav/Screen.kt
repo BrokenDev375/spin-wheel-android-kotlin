@@ -16,7 +16,7 @@ sealed class Screen(
     data object Dice : Screen("dice", "Xúc Xắc")
     data object Card : Screen("card", "Lật Thẻ")
     data object Settings : Screen("settings", "Cài đặt")
-    data object Language : Screen("language", "Language")
+    data object Language : Screen("language", "Đổi ngôn ngữ")
     data object Payment : Screen("payment", "Pro")
 }
 

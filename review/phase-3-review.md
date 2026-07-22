@@ -12,9 +12,10 @@ Branch: `phase-3-storage-data-layer`
 ## Scope da implement
 
 1. Room dependency:
-   - `androidx.room:room-runtime:2.8.4`
-   - `androidx.room:room-ktx:2.8.4`
-   - `androidx.room:room-compiler:2.8.4` qua KSP
+   - Ban dau Phase 3 dung `androidx.room:room-runtime:2.8.4`
+   - Ban dau Phase 3 dung `androidx.room:room-ktx:2.8.4`
+   - Ban dau Phase 3 dung `androidx.room:room-compiler:2.8.4` qua KSP
+   - Sau Phase 4, dependency Room hien tai trong app duoc chuyen ve `2.6.1` de fix loi KSP khi doc schema export cu. Data contract va `app/schemas/.../1.json` khong doi.
    - Export schema ra `app/schemas`
 
 2. Domain model:
@@ -108,7 +109,9 @@ Ket qua:
 
 ## Ghi chu version
 
-- Dung Room `2.8.4` de phu hop hon voi Kotlin/KSP moi. Tham chieu release note AndroidX Room: `https://developer.android.com/jetpack/androidx/releases/room`.
+- Ban dau dung Room `2.8.4`; trong Phase 4 da chuyen ve Room `2.6.1` vi Room processor `2.8.4` bi `AbstractMethodError` voi `kotlinx.serialization` khi doc schema export version 1 tren toolchain hien tai.
+- Thay doi nay chi o dependency build/runtime Room, khong doi schema database version 1.
+- Chi tiet xem `review/phase-4-review.md`.
 
 ## Ket luan
 

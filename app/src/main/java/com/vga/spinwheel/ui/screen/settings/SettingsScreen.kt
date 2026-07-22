@@ -2,14 +2,24 @@ package com.vga.spinwheel.ui.screen.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinSettingRow
 import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -17,11 +27,16 @@ import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
-fun SettingsSkeletonScreen(
+fun SettingsScreen(
     onBack: () -> Unit,
+    onShareClick: () -> Unit,
     onLanguageClick: () -> Unit,
+    onRateClick: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.uiState.collectAsState()
+
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -29,7 +44,7 @@ fun SettingsSkeletonScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Cai dat",
+                title = "Cài đặt",
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Back",
                 onNavigationClick = onBack,
@@ -47,42 +62,69 @@ fun SettingsSkeletonScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             SpinSettingRow(
-                title = "Chia se ung dung",
+                title = "Chia sẻ",
+                onClick = onShareClick,
+                leading = { SettingsGlyph(SpinIconGlyph.ChevronRight) },
             )
             SpinSettingRow(
-                title = "Ngon ngu",
+                title = "Ngôn ngữ",
                 onClick = onLanguageClick,
+                leading = { SettingsGlyph(SpinIconGlyph.Home) },
             )
             SpinSettingRow(
-                title = "Danh gia ung dung",
+                title = "Đánh giá ứng dụng",
+                onClick = onRateClick,
+                leading = { SettingsGlyph(SpinIconGlyph.Crown) },
             )
             SpinSettingRow(
-                title = "Nhac nen",
+                title = "Nhạc nền",
+                leading = { SettingsGlyph(SpinIconGlyph.Settings) },
                 trailing = {
                     SpinToggle(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = state.musicEnabled,
+                        onCheckedChange = viewModel::setMusicEnabled,
                     )
                 },
             )
             SpinSettingRow(
-                title = "Am thanh tro choi",
+                title = "Âm thanh trò chơi",
+                leading = { SettingsGlyph(SpinIconGlyph.Check) },
                 trailing = {
                     SpinToggle(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = state.gameSoundEnabled,
+                        onCheckedChange = viewModel::setGameSoundEnabled,
                     )
                 },
             )
             SpinSettingRow(
                 title = "Rung",
+                leading = { SettingsGlyph(SpinIconGlyph.Minus) },
                 trailing = {
                     SpinToggle(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = state.vibrationEnabled,
+                        onCheckedChange = viewModel::setVibrationEnabled,
                     )
                 },
             )
         }
+    }
+}
+
+@Composable
+private fun SettingsGlyph(glyph: SpinIconGlyph) {
+    Box(
+        modifier = Modifier
+            .size(42.dp)
+            .clip(CircleShape)
+            .background(Color.White.copy(alpha = 0.08f)),
+    ) {
+        SpinIcon(
+            glyph = glyph,
+            tint = Color(0xFF50C450),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(26.dp)
+                .padding(2.dp),
+        )
     }
 }
