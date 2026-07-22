@@ -79,6 +79,18 @@ fun AppNavHost(
         placeholder(Screen.Number) { navController.popBackStack() }
         placeholder(Screen.Drawing) { navController.popBackStack() }
         placeholder(Screen.Dice) { navController.popBackStack() }
+        coinGraph(
+            navController = navController,
+            onBack = { navController.popBackStack() },
+        )
+        teamNavGraph(
+            navController = navController,
+            onBack = { navController.popBackStack() },
+        )
+        numberGraph(navController = navController)
+        drawingNavGraph(navController = navController)
+        placeholder(Screen.Bottle) { navController.popBackStack() }
+        diceGraph(navController = navController)
         placeholder(Screen.Card) { navController.popBackStack() }
 
         composable(Screen.Settings.route) {
