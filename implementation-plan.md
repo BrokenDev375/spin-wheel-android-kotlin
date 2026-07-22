@@ -258,7 +258,7 @@ Test:
 - Build debug.
 - Run tren device/emulator vao duoc Home sau luong Splash/Language/IAP cua lib.
 
-## [ ] Phase 3 - Storage va data layer
+## [x] Phase 3 - Storage va data layer
 
 Muc tieu: co data layer de luu danh sach va setting.
 
