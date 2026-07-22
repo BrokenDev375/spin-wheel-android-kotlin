@@ -507,7 +507,7 @@ Test:
 - Count khong vuot range khi no duplicates.
 - History luu toi da 30 ket qua.
 
-## [ ] Phase 10 - Ve
+## [x] Phase 10 - Ve
 
 Tai lieu tham chieu: `feature/Drawing.md`.
 

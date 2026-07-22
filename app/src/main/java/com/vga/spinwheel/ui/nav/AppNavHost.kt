@@ -76,7 +76,7 @@ fun AppNavHost(
         numberGraph(navController = navController)
         drawingNavGraph(navController = navController)
         placeholder(Screen.Bottle) { navController.popBackStack() }
-        placeholder(Screen.Dice) { navController.popBackStack() }
+        diceGraph(navController = navController)
         placeholder(Screen.Card) { navController.popBackStack() }
 
         composable(Screen.Settings.route) {
