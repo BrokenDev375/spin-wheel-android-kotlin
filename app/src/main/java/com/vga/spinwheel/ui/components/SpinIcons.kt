@@ -20,6 +20,7 @@ enum class SpinIconGlyph {
     Plus,
     Minus,
     ChevronRight,
+    ChevronDown,
     Check,
     Wheel,
     Trash,
@@ -143,6 +144,11 @@ fun SpinIcon(
             SpinIconGlyph.ChevronRight -> {
                 drawLine(tint, Offset(w * 0.36f, h * 0.22f), Offset(w * 0.64f, h * 0.5f), stroke, StrokeCap.Round)
                 drawLine(tint, Offset(w * 0.64f, h * 0.5f), Offset(w * 0.36f, h * 0.78f), stroke, StrokeCap.Round)
+            }
+
+            SpinIconGlyph.ChevronDown -> {
+                drawLine(tint, Offset(w * 0.24f, h * 0.38f), Offset(w * 0.5f, h * 0.64f), stroke, StrokeCap.Round)
+                drawLine(tint, Offset(w * 0.5f, h * 0.64f), Offset(w * 0.76f, h * 0.38f), stroke, StrokeCap.Round)
             }
 
             SpinIconGlyph.Check -> {
