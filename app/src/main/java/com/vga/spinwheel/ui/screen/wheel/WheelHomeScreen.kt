@@ -18,10 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,12 +37,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.data.model.Wheel
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinPrimaryButton
-import com.vga.spinwheel.ui.components.SpinSecondaryButton
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -81,29 +80,83 @@ fun WheelHomeScreen(
                 .padding(innerPadding)
                 .padding(horizontal = SpinSpacing.ScreenHorizontal),
         ) {
-            Row(
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // AI Generator Button (Full Width, Green/Teal, Sparkles Icon)
+            Button(
+                onClick = { viewModel.showAiModal(true) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF00E676),
+                    contentColor = Color.White,
+                ),
             ) {
-                SpinPrimaryButton(
-                    text = "Tạo Bánh Xe Mới",
-                    onClick = onAddWheel,
-                    modifier = Modifier.weight(1f),
-                )
-                SpinSecondaryButton(
-                    text = "Trình Tạo AI",
-                    onClick = { viewModel.showAiModal(true) },
-                    modifier = Modifier.weight(1f),
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.Sparkles,
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp),
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text(
+                        text = "Trình tạo AI",
+                        fontSize = 18.sp,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    )
+                }
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Create New Wheel Button (Full Width, Dark Purple)
+            Button(
+                onClick = onAddWheel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF3B3754),
+                    contentColor = Color.White,
+                ),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.Plus,
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(
+                        text = "Tạo Bánh xe mới",
+                        fontSize = 17.sp,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             if (wheels.isEmpty()) {
-                WheelEmptyState(
-                    onAddWheel = onAddWheel,
-                    onAiGenerate = { viewModel.showAiModal(true) },
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "Không có bánh xe. Thêm mới đi!",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = SpinColors.TextMuted,
+                    )
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -136,7 +189,7 @@ fun WheelHomeScreen(
                         deleteTargetId = null
                     }
                 ) {
-                    Text("Xóa", color = Color(0xFFFF5252))
+                    Text("Xoá", color = Color(0xFFFF5252))
                 }
             },
             dismissButton = {
@@ -144,7 +197,7 @@ fun WheelHomeScreen(
                     Text("Hủy", color = SpinColors.TextPrimary)
                 }
             },
-            containerColor = SpinColors.Card,
+            containerColor = Color(0xFF2D2845),
         )
     }
 
@@ -165,38 +218,6 @@ fun WheelHomeScreen(
 }
 
 @Composable
-private fun WheelEmptyState(
-    onAddWheel: () -> Unit,
-    onAiGenerate: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        SpinIcon(
-            glyph = SpinIconGlyph.Wheel,
-            tint = SpinColors.Action,
-            modifier = Modifier.size(80.dp),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Chưa có bánh xe nào",
-            style = MaterialTheme.typography.titleLarge,
-            color = SpinColors.TextPrimary,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Hãy tạo bánh xe đầu tiên của bạn hoặc dùng AI gợi ý để bắt đầu quay!",
-            style = MaterialTheme.typography.bodyMedium,
-            color = SpinColors.TextMuted,
-        )
-    }
-}
-
-@Composable
 private fun WheelItemCard(
     wheel: Wheel,
     onClick: () -> Unit,
@@ -206,61 +227,56 @@ private fun WheelItemCard(
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(SpinRadius.Card))
-            .background(SpinColors.Card)
-            .border(1.dp, SpinColors.CardBorder, RoundedCornerShape(SpinRadius.Card))
+            .background(Color(0xFF3B3754))
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
     ) {
-        SpinIcon(
-            glyph = SpinIconGlyph.Wheel,
-            tint = SpinColors.Premium,
-            modifier = Modifier.size(36.dp),
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 14.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                text = wheel.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = SpinColors.TextPrimary,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "${wheel.items.size} tùy chọn",
-                style = MaterialTheme.typography.bodyMedium,
-                color = SpinColors.TextMuted,
-            )
-        }
-        Box {
-            SpinIconButton(
-                glyph = SpinIconGlyph.More,
-                contentDescription = "Menu",
-                onClick = { menuExpanded = true },
-            )
-            DropdownMenu(
-                expanded = menuExpanded,
-                onDismissRequest = { menuExpanded = false },
-                modifier = Modifier.background(SpinColors.Card),
-            ) {
-                DropdownMenuItem(
-                    text = { Text("Sửa", color = SpinColors.TextPrimary) },
-                    onClick = { menuExpanded = false; onEdit() },
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = wheel.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = SpinColors.TextPrimary,
                 )
-                DropdownMenuItem(
-                    text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
-                    onClick = { menuExpanded = false; onDuplicate() },
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${wheel.items.size} options",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SpinColors.TextMuted,
                 )
-                DropdownMenuItem(
-                    text = { Text("Xóa", color = Color(0xFFFF5252)) },
-                    onClick = { menuExpanded = false; onDelete() },
+            }
+            Box {
+                SpinIconButton(
+                    glyph = SpinIconGlyph.More,
+                    contentDescription = "Menu",
+                    onClick = { menuExpanded = true },
                 )
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    modifier = Modifier.background(Color(0xFF2D2845)),
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Sửa", color = SpinColors.TextPrimary) },
+                        onClick = { menuExpanded = false; onEdit() },
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
+                        onClick = { menuExpanded = false; onDuplicate() },
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Xoá", color = Color(0xFFFF5252)) },
+                        onClick = { menuExpanded = false; onDelete() },
+                    )
+                }
             }
         }
     }

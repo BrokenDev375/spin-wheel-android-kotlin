@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.vga.spinwheel.ui.screen.wheel.WheelAddEditScreen
 import com.vga.spinwheel.ui.screen.wheel.WheelHistoryScreen
 import com.vga.spinwheel.ui.screen.wheel.WheelHomeScreen
+import com.vga.spinwheel.ui.screen.wheel.WheelPaletteScreen
 import com.vga.spinwheel.ui.screen.wheel.WheelResultScreen
 import com.vga.spinwheel.ui.screen.wheel.WheelSettingsScreen
 import com.vga.spinwheel.ui.screen.wheel.WheelSpinScreen
@@ -106,8 +107,27 @@ fun NavGraphBuilder.wheelNavGraph(
             navController.getBackStackEntry(WheelRoutes.HOME)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
+        val wheelId = backStackEntry.arguments?.getString(WheelRoutes.ARG_WHEEL_ID) ?: ""
 
         WheelSettingsScreen(
+            viewModel = viewModel,
+            onBack = { navController.popBackStack() },
+            onOpenPalette = { navController.navigate(WheelRoutes.palette(wheelId)) },
+        )
+    }
+
+    composable(
+        route = WheelRoutes.PALETTE,
+        arguments = listOf(
+            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType }
+        ),
+    ) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(WheelRoutes.HOME)
+        }
+        val viewModel: WheelViewModel = hiltViewModel(parentEntry)
+
+        WheelPaletteScreen(
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
         )

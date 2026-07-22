@@ -6,29 +6,36 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.vga.spinwheel.ui.components.SpinPrimaryButton
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 
@@ -41,89 +48,118 @@ fun WheelAiGenerateDialog(
 ) {
     var prompt by remember { mutableStateOf("") }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = "Trình Tạo AI Bánh Xe",
-                style = MaterialTheme.typography.titleLarge,
-                color = SpinColors.TextPrimary,
-            )
-        },
-        text = {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF2D2845)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+        ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
+                // Header
                 Text(
-                    text = "Chọn chủ đề mẫu hoặc nhập chủ đề của bạn:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = SpinColors.TextMuted,
+                    text = "Trình tạo AI",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
                 )
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                // Input Card Container
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF3B3754)),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    items(topics) { topic ->
-                        Row(
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    ) {
+                        Text(
+                            text = "Enter a topic for your wheel:",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        OutlinedTextField(
+                            value = prompt,
+                            onValueChange = { prompt = it },
+                            placeholder = {
+                                Text(
+                                    "e.g. Dinner decisions, Truth or dare",
+                                    color = SpinColors.TextMuted,
+                                    fontSize = 15.sp,
+                                )
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(SpinRadius.Control))
-                                .background(Color.White.copy(alpha = 0.08f))
-                                .clickable { onSelectTopic(topic) }
-                                .padding(horizontal = 14.dp, vertical = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = topic.title,
-                                    style = MaterialTheme.typography.titleSmall,
-                                    color = SpinColors.TextPrimary,
-                                )
-                                Text(
-                                    text = "${topic.options.size} mục",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = SpinColors.TextMuted,
-                                )
-                            }
-                        }
+                                .height(110.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedBorderColor = Color.White.copy(alpha = 0.3f),
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
+                            ),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Remaining quota f111878b: 4/4",
+                            fontSize = 13.sp,
+                            color = SpinColors.TextMuted,
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                // Sample Topic Chips
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(topics) { topic ->
+                        Text(
+                            text = topic.title,
+                            fontSize = 13.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFF3B3754))
+                                .clickable { onSelectTopic(topic) }
+                                .padding(horizontal = 12.dp, vertical = 6.dp),
+                        )
+                    }
+                }
 
-                OutlinedTextField(
-                    value = prompt,
-                    onValueChange = { prompt = it },
-                    placeholder = { Text("Ví dụ: Món ăn tối", color = SpinColors.TextMuted) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = SpinColors.TextPrimary,
-                        unfocusedTextColor = SpinColors.TextPrimary,
-                        focusedBorderColor = SpinColors.Action,
-                        unfocusedBorderColor = SpinColors.CardBorder,
+                // Big Orange Button
+                Button(
+                    onClick = {
+                        if (prompt.isNotBlank()) {
+                            onCustomPrompt(prompt)
+                        } else {
+                            topics.firstOrNull()?.let { onSelectTopic(it) }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFEF6C00),
+                        contentColor = Color.White,
                     ),
-                )
-
-                if (prompt.isNotBlank()) {
-                    SpinPrimaryButton(
-                        text = "Tạo Bánh Xe Với AI",
-                        onClick = { onCustomPrompt(prompt) },
-                        modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = "Generate options",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Đóng", color = SpinColors.TextMuted)
-            }
-        },
-        containerColor = SpinColors.Card,
-    )
+        }
+    }
 }

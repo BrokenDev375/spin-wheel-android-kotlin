@@ -9,81 +9,53 @@ data class WheelPalette(
 )
 
 object WheelPalettes {
-    val Default = WheelPalette(
+    val Classic = WheelPalette(
         id = 0,
-        name = "Rực Rỡ",
+        name = "Cổ điển",
         colors = listOf(
-            Color(0xFFFF5252),
-            Color(0xFFFF4081),
-            Color(0xFFE040FB),
-            Color(0xFF7C4DFF),
-            Color(0xFF536DFE),
-            Color(0xFF448AFF),
-            Color(0xFF40C4FF),
-            Color(0xFF1DE9B6),
-            Color(0xFF64DD17),
-            Color(0xFFFFD600),
-            Color(0xFFFFAB00),
-            Color(0xFFFF6D00),
+            Color(0xFFFFC107), // Yellow
+            Color(0xFFFF5252), // Orange-Red
+            Color(0xFF607D8B), // Grey
+            Color(0xFF1DE9B6), // Teal
+        ),
+    )
+
+    val Vibrant = WheelPalette(
+        id = 1,
+        name = "Sáng rực",
+        colors = listOf(
+            Color(0xFFFFC107), // Yellow
+            Color(0xFFFF3D00), // Bright Red
+            Color(0xFF2979FF), // Bright Blue
+            Color(0xFF00E676), // Bright Green
         ),
     )
 
     val Pastel = WheelPalette(
-        id = 1,
-        name = "Pastel Nhẹ Nhàng",
-        colors = listOf(
-            Color(0xFFFFB7B2),
-            Color(0xFFFFDAC1),
-            Color(0xFFE2F0CB),
-            Color(0xFFB5EAD7),
-            Color(0xFFC7CEEA),
-            Color(0xFFF3C4FB),
-            Color(0xFFFEE1E8),
-        ),
-    )
-
-    val Neon = WheelPalette(
         id = 2,
-        name = "Neon Đêm",
+        name = "Nhẹ nhàng",
         colors = listOf(
-            Color(0xFF00F5D4),
-            Color(0xFF7B2CBF),
-            Color(0xFFF15BB5),
-            Color(0xFFFEE440),
-            Color(0xFF00BBF9),
-            Color(0xFF9B5DE5),
+            Color(0xFFFFF176), // Pastel Yellow
+            Color(0xFFFF80AB), // Pastel Pink
+            Color(0xFF82B1FF), // Pastel Blue
+            Color(0xFFA7FFEB), // Pastel Green
         ),
     )
 
-    val Sunset = WheelPalette(
+    val Dark = WheelPalette(
         id = 3,
-        name = "Hoàng Hôn",
+        name = "Tối",
         colors = listOf(
-            Color(0xFFFF4E50),
-            Color(0xFFF9D423),
-            Color(0xFFFC913A),
-            Color(0xFFFF6B6B),
-            Color(0xFFC7F464),
-            Color(0xFF4ECDC4),
+            Color(0xFF90A4AE), // Light Grey
+            Color(0xFF546E7A), // Mid Grey
+            Color(0xFF37474F), // Dark Grey
+            Color(0xFF212121), // Charcoal
         ),
     )
 
-    val Ocean = WheelPalette(
-        id = 4,
-        name = "Đại Dương",
-        colors = listOf(
-            Color(0xFF006699),
-            Color(0xFF2980B9),
-            Color(0xFF3498DB),
-            Color(0xFF1ABC9C),
-            Color(0xFF16A085),
-            Color(0xFF2C3E50),
-        ),
-    )
-
-    val all: List<WheelPalette> = listOf(Default, Pastel, Neon, Sunset, Ocean)
+    val all: List<WheelPalette> = listOf(Classic, Vibrant, Pastel, Dark)
 
     fun getPalette(index: Int): WheelPalette {
-        return all.getOrElse(index.coerceIn(0, all.lastIndex)) { Default }
+        return all.getOrElse(index.coerceIn(0, all.lastIndex)) { Classic }
     }
 }
