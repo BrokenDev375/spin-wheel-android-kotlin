@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -193,16 +194,17 @@ fun DrawingSpinScreen(
             val topIndex = (maxCards - 1).coerceAtLeast(0)
             
             Box(
-                modifier = Modifier.offset(x = shakeOffset.value.dp),
                 contentAlignment = Alignment.Center
             ) {
                 for (i in topIndex downTo 0) {
                     val scaleFactor = 1f - (i * 0.05f)
                     val yOffset = (i * 12).dp
+                    // Alternate shake direction based on index
+                    val currentShake = if (i % 2 == 0) shakeOffset.value else -shakeOffset.value
                     
                     Box(
                         modifier = Modifier
-                            .offset(y = -yOffset)
+                            .offset(x = currentShake.dp, y = -yOffset)
                             .scale(scaleFactor)
                             .size(width = 220.dp, height = 300.dp)
                             .clip(RoundedCornerShape(16.dp))
