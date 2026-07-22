@@ -589,7 +589,7 @@ Test:
 - Total dung.
 - Theme dice update dung.
 
-## [ ] Phase 13 - Lat The
+## [x] Phase 13 - Lat The
 
 Tai lieu tham chieu: `feature/Card.md`.
 

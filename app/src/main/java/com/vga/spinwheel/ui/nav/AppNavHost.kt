@@ -65,6 +65,11 @@ fun AppNavHost(
             onBack = { navController.popBackStack() },
         )
 
+        cardNavGraph(
+            navController = navController,
+            onBack = { navController.popBackStack() },
+        )
+
         composable(Screen.Finger.route) {
             val viewModel: FingerViewModel = hiltViewModel()
             FingerScreen(
