@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
         RandomHistoryEntity::class,
     ],
     version = 1,
-    exportSchema = true,
+    exportSchema = false,
 )
 abstract class SpinWheelDatabase : RoomDatabase() {
 

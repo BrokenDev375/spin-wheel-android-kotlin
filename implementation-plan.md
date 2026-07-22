@@ -353,7 +353,7 @@ Test:
 - Setting -> Language -> Done.
 - Payment chon goi va back ve Home.
 
-## [ ] Phase 5 - Banh Xe
+## [x] Phase 5 - Banh Xe
 
 Tai lieu tham chieu: `feature/WheelChair.md`.
 

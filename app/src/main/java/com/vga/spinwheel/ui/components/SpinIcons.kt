@@ -20,6 +20,10 @@ enum class SpinIconGlyph {
     Minus,
     ChevronRight,
     Check,
+    Wheel,
+    Trash,
+    History,
+    More,
 }
 
 @Composable
@@ -131,6 +135,40 @@ fun SpinIcon(
             SpinIconGlyph.Check -> {
                 drawLine(tint, Offset(w * 0.2f, h * 0.52f), Offset(w * 0.42f, h * 0.72f), stroke, StrokeCap.Round)
                 drawLine(tint, Offset(w * 0.42f, h * 0.72f), Offset(w * 0.82f, h * 0.28f), stroke, StrokeCap.Round)
+            }
+
+            SpinIconGlyph.Wheel -> {
+                drawCircle(tint, radius = w * 0.38f, center = Offset(w * 0.5f, h * 0.5f), style = Stroke(width = stroke))
+                drawCircle(tint, radius = w * 0.1f, center = Offset(w * 0.5f, h * 0.5f))
+                repeat(4) { idx ->
+                    rotate(idx * 45f, Offset(w * 0.5f, h * 0.5f)) {
+                        drawLine(tint, Offset(w * 0.5f, h * 0.12f), Offset(w * 0.5f, h * 0.88f), stroke * 0.7f, StrokeCap.Round)
+                    }
+                }
+            }
+
+            SpinIconGlyph.Trash -> {
+                drawLine(tint, Offset(w * 0.2f, h * 0.28f), Offset(w * 0.8f, h * 0.28f), stroke, StrokeCap.Round)
+                drawLine(tint, Offset(w * 0.38f, h * 0.2f), Offset(w * 0.62f, h * 0.2f), stroke, StrokeCap.Round)
+                val body = Path().apply {
+                    moveTo(w * 0.28f, h * 0.28f)
+                    lineTo(w * 0.32f, h * 0.8f)
+                    lineTo(w * 0.68f, h * 0.8f)
+                    lineTo(w * 0.72f, h * 0.28f)
+                }
+                drawPath(body, tint, style = Stroke(width = stroke, cap = StrokeCap.Round))
+            }
+
+            SpinIconGlyph.History -> {
+                drawCircle(tint, radius = w * 0.36f, center = Offset(w * 0.5f, h * 0.5f), style = Stroke(width = stroke))
+                drawLine(tint, Offset(w * 0.5f, h * 0.26f), Offset(w * 0.5f, h * 0.5f), stroke, StrokeCap.Round)
+                drawLine(tint, Offset(w * 0.5f, h * 0.5f), Offset(w * 0.7f, h * 0.5f), stroke, StrokeCap.Round)
+            }
+
+            SpinIconGlyph.More -> {
+                drawCircle(tint, radius = stroke, center = Offset(w * 0.5f, h * 0.26f))
+                drawCircle(tint, radius = stroke, center = Offset(w * 0.5f, h * 0.5f))
+                drawCircle(tint, radius = stroke, center = Offset(w * 0.5f, h * 0.74f))
             }
         }
     }
