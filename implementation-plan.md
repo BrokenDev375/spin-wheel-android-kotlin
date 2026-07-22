@@ -204,7 +204,7 @@ Test:
 - Khong crash khi vao Home.
 - Splash/Language/IAP cua lib neu bat config test khong lam ket app.
 
-## [ ] Phase 2 - UI system va component dung chung
+## [x] Phase 2 - UI system va component dung chung
 
 Muc tieu: tao bo component lap lai de cac feature dung chung.
 

@@ -5,16 +5,16 @@ sealed class Screen(
     val title: String,
 ) {
     data object Home : Screen("home", "Spin Wheel")
-    data object Wheel : Screen("wheel", "Banh Xe")
-    data object Finger : Screen("finger", "Chon Ngon Tay")
-    data object Coin : Screen("coin", "Dong Xu")
-    data object Team : Screen("team", "Doi")
-    data object Number : Screen("number", "So Ngau Nhien")
-    data object Drawing : Screen("drawing", "Ve")
+    data object Wheel : Screen("wheel", "Bánh Xe")
+    data object Finger : Screen("finger", "Chọn Ngón Tay")
+    data object Coin : Screen("coin", "Đồng Xu")
+    data object Team : Screen("team", "Đội")
+    data object Number : Screen("number", "Số Ngẫu Nhiên")
+    data object Drawing : Screen("drawing", "Vẽ")
     data object Bottle : Screen("bottle", "Quay Chai")
-    data object Dice : Screen("dice", "Xuc Xac")
-    data object Card : Screen("card", "Lat The")
-    data object Settings : Screen("settings", "Setting")
+    data object Dice : Screen("dice", "Xúc Xắc")
+    data object Card : Screen("card", "Lật Thẻ")
+    data object Settings : Screen("settings", "Cài đặt")
     data object Payment : Screen("payment", "Pro")
 }
 
