@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 
 enum class SpinIconGlyph {
     Back,
+    Close,
     Home,
     Settings,
     Crown,
@@ -53,6 +54,11 @@ fun SpinIcon(
                     strokeWidth = stroke,
                     cap = StrokeCap.Round,
                 )
+            }
+
+            SpinIconGlyph.Close -> {
+                drawLine(tint, Offset(w * 0.26f, h * 0.26f), Offset(w * 0.74f, h * 0.74f), stroke, StrokeCap.Round)
+                drawLine(tint, Offset(w * 0.74f, h * 0.26f), Offset(w * 0.26f, h * 0.74f), stroke, StrokeCap.Round)
             }
 
             SpinIconGlyph.Home -> {

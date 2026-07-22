@@ -315,7 +315,7 @@ Test:
 - Home -> route Wheel skeleton.
 - Home -> Settings/Payment skeleton.
 
-## [ ] Phase 4 - Home, Intro, Setting, Language, Payment
+## [x] Phase 4 - Home, Intro, Setting, Language, Payment
 
 Tai lieu tham chieu: `feature/Home.md`.
 
