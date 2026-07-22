@@ -19,6 +19,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -69,6 +70,9 @@ import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
 fun BottleScreen(
@@ -588,7 +592,7 @@ private fun BottlePreviewCard(
     angle: Int,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    BoxWithConstraints(
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
             .background(Color(0xFF3D3D3C))
@@ -599,6 +603,19 @@ private fun BottlePreviewCard(
             ),
         contentAlignment = Alignment.Center,
     ) {
+        val radians = Math.toRadians(angle.toDouble())
+        val sinValue = abs(sin(radians)).toFloat()
+        val cosValue = abs(cos(radians)).toFloat()
+        val availableWidth = maxOf(maxWidth - 56.dp, 120.dp)
+        val availableHeight = maxOf(maxHeight - 56.dp, 180.dp)
+        val widthFactor = (BottleAspectRatio * cosValue + sinValue).coerceAtLeast(0.1f)
+        val heightFactor = (BottleAspectRatio * sinValue + cosValue).coerceAtLeast(0.1f)
+        val bottleHeight = minOf(
+            availableWidth / widthFactor,
+            availableHeight / heightFactor,
+            380.dp,
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -609,7 +626,10 @@ private fun BottlePreviewCard(
         BottleArt(
             style = style,
             angle = angle.toFloat(),
-            modifier = Modifier.size(width = 158.dp, height = 410.dp),
+            modifier = Modifier.size(
+                width = bottleHeight * BottleAspectRatio,
+                height = bottleHeight,
+            ),
         )
     }
 }
@@ -836,6 +856,7 @@ private fun shareBottleResult(
 
 private const val BottleBaseWidth = 132f
 private const val BottleBaseHeight = 342f
+private const val BottleAspectRatio = BottleBaseWidth / BottleBaseHeight
 
 private val BottleCreamLight = Color(0xFFFFF2C5)
 private val BottleCream = Color(0xFFF8DDA0)
