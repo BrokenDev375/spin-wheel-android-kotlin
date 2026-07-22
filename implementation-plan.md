@@ -536,7 +536,7 @@ Test:
 - Random hien dung item.
 - Theme doi mau stack card.
 
-## [ ] Phase 11 - Quay Chai
+## [x] Phase 11 - Quay Chai
 
 Tai lieu tham chieu: `feature/bottle.md`.
 
