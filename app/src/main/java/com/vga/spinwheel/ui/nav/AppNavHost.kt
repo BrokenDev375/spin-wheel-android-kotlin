@@ -1,13 +1,20 @@
 package com.vga.spinwheel.ui.nav
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.vga.spinwheel.ui.screen.home.HomeScreen
+import com.vga.spinwheel.ui.screen.intro.IntroScreen
+import com.vga.spinwheel.ui.screen.language.LanguageScreen
+import com.vga.spinwheel.ui.screen.payment.PaymentScreen
 import com.vga.spinwheel.ui.screen.placeholder.PlaceholderScreen
+import com.vga.spinwheel.ui.screen.settings.SettingsScreen
 
 @Composable
 fun AppNavHost(
@@ -15,12 +22,23 @@ fun AppNavHost(
     startDestination: String = Screen.Home.route,
 ) {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
+        composable(Screen.Intro.route) {
+            IntroScreen(
+                onFinished = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Intro.route) { inclusive = true }
+                    }
+                },
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 onFeatureClick = { screen -> navController.navigate(screen.route) },
@@ -29,7 +47,11 @@ fun AppNavHost(
             )
         }
 
-        placeholder(Screen.Wheel) { navController.popBackStack() }
+        wheelNavGraph(
+            navController = navController,
+            onBack = { navController.popBackStack() },
+        )
+
         placeholder(Screen.Finger) { navController.popBackStack() }
         placeholder(Screen.Coin) { navController.popBackStack() }
         placeholder(Screen.Team) { navController.popBackStack() }
@@ -38,8 +60,38 @@ fun AppNavHost(
         placeholder(Screen.Bottle) { navController.popBackStack() }
         placeholder(Screen.Dice) { navController.popBackStack() }
         placeholder(Screen.Card) { navController.popBackStack() }
-        placeholder(Screen.Settings) { navController.popBackStack() }
-        placeholder(Screen.Payment) { navController.popBackStack() }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+                onShareClick = {
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "Spin Wheel & Random Tools")
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, "Share"))
+                },
+                onLanguageClick = { navController.navigate(Screen.Language.route) },
+                onRateClick = {
+                    Toast.makeText(context, "Đánh giá ứng dụng mock", Toast.LENGTH_SHORT).show()
+                },
+            )
+        }
+
+        composable(Screen.Language.route) {
+            LanguageScreen(
+                onDone = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.Payment.route) {
+            PaymentScreen(
+                onClose = { navController.popBackStack() },
+                onRestore = {
+                    Toast.makeText(context, "Restore mock", Toast.LENGTH_SHORT).show()
+                },
+            )
+        }
     }
 }
 

@@ -4,6 +4,7 @@ sealed class Screen(
     val route: String,
     val title: String,
 ) {
+    data object Intro : Screen("intro", "Intro")
     data object Home : Screen("home", "Spin Wheel")
     data object Wheel : Screen("wheel", "Bánh Xe")
     data object Finger : Screen("finger", "Chọn Ngón Tay")
@@ -15,6 +16,7 @@ sealed class Screen(
     data object Dice : Screen("dice", "Xúc Xắc")
     data object Card : Screen("card", "Lật Thẻ")
     data object Settings : Screen("settings", "Cài đặt")
+    data object Language : Screen("language", "Đổi ngôn ngữ")
     data object Payment : Screen("payment", "Pro")
 }
 
