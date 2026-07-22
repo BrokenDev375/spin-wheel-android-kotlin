@@ -234,6 +234,30 @@ Test:
 - Preview Compose cho cac component chinh.
 - Kiem tra mobile portrait.
 
+## [x] Phase 2.5 - Hilt va dependency injection
+
+Muc tieu: tich hop Hilt truoc khi xay data layer, Repository va ViewModel that.
+
+Cong viec:
+
+1. Them Gradle plugin va dependency Hilt.
+2. Annotate `MyApplication` bang `@HiltAndroidApp`.
+3. Annotate `MainActivity` bang `@AndroidEntryPoint`.
+4. Tao DI module toi thieu de lam nen cho Phase 3:
+   - Application `Context` dung built-in `@ApplicationContext` cua Hilt.
+   - `AppDispatchers` singleton cho Repository/Room.
+5. Build debug de xac nhan Hilt compile va splash/lib flow khong crash.
+
+Output:
+
+- App co Hilt DI foundation.
+- Phase 3 Storage co the inject Room database, DAO va Repository.
+
+Test:
+
+- Build debug.
+- Run tren device/emulator vao duoc Home sau luong Splash/Language/IAP cua lib.
+
 ## [ ] Phase 3 - Storage va data layer
 
 Muc tieu: co data layer de luu danh sach va setting.

@@ -6,7 +6,9 @@ import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
 import com.vga.spinwheel.core.MainActivity
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
