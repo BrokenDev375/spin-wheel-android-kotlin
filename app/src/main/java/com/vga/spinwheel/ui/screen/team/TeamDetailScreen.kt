@@ -229,9 +229,13 @@ private fun TeamDetailBottomBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SpinColors.Background)
-            .padding(horizontal = SpinSpacing.ScreenHorizontal, vertical = 28.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .background(Color(0xFF201B2D))
+            .border(
+                width = 1.dp,
+                color = Color.White.copy(alpha = 0.05f)
+            )
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TeamToolButton(
@@ -264,17 +268,17 @@ private fun TeamToolButton(
 ) {
     Box(
         modifier = Modifier
-            .size(width = 58.dp, height = 58.dp)
+            .size(width = 48.dp, height = 48.dp)
             .alpha(if (enabled) 1f else 0.45f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF393347))
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.White.copy(alpha = 0.05f))
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(
             glyph = glyph,
             tint = Color.White,
-            modifier = Modifier.size(30.dp),
+            modifier = Modifier.size(24.dp),
         )
     }
 }
@@ -288,10 +292,14 @@ private fun TeamPrimaryActionButton(
 ) {
     Box(
         modifier = modifier
-            .height(58.dp)
+            .height(48.dp)
             .alpha(if (enabled) 1f else 0.65f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF49425F))
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                    colors = listOf(Color(0xFFFF6B6B), Color(0xFFFF8E53))
+                )
+            )
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp),
         contentAlignment = Alignment.Center,
@@ -299,9 +307,10 @@ private fun TeamPrimaryActionButton(
         Text(
             text = text,
             color = Color.White,
-            fontSize = if (text == "Next") 24.sp else 17.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
+            letterSpacing = 0.5.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

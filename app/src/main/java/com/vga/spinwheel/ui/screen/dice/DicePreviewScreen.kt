@@ -1,0 +1,169 @@
+package com.vga.spinwheel.ui.screen.dice
+
+import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.SpinIconGlyph
+
+@Composable
+fun DicePreviewScreen(
+    viewModel: DiceViewModel,
+    onHome: () -> Unit,
+    onRetry: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    
+    val total = uiState.currentResults.sum()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF201B2D))
+    ) {
+        SpinTopBar(
+            title = "Kết Quả",
+            navigationIcon = SpinIconGlyph.Back,
+            onNavigationClick = onHome
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                // Total chip
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color(0xFFF12966))
+                        .padding(horizontal = 24.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = total.toString(),
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Grid of dice
+                val columns = when (uiState.diceCount) {
+                    1 -> 1
+                    2 -> 2
+                    3 -> 2
+                    4 -> 2
+                    else -> 3
+                }
+                
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(uiState.currentResults) { value ->
+                        DiceTile(
+                            styleIndex = uiState.styleIndex,
+                            modifier = Modifier.size(100.dp)
+                        ) {
+                            DiceFace(
+                                value = value,
+                                styleIndex = uiState.styleIndex,
+                                isShaking = false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Action buttons
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color(0xFF769EFD))
+                    .clickable {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            val valuesText = uiState.currentResults.joinToString(", ")
+                            putExtra(Intent.EXTRA_TEXT, "Tổng điểm Xúc Xắc: $total ($valuesText) - app Spin Wheel")
+                        }
+                        context.startActivity(Intent.createChooser(shareIntent, "Share"))
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Chia sẻ kết quả",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color(0xFF393347))
+                    .clickable {
+                        viewModel.resetResults()
+                        onRetry()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Thử lại",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}

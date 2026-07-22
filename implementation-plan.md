@@ -422,7 +422,7 @@ Test:
 - Thoat giua countdown khong bi callback cu.
 - Ket qua hien dung winner/loser.
 
-## [ ] Phase 7 - Dong Xu
+## [x] Phase 7 - Dong Xu
 
 Tai lieu tham chieu: `feature/Coin.md`.
 
@@ -478,7 +478,7 @@ Test:
 - Bam Next moi sang preview.
 - Preview co share va retry.
 
-## [ ] Phase 9 - So Ngau Nhien
+## [x] Phase 9 - So Ngau Nhien
 
 Tai lieu tham chieu: `feature/Number.md`.
 
@@ -507,7 +507,7 @@ Test:
 - Count khong vuot range khi no duplicates.
 - History luu toi da 30 ket qua.
 
-## [ ] Phase 10 - Ve
+## [x] Phase 10 - Ve
 
 Tai lieu tham chieu: `feature/Drawing.md`.
 
