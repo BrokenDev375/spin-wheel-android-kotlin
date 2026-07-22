@@ -53,9 +53,12 @@ fun AppNavHost(
         )
 
         placeholder(Screen.Finger) { navController.popBackStack() }
-        placeholder(Screen.Coin) { navController.popBackStack() }
+        coinGraph(
+            navController = navController,
+            onBack = { navController.popBackStack() },
+        )
         placeholder(Screen.Team) { navController.popBackStack() }
-        placeholder(Screen.Number) { navController.popBackStack() }
+        numberGraph(navController = navController)
         placeholder(Screen.Drawing) { navController.popBackStack() }
         placeholder(Screen.Bottle) { navController.popBackStack() }
         placeholder(Screen.Dice) { navController.popBackStack() }
