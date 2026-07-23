@@ -352,7 +352,56 @@ Quy uoc trang thai:
 - Da duoc nguoi dung phe duyet ket qua va yeu cau commit rieng.
 - Commit Chang 6/correction trong commit rieng.
 
-## [ ] Chang 7 - Release config, asset va signing
+## [ ] Chang 7 - Audit Ads runtime theo folder mau
+
+### Pham vi
+
+- Nguoi dung se cung cap folder `advertisement/` mau da chay on dinh de doi chieu.
+- Doi chieu folder mau voi `app/src/main/java/com/vga/spinwheel/advertisement/` hien tai.
+- Chinh Ads theo dung tai lieu `03_ADS.md`, `05_ADS_RUNTIME_LESSONS.md`,
+  `06_ADS_REUSABLE_COMPONENTS.md` va `10_MIGRATE_ADS_TO_LIB.md`.
+- Giu nguyen nguyen tac moi load/show Ads di qua `Admob.getInstance()` cua lib, khong goi
+  GMA SDK truc tiep.
+- Kiem tra va can lai `AdsViewModel`, `NativeAdSlot`, `AdManager`, `AdScenario`,
+  `NativeInter`, `NativeAdsFull`, `AdPositions`, `Remote.kt` va `ad_native_full.xml`.
+- Dam bao native fail thi an slot, khong ket shimmer; bind native dung mot lan; cache native
+  theo Activity; key slot on dinh trong list.
+- Dam bao inter/native-inter fallback va callback dieu huong chay dung mot lan.
+- Kiem tra `positionIntrol` inline/modal trong Intro va logic timeout/fallback.
+- Kiem tra log Ads dung `println`, khong dung `android.util.Log`.
+- Kiem tra debug dung Google test unit, release doc tu `ads_config`.
+- Kiem tra premium bo toan bo Ads va khong de lai khoang trong UI.
+- Cap nhat unit test cho frequency, callback exactly-once, positionIntrol va premium gate neu can.
+
+### Du lieu can nguoi dung cung cap
+
+- Folder `advertisement/` mau gom cac file core Ads dang chay on dinh.
+- Neu co, cung cap kem `firebase/Remote.kt`, `res/layout/ad_native_full.xml`,
+  `res/xml/config.xml` va `assets/default_ads_config.json` cua app mau de doi chieu.
+
+### Khong lam trong chang nay
+
+- Khong dien ad unit production neu nguoi dung chua cung cap.
+- Khong cau hinh signing/keystore.
+- Khong sua UI feature ngoai cac container/slot Ads can thiet.
+
+### Nghiem thu
+
+- Khong con `AdLoader`, `AdRequest`, `InterstitialAd.load`, `AppOpenAd`,
+  `MobileAds.initialize` hoac manager Ads tu viet trong code app.
+- `NativeInterHost()` dat o root va goi qua import.
+- Native fail/no-fill an slot, khong shimmer ket.
+- `showInter` va native-inter goi `onNext()` dung mot lan trong moi nhanh.
+- `default_ads_config.json` va `res/xml/config.xml` du placement app/lib can thiet.
+- `testDebugUnitTest`, `compileDebugKotlin`, `lintDebug` va build debug/release pass.
+- Neu co thiet bi, test runtime bang `adb logcat -s System.out` voi log `ADSLOT|ADS`.
+
+### Diem dung phe duyet
+
+- Bao cao diff giua folder mau va folder hien tai, ly do moi diem giu/sua.
+- Dung lai de nguoi dung review runtime Ads truoc khi sang release config.
+
+## [ ] Chang 8 - Release config, asset va signing
 
 ### Pham vi
 
@@ -385,7 +434,7 @@ Quy uoc trang thai:
 - Bao cao checksum/ten artifact va ket qua kiem tra signing, khong hien secret.
 - Dung lai truoc khi cai/phat hanh artifact.
 
-## [ ] Chang 8 - QA feature, UI polish va release candidate
+## [ ] Chang 9 - QA feature, UI polish va release candidate
 
 ### Pham vi
 
@@ -419,8 +468,9 @@ Quy uoc trang thai:
 | 4. Ads UI/flow | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 5. IAP | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
 | 6. Language + i18n | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
-| 7. Release config | Chua lam | Chua | Chua | Chua |
-| 8. QA + release candidate | Chua lam | Chua | Chua | Chua |
+| 7. Ads runtime audit | Chua lam | Chua | Chua | Chua |
+| 8. Release config | Chua lam | Chua | Chua | Chua |
+| 9. QA + release candidate | Chua lam | Chua | Chua | Chua |
 
 ## 6. Mau bao cao sau moi chang
 
@@ -446,6 +496,7 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Co the bat dau **Chang 7 - Release config, asset va signing** sau khi nguoi dung phe duyet.
+Co the bat dau **Chang 7 - Audit Ads runtime theo folder mau** sau khi nguoi dung cung cap
+folder `advertisement/` mau va phe duyet bat dau.
 Phan nghiem thu Billing production cua Chang 5 van bi chan den khi co product/subscription
 id va Google Play public license key that.
