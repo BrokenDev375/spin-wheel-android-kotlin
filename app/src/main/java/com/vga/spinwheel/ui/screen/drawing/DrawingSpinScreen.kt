@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,10 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,9 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinTopBar
-import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinRadius
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.theme.SpinSpacing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -75,27 +68,67 @@ fun DrawingSpinScreen(
 
     val cardColor = getThemeColor(themeIndex)
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = wheel?.name ?: "Vẽ",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
-                onNavigationClick = onBack,
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.Settings,
-                        contentDescription = "Cài đặt",
-                        onClick = onOpenSettings,
-                    )
-                },
+    SpinScreen(
+        title = wheel?.name ?: "Vẽ",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = onBack,
+        confirmExitOnBack = true,
+        actions = {
+            SpinIconButton(
+                glyph = SpinIconGlyph.Settings,
+                contentDescription = "Cài đặt",
+                onClick = onOpenSettings,
             )
         },
-        bottomBar = {
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                val maxCards = (wheel?.items?.size ?: 0).coerceAtMost(3)
+                val topIndex = (maxCards - 1).coerceAtLeast(0)
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    for (i in topIndex downTo 0) {
+                        val scaleFactor = 1f - (i * 0.05f)
+                        val yOffset = (i * 12).dp
+                        val rotation = if (i == 0) 0f else (if (i % 2 == 1) 3f else -3f)
+
+                        Box(
+                            modifier = Modifier
+                                .offset(y = yOffset, x = if (i == 0) shakeOffset.value.dp else 0.dp)
+                                .scale(scaleFactor)
+                                .rotate(rotation)
+                                .size(width = 240.dp, height = 340.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(if (i == 0) cardColor else cardColor.copy(alpha = 0.8f))
+                                .border(2.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(24.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (i == 0 && showTempResult) {
+                                val winnerText = viewModel.lastResult.collectAsState().value?.name ?: ""
+                                Text(
+                                    text = winnerText,
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Bottom bar controls
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -103,7 +136,7 @@ fun DrawingSpinScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Tùy chỉnh (Settings) button
+                // Settings button
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -119,7 +152,7 @@ fun DrawingSpinScreen(
                     )
                 }
 
-                // Nhấn để ghép nối (Main action) button
+                // Main action button
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -129,7 +162,6 @@ fun DrawingSpinScreen(
                         .clickable(enabled = !isSpinning && !showTempResult) {
                             isSpinning = true
                             scope.launch {
-                                // Horizontal alternating shake
                                 val shakeDuration = duration * 1000L
                                 val endTime = System.currentTimeMillis() + shakeDuration
 
@@ -159,12 +191,12 @@ fun DrawingSpinScreen(
                     Text(
                         text = "Nhấn để ghép nối",
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.ExtraBold, // 900
+                        fontWeight = FontWeight.ExtraBold,
                         color = Color(0xFF111111)
                     )
                 }
 
-                // Quay lại từ đầu (Reset) button
+                // Reset button
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -183,66 +215,5 @@ fun DrawingSpinScreen(
                 }
             }
         }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
-        ) {
-            val maxCards = (wheel?.items?.size ?: 0).coerceAtMost(3)
-            val topIndex = (maxCards - 1).coerceAtLeast(0)
-            
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                for (i in topIndex downTo 0) {
-                    val scaleFactor = 1f - (i * 0.05f)
-                    val yOffset = (i * 12).dp
-                    // Alternate shake direction based on index
-                    val currentShake = if (i % 2 == 0) shakeOffset.value else -shakeOffset.value
-                    
-                    Box(
-                        modifier = Modifier
-                            .offset(x = currentShake.dp, y = -yOffset)
-                            .scale(scaleFactor)
-                            .size(width = 220.dp, height = 300.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(if (i == 0) cardColor else cardColor.copy(alpha = 0.5f))
-                            .border(2.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(16.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (i == 0) {
-                            SpinIcon(
-                                glyph = SpinIconGlyph.Sparkles,
-                                tint = Color.White.copy(alpha = 0.5f),
-                                modifier = Modifier.size(64.dp)
-                            )
-                        }
-                    }
-                }
-            }
-            
-            if (showTempResult) {
-                Text(
-                    text = "Đang mở thẻ...",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.offset(y = 200.dp)
-                )
-            }
-        }
-    }
-}
-
-fun getThemeColor(index: Int): Color {
-    return when(index) {
-        0 -> Color(0xFFEF6C00) // Orange
-        1 -> Color(0xFF1E88E5) // Blue
-        2 -> Color(0xFF43A047) // Green
-        3 -> Color(0xFFE53935) // Red
-        4 -> Color(0xFF8E24AA) // Purple
-        else -> Color(0xFFEF6C00)
     }
 }

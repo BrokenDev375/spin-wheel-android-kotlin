@@ -1,5 +1,6 @@
 package com.vga.spinwheel.ui.screen.team
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,7 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.ui.components.SpinConfirmExitDialog
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -53,6 +57,7 @@ fun TeamDetailScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val list = state.currentList
+    var showExitDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(listId) {
         viewModel.loadList(listId)
@@ -67,6 +72,17 @@ fun TeamDetailScreen(
             TeamRoundRules.createTeams(members, state.groupSize)
         }
     }
+    val requestBack = {
+        if (state.status == TeamMatchStatus.Idle) {
+            showExitDialog = true
+        } else {
+            viewModel.resetMatching()
+        }
+    }
+
+    BackHandler(enabled = true) {
+        requestBack()
+    }
 
     Scaffold(
         modifier = modifier
@@ -78,13 +94,7 @@ fun TeamDetailScreen(
                 title = "Đội",
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Quay lại",
-                onNavigationClick = {
-                    if (state.status == TeamMatchStatus.Idle) {
-                        onBack()
-                    } else {
-                        viewModel.resetMatching()
-                    }
-                },
+                onNavigationClick = requestBack,
             )
         },
         bottomBar = {
@@ -162,6 +172,16 @@ fun TeamDetailScreen(
                 }
             }
         }
+    }
+
+    if (showExitDialog) {
+        SpinConfirmExitDialog(
+            onDismiss = { showExitDialog = false },
+            onConfirm = {
+                showExitDialog = false
+                onBack()
+            },
+        )
     }
 }
 

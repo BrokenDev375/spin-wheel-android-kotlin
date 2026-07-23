@@ -1,5 +1,6 @@
 package com.vga.spinwheel.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -22,12 +24,14 @@ fun SpinTopBar(
     navigationIcon: SpinIconGlyph? = null,
     navigationDescription: String = "Navigate",
     onNavigationClick: (() -> Unit)? = null,
+    centerTitle: Boolean = true,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(82.dp)
+            .height(60.dp)
+            .background(SpinColors.Background)
             .padding(
                 horizontal = SpinSpacing.ScreenHorizontal,
                 vertical = 8.dp,
@@ -46,7 +50,20 @@ fun SpinTopBar(
             text = title,
             color = SpinColors.TextPrimary,
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.align(Alignment.Center),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = if (centerTitle) {
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 48.dp)
+            } else {
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(
+                        start = if (navigationIcon != null && onNavigationClick != null) 48.dp else 0.dp,
+                        end = 48.dp,
+                    )
+            },
         )
 
         Row(

@@ -37,6 +37,8 @@ import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 
+import com.vga.spinwheel.ui.components.SpinScreen
+
 @Composable
 fun DiceHomeScreen(
     viewModel: DiceViewModel,
@@ -52,25 +54,24 @@ fun DiceHomeScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF201B2D))
-    ) {
-        SpinTopBar(
-            title = "Xúc Xắc",
-            navigationIcon = SpinIconGlyph.Back,
-            onNavigationClick = onBack,
-            actions = {
-                if (!uiState.isRolling) {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.Settings,
-                        contentDescription = "Cài đặt",
-                        onClick = onOpenSettings
-                    )
-                }
+    SpinScreen(
+        title = "Xúc Xắc",
+        navigationIcon = SpinIconGlyph.Back,
+        onNavigationClick = onBack,
+        confirmExitOnBack = true,
+        actions = {
+            if (!uiState.isRolling) {
+                SpinIconButton(
+                    glyph = SpinIconGlyph.Settings,
+                    contentDescription = "Cài đặt",
+                    onClick = onOpenSettings
+                )
             }
-        )
+        }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
 
         // Dice count selector
         Row(
@@ -243,4 +244,5 @@ fun DiceHomeScreen(
             }
         }
     }
+}
 }

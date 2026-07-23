@@ -43,6 +43,7 @@ import com.vga.spinwheel.data.model.Wheel
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.screen.wheel.WheelAiGenerateDialog
 import com.vga.spinwheel.ui.screen.wheel.WheelViewModel
@@ -65,24 +66,16 @@ fun TeamHomeScreen(
     val showAiModal by wheelFormViewModel.showAiModal.collectAsState()
     var deleteTargetId by remember { mutableStateOf<String?>(null) }
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = "Đội",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
-                onNavigationClick = onBack,
-            )
-        },
-    ) { innerPadding ->
+    SpinScreen(
+        title = "Đội",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = onBack,
+        modifier = modifier,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
                 .padding(horizontal = SpinSpacing.ScreenHorizontal),
         ) {
             Spacer(modifier = Modifier.height(10.dp))
