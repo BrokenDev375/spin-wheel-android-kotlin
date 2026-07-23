@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,8 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.vga.spinwheel.advertisement.NativeAdSlot
 import com.vga.spinwheel.firebase.Remote
+import com.vga.spinwheel.platform.IapLauncher
 import com.vga.spinwheel.ui.components.SpinFeatureCard
 import com.vga.spinwheel.ui.components.SpinFeatureCardStyle
 import com.vga.spinwheel.ui.components.SpinFeatureVisual
@@ -37,7 +42,20 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     var navigationPending by remember { mutableStateOf(false) }
-    val showNativeHome = remember { Remote.instance.isAdEnabled("native_home") }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var isPremium by remember { mutableStateOf(IapLauncher.isPremium()) }
+    val nativeHomeConfigured = remember { Remote.instance.isAdEnabled("native_home") }
+    val showNativeHome = nativeHomeConfigured && !isPremium
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isPremium = IapLauncher.isPremium()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     Scaffold(
         modifier = modifier

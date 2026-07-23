@@ -15,9 +15,9 @@ import com.vga.spinwheel.ui.screen.intro.IntroScreen
 import com.vga.spinwheel.ui.screen.finger.FingerScreen
 import com.vga.spinwheel.ui.screen.finger.FingerViewModel
 import com.vga.spinwheel.ui.screen.language.LanguageScreen
-import com.vga.spinwheel.ui.screen.payment.PaymentScreen
 import com.vga.spinwheel.ui.screen.settings.SettingsScreen
 import com.vga.spinwheel.advertisement.AdManager
+import com.vga.spinwheel.platform.IapLauncher
 
 @Composable
 fun AppNavHost(
@@ -53,7 +53,7 @@ fun AppNavHost(
                     }
                 },
                 onSettingsClick = { navController.navigate(Screen.Settings.route) },
-                onPaymentClick = { navController.navigate(Screen.Payment.route) },
+                onPaymentClick = { IapLauncher.open(context) },
             )
         }
 
@@ -106,6 +106,7 @@ fun AppNavHost(
                     context.startActivity(Intent.createChooser(shareIntent, "Share"))
                 },
                 onLanguageClick = { navController.navigate(Screen.Language.route) },
+                onPremiumClick = { IapLauncher.open(context) },
                 onRateClick = {
                     Toast.makeText(context, "Đánh giá ứng dụng mock", Toast.LENGTH_SHORT).show()
                 },
@@ -118,13 +119,5 @@ fun AppNavHost(
             )
         }
 
-        composable(Screen.Payment.route) {
-            PaymentScreen(
-                onClose = { navController.popBackStack() },
-                onRestore = {
-                    Toast.makeText(context, "Restore mock", Toast.LENGTH_SHORT).show()
-                },
-            )
-        }
     }
 }

@@ -31,6 +31,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onShareClick: () -> Unit,
     onLanguageClick: () -> Unit,
+    onPremiumClick: () -> Unit,
     onRateClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
@@ -61,6 +62,11 @@ fun SettingsScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            SpinSettingRow(
+                title = "Nang cap Premium",
+                onClick = onPremiumClick,
+                leading = { SettingsGlyph(SpinIconGlyph.Crown) },
+            )
             SpinSettingRow(
                 title = "Chia sẻ",
                 onClick = onShareClick,

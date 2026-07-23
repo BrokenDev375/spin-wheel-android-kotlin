@@ -17,7 +17,6 @@ sealed class Screen(
     data object Card : Screen("card", "Lật Thẻ")
     data object Settings : Screen("settings", "Cài đặt")
     data object Language : Screen("language", "Đổi ngôn ngữ")
-    data object Payment : Screen("payment", "Pro")
 }
 
 val featureScreens = listOf(

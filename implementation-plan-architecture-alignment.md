@@ -238,7 +238,7 @@ Quy uoc trang thai:
 - Chua test runtime fill/fail/premium tren may that vi moi truong khong co lenh `adb`.
 - Da duoc nguoi dung phe duyet ket qua va yeu cau commit rieng.
 
-## [ ] Chang 5 - Thay Payment mock bang IAP that
+## [x] Chang 5 - Thay Payment mock bang IAP that
 
 ### Pham vi
 
@@ -265,6 +265,28 @@ Quy uoc trang thai:
 ### Diem dung phe duyet
 
 - Dung lai de nguoi dung test tai khoan Play test va xac nhan product mapping.
+
+### Ket qua thuc hien - Da phe duyet (development)
+
+- Da tao `platform/IapLauncher.kt` boc API mo paywall cua lib va truy van premium.
+- Nut Crown tai Home va muc `Nang cap Premium` tai Settings deu mo paywall cua lib.
+- Da go route `Payment`, `PaymentScreen`, `PaymentViewModel`, `PaymentPlan` va key luu
+  payment plan mock; khong con gia/trial/restore gia lap trong UI app.
+- Home kiem tra lai `IAPUtils.isPremium()` khi resume; sau khi premium, native Home bi
+  go khoi composition va khong de lai khoang trong. Inter/native-inter van duoc chan boi
+  premium gate cua `Remote`, resume Ads van duoc chan boi `MyApplication.enableAdsResume()`.
+- Tam giu `defaultIapPremiumKey()`, `defaultIapPremiumWeeklyKey()`,
+  `defaultIapPremiumMonthlyKey()`, `defaultIapPremiumYearlyKey()` va
+  `MOCK_PUBLIC_LICENSE_KEY` theo phe duyet cua nguoi dung.
+- **Chan production:** chua co product/subscription id va Google Play public license key
+  that; khong the nghiem thu mua, restore, gia, entitlement hoac phat hanh Billing that.
+  Cac gia tri nay bat buoc phai duoc thay va test bang tai khoan Play test truoc release.
+- `testDebugUnitTest`: 37/37 test pass.
+- `lintDebug`: pass, 0 error (con 31 warning va 3 hint).
+- `assembleDebug`: pass.
+- `assembleRelease`: pass, van tao APK unsigned nhu baseline.
+- Chua test mo/paywall runtime tren may that vi moi truong khong co lenh `adb`.
+- Da duoc nguoi dung phe duyet ket qua development va yeu cau commit rieng.
 
 ## [ ] Chang 6 - Dong bo Language va i18n
 
@@ -358,7 +380,7 @@ Quy uoc trang thai:
 | 2. Remote + Intro gate | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 3. Ads core | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 4. Ads UI/flow | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
-| 5. IAP | Chua lam | Chua | Chua | Chua |
+| 5. IAP | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
 | 6. Language + i18n | Chua lam | Chua | Chua | Chua |
 | 7. Release config | Chua lam | Chua | Chua | Chua |
 | 8. QA + release candidate | Chua lam | Chua | Chua | Chua |
@@ -387,5 +409,6 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Cho phe duyet bat dau **Chang 5 - Thay Payment mock bang IAP that** va cung cap cac
-product/subscription id cung Google Play public license key truoc khi implement.
+Co the bat dau **Chang 6 - Dong bo Language va i18n** sau khi nguoi dung phe duyet.
+Phan nghiem thu Billing production cua Chang 5 van bi chan den khi co product/subscription
+id va Google Play public license key that.
