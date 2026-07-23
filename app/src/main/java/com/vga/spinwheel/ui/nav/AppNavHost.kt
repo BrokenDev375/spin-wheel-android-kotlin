@@ -51,10 +51,10 @@ fun AppNavHost(
         val onBackWithAd: () -> Unit = {
             val activity = context.findActivity()
             if (activity == null) {
-                navController.popBackStackSafely()
+                navController.popBackStack()
             } else {
                 AdManager.showInter(activity, "inter_back") {
-                    navController.popBackStackSafely()
+                    navController.popBackStack()
                 }
             }
         }
