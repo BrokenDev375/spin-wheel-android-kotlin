@@ -5,6 +5,7 @@ import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
+import com.nlbn.ads.util.AppOpenManager
 import com.vga.spinwheel.core.AppStorage
 import com.vga.spinwheel.core.IntroActivity
 import com.vga.spinwheel.core.MainActivity
@@ -14,6 +15,8 @@ import dagger.hilt.android.HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
+        AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
         super.onCreate()
         registerRemoteConfigDefaults()
     }
