@@ -37,6 +37,7 @@ data class CardUiState(
     val tempThemeIndex: Int = settings.themeIndex,
     val cards: List<FlipCard> = emptyList(),
     val stage: CardStage = CardStage.Picking,
+    val isShuffled: Boolean = false,
     val runId: Long = 0L,
 ) {
     val allCardsFlipped: Boolean
@@ -56,16 +57,16 @@ class CardViewModel @Inject constructor(
     private var resultJob: Job? = null
 
     fun shuffleCards() {
-        startNewRound()
+        startNewRound(isShuffled = true)
     }
 
     fun resetCards() {
-        startNewRound()
+        startNewRound(isShuffled = false)
     }
 
     fun flipCard(cardId: Int) {
         val state = _uiState.value
-        if (state.stage != CardStage.Picking) return
+        if (!state.isShuffled || state.stage != CardStage.Picking) return
 
         val target = state.cards.firstOrNull { it.id == cardId } ?: return
         if (target.isFlipped) return
@@ -83,9 +84,10 @@ class CardViewModel @Inject constructor(
             )
         }
 
-        if (nextCards.all { it.isFlipped }) {
+        val isWinFound = target.isWinner || nextCards.count { it.isFlipped && it.isWinner } >= state.settings.winners || nextCards.all { it.isFlipped }
+        if (isWinFound) {
             resultJob = viewModelScope.launch {
-                delay(resultDelayMillis(state.settings.durationSeconds))
+                delay(300L)
                 if (isActiveRun(runId)) {
                     _uiState.update { it.copy(stage = CardStage.Result) }
                 }
@@ -94,7 +96,7 @@ class CardViewModel @Inject constructor(
     }
 
     fun retryFromResult() {
-        startNewRound()
+        startNewRound(isShuffled = false)
     }
 
     fun updateDuration(value: Int) {
@@ -172,6 +174,7 @@ class CardViewModel @Inject constructor(
                 settings = settings,
                 cards = createCards(settings.totalCards, settings.winners),
                 stage = CardStage.Picking,
+                isShuffled = false,
                 runId = it.runId + 1,
             )
         }
@@ -185,12 +188,13 @@ class CardViewModel @Inject constructor(
         }
     }
 
-    private fun startNewRound() {
+    private fun startNewRound(isShuffled: Boolean = false) {
         resultJob?.cancel()
         _uiState.update {
             it.copy(
                 cards = createCards(it.settings.totalCards, it.settings.winners),
                 stage = CardStage.Picking,
+                isShuffled = isShuffled,
                 runId = it.runId + 1,
             )
         }

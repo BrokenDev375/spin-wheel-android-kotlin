@@ -62,6 +62,10 @@ import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinResultCard
+import com.vga.spinwheel.ui.components.SpinResultScreen
+import com.vga.spinwheel.ui.components.SpinRetryButton
+import com.vga.spinwheel.ui.components.SpinShareButton
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -278,6 +282,26 @@ private fun CardHomeScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
+            if (!state.isShuffled) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color(0xFFE29C32).copy(alpha = 0.2f))
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "Nhấn 'NHẤN ĐỂ XÁO TRỘN' để bắt đầu trò chơi",
+                        color = Color(0xFFFFD88A),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+
             WinnerCardPreview(
                 theme = theme,
                 animationMillis = cardAnimationMillis(state.settings.durationSeconds),
@@ -302,7 +326,7 @@ private fun CardHomeScreen(
                             isWinner = card.isWinner,
                             isFaceUp = card.isFlipped,
                             animationMillis = cardAnimationMillis(state.settings.durationSeconds),
-                            enabled = !card.isFlipped,
+                            enabled = state.isShuffled && !card.isFlipped,
                             onClick = { onFlipCard(card.id) },
                             modifier = Modifier
                                 .widthIn(max = 94.dp)
@@ -326,82 +350,39 @@ private fun CardResultScreen(
 ) {
     val theme = CardThemes.get(state.settings.themeIndex)
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = "Kết Quả",
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.Home,
-                        contentDescription = "Về trang chủ",
-                        onClick = onHome,
-                        tint = Color.White,
-                    )
-                },
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    SpinResultScreen(
+        title = "Kết Quả",
+        onHome = onHome,
+        onShare = onShare,
+        onRetry = onRetry,
+        modifier = modifier,
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Spacer(modifier = Modifier.height(28.dp))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 340.dp)
-                    .weight(1f)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Color(0xFF3D3D3C))
-                    .border(
-                        width = 1.5.dp,
-                        color = Color.White.copy(alpha = 0.62f),
-                        shape = RoundedCornerShape(18.dp),
-                    )
-                    .padding(18.dp),
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
+            items(state.cards, key = { it.id }) { card ->
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    items(state.cards, key = { it.id }) { card ->
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            FlipCardView(
-                                theme = theme,
-                                isWinner = card.isWinner,
-                                isFaceUp = true,
-                                animationMillis = 240,
-                                enabled = false,
-                                onClick = {},
-                                modifier = Modifier
-                                    .widthIn(max = 84.dp)
-                                    .fillMaxWidth()
-                                    .aspectRatio(CardAspectRatio),
-                            )
-                        }
-                    }
+                    FlipCardView(
+                        theme = theme,
+                        isWinner = card.isWinner,
+                        isFaceUp = true,
+                        animationMillis = 240,
+                        enabled = false,
+                        onClick = {},
+                        modifier = Modifier
+                            .widthIn(max = 84.dp)
+                            .fillMaxWidth()
+                            .aspectRatio(CardAspectRatio),
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(28.dp))
-            CardShareButton(onClick = onShare)
-            Spacer(modifier = Modifier.height(36.dp))
-            CardRetryButton(onClick = onRetry)
-            Spacer(modifier = Modifier.height(28.dp))
         }
     }
 }
@@ -413,34 +394,15 @@ private fun CardHeader(
     modifier: Modifier = Modifier,
     actions: @Composable (() -> Unit)? = null,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(82.dp)
-            .padding(
-                horizontal = SpinSpacing.ScreenHorizontal,
-                vertical = 8.dp,
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SpinIconButton(
-            glyph = SpinIconGlyph.Back,
-            contentDescription = "Quay lại",
-            onClick = onBack,
-            tint = Color.White,
-        )
-        Text(
-            text = title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 14.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.headlineSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        actions?.invoke()
-    }
+    SpinTopBar(
+        title = title,
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = onBack,
+        centerTitle = true,
+        actions = { actions?.invoke() },
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -874,65 +836,6 @@ private fun StaticCardFace(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-    }
-}
-
-@Composable
-private fun CardShareButton(
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .width(222.dp)
-            .height(62.dp)
-            .clip(RoundedCornerShape(9.dp))
-            .background(Color(0xFF39A9F2))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            SpinIcon(
-                glyph = SpinIconGlyph.Share,
-                tint = Color.White,
-                modifier = Modifier.size(30.dp),
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = "Chia sẻ kết quả",
-                color = Color.White,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CardRetryButton(
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(58.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFDE3D2D))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = "Thử lại",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.ExtraBold,
-        )
     }
 }
 

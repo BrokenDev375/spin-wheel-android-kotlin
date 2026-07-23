@@ -81,3 +81,13 @@ fun DrawingPaletteScreen(
         }
     }
 }
+
+fun getThemeColor(index: Int): Color {
+    return when (index % 5) {
+        0 -> Color(0xFFEC9213)
+        1 -> Color(0xFFE91E63)
+        2 -> Color(0xFF9C27B0)
+        3 -> Color(0xFF2196F3)
+        else -> Color(0xFF4CAF50)
+    }
+}

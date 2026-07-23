@@ -50,7 +50,7 @@ private val SpinTypography = Typography(
         fontWeight = FontWeight.ExtraBold,
     ),
     headlineSmall = TextStyle(
-        fontSize = 30.sp,
+        fontSize = 20.sp,
         lineHeight = 34.sp,
         fontWeight = FontWeight.ExtraBold,
     ),

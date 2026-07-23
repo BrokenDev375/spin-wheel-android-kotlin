@@ -47,6 +47,11 @@ import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinResultCard
+import com.vga.spinwheel.ui.components.SpinResultScreen
+import com.vga.spinwheel.ui.components.SpinRetryButton
+import com.vga.spinwheel.ui.components.SpinShareButton
+import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
@@ -141,69 +146,56 @@ private fun FingerHeader(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(82.dp)
-            .background(SpinColors.Background)
-            .padding(horizontal = SpinSpacing.ScreenHorizontal),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SpinIconButton(
-            glyph = SpinIconGlyph.Back,
-            contentDescription = "Quay lại",
-            onClick = onBack,
-            tint = SpinColors.TextPrimary,
-        )
-        Text(
-            text = title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 12.dp),
-            color = SpinColors.TextPrimary,
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Box {
-            Box(
-                modifier = Modifier
-                    .size(54.dp)
-                    .clip(CircleShape)
-                    .background(FingerMenuGreen)
-                    .clickable { expanded = true },
-                contentAlignment = Alignment.Center,
-            ) {
-                SpinIcon(
-                    glyph = SpinIconGlyph.ChevronDown,
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp),
-                )
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .background(FingerMenuBackground)
-                    .defaultMinSize(minWidth = 118.dp),
-            ) {
-                (FingerRoundRules.MIN_FINGER_COUNT..FingerRoundRules.MAX_FINGER_COUNT).forEach { count ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = count.toString(),
-                                color = if (count == fingerCount) FingerMenuGreen else Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Medium,
-                            )
-                        },
-                        onClick = {
-                            expanded = false
-                            onFingerCountSelected(count)
-                        },
+    SpinTopBar(
+        title = title,
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = onBack,
+        centerTitle = true,
+        modifier = modifier,
+        actions = {
+            Box {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(FingerMenuGreen)
+                        .clickable { expanded = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.ChevronDown,
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp),
                     )
                 }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .background(FingerMenuBackground)
+                        .defaultMinSize(minWidth = 118.dp),
+                ) {
+                    (FingerRoundRules.MIN_FINGER_COUNT..FingerRoundRules.MAX_FINGER_COUNT).forEach { count ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = count.toString(),
+                                    color = if (count == fingerCount) FingerMenuGreen else Color.White,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                            },
+                            onClick = {
+                                expanded = false
+                                onFingerCountSelected(count)
+                            },
+                        )
+                    }
+                }
             }
-        }
-    }
+        },
+    )
 }
 
 @Composable
@@ -320,39 +312,15 @@ private fun FingerFinalResultScreen(
     onHome: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background)
-            .padding(horizontal = 20.dp),
+    SpinResultScreen(
+        title = "Kết Quả",
+        onHome = onHome,
+        onShare = onShare,
+        onRetry = onRetry,
+        modifier = modifier,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(86.dp),
-        ) {
-            Text(
-                text = "Kết Quả",
-                modifier = Modifier.align(Alignment.Center),
-                color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            SpinIconButton(
-                glyph = SpinIconGlyph.Home,
-                contentDescription = "Về trang chủ",
-                onClick = onHome,
-                modifier = Modifier.align(Alignment.CenterEnd),
-                tint = Color.White,
-            )
-        }
-
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .clip(RoundedCornerShape(18.dp))
-                .background(FingerResultCard)
-                .border(1.5.dp, Color.White.copy(alpha = 0.62f), RoundedCornerShape(18.dp)),
+            modifier = Modifier.fillMaxSize(),
         ) {
             FingerResultPoints(
                 points = state.points,
@@ -362,57 +330,6 @@ private fun FingerFinalResultScreen(
                 constrainToCard = true,
             )
         }
-
-        Spacer(modifier = Modifier.height(34.dp))
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Row(
-                modifier = Modifier
-                    .height(58.dp)
-                    .clip(RoundedCornerShape(9.dp))
-                    .background(FingerShareBlue)
-                    .clickable(onClick = onShare)
-                    .padding(horizontal = 18.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                SpinIcon(
-                    glyph = SpinIconGlyph.Share,
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp),
-                )
-                Text(
-                    text = "Chia sẻ kết\nquả",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(74.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(FingerRetryRed)
-                .clickable(onClick = onRetry),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = "Thử lại",
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(28.dp))
     }
 }
 

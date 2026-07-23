@@ -49,6 +49,7 @@ import androidx.navigation.NavController
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.nav.NumberRoutes
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -101,28 +102,23 @@ fun NumberHomeScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            SpinTopBar(
-                title = "Số Ngẫu Nhiên",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
-                onNavigationClick = { if (!isSpinning) navController.popBackStack() },
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.History,
-                        contentDescription = "History",
-                        onClick = { if (!isSpinning) navController.navigate(NumberRoutes.HISTORY) }
-                    )
-                }
+    SpinScreen(
+        title = "Số Ngẫu Nhiên",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Back",
+        onNavigationClick = { if (!isSpinning) navController.popBackStack() },
+        confirmExitOnBack = true,
+        actions = {
+            SpinIconButton(
+                glyph = SpinIconGlyph.History,
+                contentDescription = "History",
+                onClick = { if (!isSpinning) navController.navigate(NumberRoutes.HISTORY) }
             )
-        },
-        containerColor = SpinColors.Background
-    ) { padding ->
+        }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

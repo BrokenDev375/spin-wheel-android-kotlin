@@ -47,6 +47,7 @@ import androidx.navigation.NavController
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.nav.CoinRoutes
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -102,28 +103,23 @@ fun CoinHomeScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            SpinTopBar(
-                title = "Đồng Xu",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
-                onNavigationClick = { if (!isFlipping) navController.popBackStack() },
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.More, // Adjust if you have a gear icon
-                        contentDescription = "Settings",
-                        onClick = { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) }
-                    )
-                },
+    SpinScreen(
+        title = "Đồng Xu",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Back",
+        onNavigationClick = { if (!isFlipping) navController.popBackStack() },
+        confirmExitOnBack = true,
+        actions = {
+            SpinIconButton(
+                glyph = SpinIconGlyph.More,
+                contentDescription = "Settings",
+                onClick = { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) }
             )
         },
-        containerColor = SpinColors.Background
-    ) { padding ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

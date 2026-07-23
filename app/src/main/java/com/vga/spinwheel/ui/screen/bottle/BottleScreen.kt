@@ -66,6 +66,10 @@ import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinResultCard
+import com.vga.spinwheel.ui.components.SpinResultScreen
+import com.vga.spinwheel.ui.components.SpinRetryButton
+import com.vga.spinwheel.ui.components.SpinShareButton
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -282,56 +286,18 @@ private fun BottleResultScreen(
     onHome: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = "Kết Quả",
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.Home,
-                        contentDescription = "Về trang chủ",
-                        onClick = onHome,
-                        tint = Color.White,
-                    )
-                },
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(34.dp))
-
-            BottlePreviewCard(
-                style = BottleStyles.get(state.styleIndex),
-                angle = state.lastAngle,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 410.dp)
-                    .weight(1f),
-            )
-
-            Spacer(modifier = Modifier.height(34.dp))
-
-            BottleShareButton(onClick = onShare)
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            BottleRetryButton(
-                text = "Thử lại",
-                onClick = onRetry,
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-        }
+    SpinResultScreen(
+        title = "Kết Quả",
+        onHome = onHome,
+        onShare = onShare,
+        onRetry = onRetry,
+        modifier = modifier,
+    ) {
+        BottlePreviewCard(
+            style = BottleStyles.get(state.styleIndex),
+            angle = state.lastAngle,
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 }
 
@@ -342,34 +308,15 @@ private fun BottleHeader(
     modifier: Modifier = Modifier,
     actions: @Composable (() -> Unit)? = null,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(82.dp)
-            .padding(
-                horizontal = SpinSpacing.ScreenHorizontal,
-                vertical = 8.dp,
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SpinIconButton(
-            glyph = SpinIconGlyph.Back,
-            contentDescription = "Quay lại",
-            onClick = onBack,
-            tint = Color.White,
-        )
-        Text(
-            text = title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 14.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.headlineSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        actions?.invoke()
-    }
+    SpinTopBar(
+        title = title,
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = onBack,
+        centerTitle = true,
+        actions = { actions?.invoke() },
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -593,36 +540,22 @@ private fun BottlePreviewCard(
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(
-        modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(Color(0xFF3D3D3C))
-            .border(
-                width = 1.5.dp,
-                color = Color.White.copy(alpha = 0.62f),
-                shape = RoundedCornerShape(18.dp),
-            ),
+        modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
         val radians = Math.toRadians(angle.toDouble())
         val sinValue = abs(sin(radians)).toFloat()
         val cosValue = abs(cos(radians)).toFloat()
-        val availableWidth = maxOf(maxWidth - 56.dp, 120.dp)
-        val availableHeight = maxOf(maxHeight - 56.dp, 180.dp)
+        val availableWidth = maxOf(maxWidth - 32.dp, 120.dp)
+        val availableHeight = maxOf(maxHeight - 32.dp, 180.dp)
         val widthFactor = (BottleAspectRatio * cosValue + sinValue).coerceAtLeast(0.1f)
         val heightFactor = (BottleAspectRatio * sinValue + cosValue).coerceAtLeast(0.1f)
         val bottleHeight = minOf(
             availableWidth / widthFactor,
             availableHeight / heightFactor,
-            380.dp,
+            340.dp,
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.7f)
-                .background(SpinColors.Background)
-                .align(Alignment.Center),
-        )
         BottleArt(
             style = style,
             angle = angle.toFloat(),
@@ -640,12 +573,11 @@ private fun BottleShareButton(
 ) {
     Box(
         modifier = Modifier
-            .width(222.dp)
-            .height(62.dp)
-            .clip(RoundedCornerShape(9.dp))
+            .height(42.dp)
+            .clip(RoundedCornerShape(10.dp))
             .background(Color(0xFF39A9F2))
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 18.dp),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -655,14 +587,14 @@ private fun BottleShareButton(
             SpinIcon(
                 glyph = SpinIconGlyph.Share,
                 tint = Color.White,
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(18.dp),
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = "Chia sẻ kết quả",
                 color = Color.White,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -678,9 +610,9 @@ private fun BottleRetryButton(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(58.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .fillMaxWidth(0.82f)
+            .height(44.dp)
+            .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFFDE3D2D))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -688,8 +620,8 @@ private fun BottleRetryButton(
         Text(
             text = text,
             color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.ExtraBold,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Bold,
         )
     }
 }
@@ -734,7 +666,7 @@ private fun BottleArt(
             .aspectRatio(132f / 342f)
             .graphicsLayer {
                 rotationZ = angle
-                transformOrigin = TransformOrigin(0.5f, 0.58f)
+                transformOrigin = TransformOrigin(0.5f, 0.5f)
             },
     ) {
         val sx = size.width / BottleBaseWidth

@@ -37,6 +37,8 @@ import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
+import com.vga.spinwheel.ui.components.SpinScreen
+
 @Composable
 fun WheelSpinScreen(
     wheelId: String,
@@ -59,32 +61,25 @@ fun WheelSpinScreen(
         viewModel.loadWheelForSpin(wheelId)
     }
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = "Bánh xe",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
-                onNavigationClick = onBack,
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.History,
-                        contentDescription = "Lịch sử",
-                        onClick = onOpenHistory,
-                        tint = Color.White,
-                    )
-                },
+    SpinScreen(
+        title = "Bánh xe",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = onBack,
+        confirmExitOnBack = true,
+        actions = {
+            SpinIconButton(
+                glyph = SpinIconGlyph.History,
+                contentDescription = "Lịch sử",
+                onClick = onOpenHistory,
+                tint = Color.White,
             )
         },
-    ) { innerPadding ->
+        modifier = modifier,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
                 .padding(horizontal = SpinSpacing.ScreenHorizontal),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
