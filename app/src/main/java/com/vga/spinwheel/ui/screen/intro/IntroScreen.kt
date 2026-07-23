@@ -41,10 +41,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.annotation.StringRes
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.vga.spinwheel.advertisement.AdManager
 import com.vga.spinwheel.advertisement.AdPositions
+import com.vga.spinwheel.advertisement.AdScenario
 import com.vga.spinwheel.advertisement.NativeAdSlot
+import com.vga.spinwheel.advertisement.NativeInterController
 import com.vga.spinwheel.R
+import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -59,13 +61,13 @@ fun IntroScreen(
     viewModel: IntroViewModel = hiltViewModel(),
 ) {
     val activity = LocalContext.current as? Activity
-    val adPositions = remember { AdPositions.current() }
+    val adPositions = remember { AdPositions.selected() }
     var pageIndex by remember { mutableIntStateOf(0) }
     var continueEnabled by remember { mutableStateOf(false) }
     var advancePending by remember { mutableStateOf(false) }
     val page = introPagesI18n[pageIndex]
     val slideNumber = pageIndex + 1
-    val hasInlineAd = adPositions.hasInline(slideNumber)
+    val hasInlineAd = slideNumber in adPositions
 
     LaunchedEffect(pageIndex, hasInlineAd) {
         continueEnabled = !hasInlineAd
@@ -148,12 +150,8 @@ fun IntroScreen(
                             pageIndex += 1
                         }
                     }
-                    if (adPositions.hasModalAfter(slideNumber)) {
-                        AdManager.showNativeInter(
-                            activity = activity,
-                            placement = "native_inter_intro",
-                            onNext = advance,
-                        )
+                    if (slideNumber * MODAL_POSITION_MULTIPLIER in adPositions) {
+                        showIntroNativeInter(activity, advance)
                     } else {
                         advance()
                     }
@@ -330,6 +328,34 @@ private fun IntroVisual(
     }
 }
 
+private fun showIntroNativeInter(
+    activity: Activity?,
+    onNext: () -> Unit,
+) {
+    if (activity == null) {
+        onNext()
+        return
+    }
+
+    val remote = Remote.instance
+    val placement = INTRO_NATIVE_INTER_PLACEMENT
+    val unitId = remote.adUnit(placement)
+    val shouldShow = remote.isAdEnabled(placement) &&
+        unitId.isNotBlank() &&
+        AdScenario.shouldShow(
+            activity,
+            placement,
+            ratio = remote.getInt("${placement}_ratio"),
+            maxPerDay = remote.getInt("${placement}_max"),
+        )
+
+    if (shouldShow) {
+        NativeInterController.show(placement, onNext)
+    } else {
+        onNext()
+    }
+}
+
 private enum class IntroVisualType {
     WHEEL,
     GRID,
@@ -367,3 +393,5 @@ private val introPagesI18n = listOf(
 )
 
 private const val INTRO_AD_TIMEOUT_MS = 5_000L
+private const val MODAL_POSITION_MULTIPLIER = 11
+private const val INTRO_NATIVE_INTER_PLACEMENT = "native_inter_intro"

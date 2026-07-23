@@ -1,120 +1,88 @@
 package com.vga.spinwheel.advertisement
 
-import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.ads.nativead.NativeAd
-import com.nlbn.ads.callback.NativeCallback
-import com.nlbn.ads.util.Admob
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-@HiltViewModel
-class AdsViewModel @Inject constructor() : ViewModel() {
+class AdsViewModel : ViewModel() {
 
-    private val states = mutableStateMapOf<String, NativeAdSlotState>()
+    private val slots = mutableMapOf<String, Slot>()
 
-    fun stateFor(placement: String): NativeAdSlotState =
-        states.getOrPut(placement) { NativeAdSlotState() }
-
-    fun prepareForEntry(
-        placement: String,
-        retryAfterErrorMs: Long = DEFAULT_RETRY_AFTER_ERROR_MS,
-        nowMillis: Long = System.currentTimeMillis(),
-    ) {
-        val state = stateFor(placement)
-        if (state.failed && nowMillis - state.lastAttemptAtMs >= retryAfterErrorMs) {
-            state.resetError()
-        }
-    }
-
-    fun loadNativeAd(
-        context: Context,
-        placement: String,
-        unitId: String,
-    ) {
-        val state = stateFor(placement)
-        if (unitId.isBlank() || state.isLoading || state.nativeAd != null || state.failed) return
-
-        state.markLoading()
-        println("ADSLOT load START $placement unit=$unitId")
-        Admob.getInstance().loadNativeAd(
-            context.applicationContext,
-            unitId,
-            object : NativeCallback() {
-                override fun onNativeAdLoaded(nativeAd: NativeAd) {
-                    println("ADSLOT loaded $placement ad=true")
-                    state.onLoaded(nativeAd)
-                }
-
-                override fun onAdFailedToLoad() {
-                    println("ADSLOT ERR failed $placement")
-                    state.onError()
-                }
-
-                override fun onAdImpression() {
-                    println("ADSLOT impression $placement")
-                }
-
-                override fun onAdClicked() {
-                    println("ADSLOT clicked $placement")
-                }
-            },
-        )
-    }
+    fun slot(name: String): Slot = slots.getOrPut(name) { Slot() }
 
     override fun onCleared() {
-        states.values.forEach { it.destroy() }
-        states.clear()
+        slots.values.forEach { it.destroy() }
+        slots.clear()
         super.onCleared()
     }
 
-    private companion object {
-        const val DEFAULT_RETRY_AFTER_ERROR_MS = 30 * 60 * 1000L
-    }
-}
+    class Slot {
+        private val _isLoading = MutableStateFlow(false)
+        val isLoading: StateFlow<Boolean> = _isLoading
 
-class NativeAdSlotState {
-    var isLoading by mutableStateOf(false)
-        private set
+        private val _isLoaded = MutableStateFlow(false)
+        val isLoaded: StateFlow<Boolean> = _isLoaded
 
-    var nativeAd by mutableStateOf<NativeAd?>(null)
-        private set
+        private val _nativeAd = MutableStateFlow<NativeAd?>(null)
+        val nativeAd: StateFlow<NativeAd?> = _nativeAd
 
-    var failed by mutableStateOf(false)
-        private set
+        private val _impressionRecorded = MutableStateFlow(false)
 
-    var lastAttemptAtMs: Long = 0L
-        private set
+        private var lastRequestAtMs: Long = 0L
 
-    fun markLoading(nowMillis: Long = System.currentTimeMillis()) {
-        isLoading = true
-        failed = false
-        lastAttemptAtMs = nowMillis
-    }
+        fun onStartLoad() {
+            _isLoading.value = true
+            _isLoaded.value = false
+            lastRequestAtMs = System.currentTimeMillis()
+        }
 
-    fun onLoaded(ad: NativeAd) {
-        nativeAd?.destroy()
-        nativeAd = ad
-        isLoading = false
-        failed = false
-    }
+        fun onLoaded() {
+            _isLoading.value = false
+            _isLoaded.value = true
+        }
 
-    fun onError() {
-        isLoading = false
-        failed = true
-    }
+        fun onLoadedNative(ad: NativeAd) {
+            _nativeAd.value?.let { previous ->
+                if (previous !== ad) {
+                    runCatching { previous.destroy() }
+                }
+            }
+            _nativeAd.value = ad
+        }
 
-    fun resetError() {
-        failed = false
-    }
+        fun onError() {
+            _isLoading.value = false
+            _isLoaded.value = false
+            _nativeAd.value = null
+        }
 
-    fun destroy() {
-        nativeAd?.destroy()
-        nativeAd = null
-        isLoading = false
+        fun onImpression() {
+            _impressionRecorded.value = true
+        }
+
+        fun prepareForEntry(minIntervalMs: Long = 0L) {
+            if (_impressionRecorded.value) {
+                _isLoading.value = false
+                _impressionRecorded.value = false
+            }
+            if (System.currentTimeMillis() - lastRequestAtMs >= minIntervalMs) {
+                _isLoaded.value = false
+                if (_nativeAd.value != null) {
+                    runCatching { _nativeAd.value?.destroy() }
+                    _nativeAd.value = null
+                }
+            }
+        }
+
+        fun shouldLoadOnMount(): Boolean =
+            !(_isLoading.value || _isLoaded.value || _nativeAd.value != null)
+
+        fun destroy() {
+            runCatching { _nativeAd.value?.destroy() }
+            _nativeAd.value = null
+            _isLoaded.value = false
+            _isLoading.value = false
+        }
     }
 }

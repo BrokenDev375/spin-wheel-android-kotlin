@@ -331,6 +331,8 @@ Quy uoc trang thai:
 - Settings mo man Language co san cua lib bang
   `LanguageActivity.start(activity, MainActivity::class.java)`, khong route vao man Language
   rieng cua app.
+- Correction sau review: da xoa `LanguageScreen` va `LanguageViewModel` rieng cua app vi
+  luong thuc te chi dung `LanguageActivity` cua lib.
 - Da tach text chinh cua Home, Settings, Language, Intro va title route sang
   `values/strings_i18n.xml` va `values-vi/strings_i18n.xml`.
 - Da them `values-vi/strings.xml` cho cac string lib/user-visible con nam trong
@@ -352,7 +354,7 @@ Quy uoc trang thai:
 - Da duoc nguoi dung phe duyet ket qua va yeu cau commit rieng.
 - Commit Chang 6/correction trong commit rieng.
 
-## [ ] Chang 7 - Audit Ads runtime theo folder mau
+## [x] Chang 7 - Audit Ads runtime theo folder mau
 
 ### Pham vi
 
@@ -400,6 +402,33 @@ Quy uoc trang thai:
 
 - Bao cao diff giua folder mau va folder hien tai, ly do moi diem giu/sua.
 - Dung lai de nguoi dung review runtime Ads truoc khi sang release config.
+
+### Ket qua thuc hien - Da phe duyet
+
+- Da nhan folder `advertisement/` mau gom dung bay file core va doi chieu tung file voi
+  package Ads cua app.
+- Da migrate `AdManager`, `AdPositions`, `AdScenario`, `AdsViewModel`, `NativeAdSlot`,
+  `NativeAdsFull` va `NativeInter` theo folder mau; phan khac biet chi giu package/import,
+  resource va call-site dac thu cua Spin Wheel.
+- Da go `OnceAction` khong co trong mau; callback inter dung guard cuc bo nhu mau de chi
+  chuyen tiep mot lan khi callback close/fail bi goi lap.
+- `NativeAdSlot` dung cache Activity-scoped tu `AdsViewModel`, bind trong
+  `AndroidView.factory`, an slot khi fail/no-fill va dung layout native/loading cua lib.
+- `AdScenario` dem ratio/max theo ngay va don key qua han; `AdPositions` doc
+  `positionIntrol` va chon mot bo vi tri tu Remote Config.
+- `AdManager.showInter()` giu chain inter -> native-inter -> navigate; Home va Intro da
+  duoc can lai theo API cua folder mau.
+- `NativeInterHost()` van duoc dat tai root cua `MainActivity` va `IntroActivity`.
+- `ad_native_full.xml` da can lai id resource voi binder cua mau.
+- Khong tim thay `AdLoader`, `AdRequest`, `InterstitialAd.load`, `AppOpenAd`,
+  `MobileAds.initialize` hoac `android.util.Log` trong code Ads/Remote cua app.
+- `testDebugUnitTest`, `compileDebugKotlin`, `lintDebug`, `assembleDebug` va
+  `assembleRelease`: pass.
+- Chua test runtime bang ADB vi moi truong khong co thiet bi.
+- Chua dien ad unit/IAP/signing production; cac muc nay thuoc Chang 8.
+- Folder `advertisement/` mau da duoc xoa sau khi doi chieu, khong dua vao source set/commit.
+- Da duoc nguoi dung phe duyet ket qua va yeu cau danh dau hoan thanh, commit.
+- Commit Chang 7 va correction xoa man Language rieng trong commit hien tai.
 
 ## [ ] Chang 8 - Release config, asset va signing
 
@@ -468,7 +497,7 @@ Quy uoc trang thai:
 | 4. Ads UI/flow | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 5. IAP | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
 | 6. Language + i18n | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
-| 7. Ads runtime audit | Chua lam | Chua | Chua | Chua |
+| 7. Ads runtime audit | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 8. Release config | Chua lam | Chua | Chua | Chua |
 | 9. QA + release candidate | Chua lam | Chua | Chua | Chua |
 
@@ -496,7 +525,7 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Co the bat dau **Chang 7 - Audit Ads runtime theo folder mau** sau khi nguoi dung cung cap
-folder `advertisement/` mau va phe duyet bat dau.
+Co the bat dau **Chang 8 - Release config, asset va signing** sau khi nguoi dung cung cap
+ad unit/IAP/signing production va phe duyet bat dau.
 Phan nghiem thu Billing production cua Chang 5 van bi chan den khi co product/subscription
 id va Google Play public license key that.

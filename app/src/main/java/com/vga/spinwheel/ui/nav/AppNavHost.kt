@@ -42,11 +42,13 @@ fun AppNavHost(
         composable(Screen.Home.route) {
             HomeScreen(
                 onFeatureClick = { screen ->
-                    AdManager.showInter(
-                        activity = context as? Activity,
-                        placement = "inter_home",
-                    ) {
+                    val activity = context as? Activity
+                    if (activity == null) {
                         navController.navigate(screen.route)
+                    } else {
+                        AdManager.showInter(activity, "inter_home") {
+                            navController.navigate(screen.route)
+                        }
                     }
                 },
                 onSettingsClick = { navController.navigate(Screen.Settings.route) },
