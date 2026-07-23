@@ -64,6 +64,7 @@ fun WheelPaletteScreen(
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Quay lại",
                 onNavigationClick = onBack,
+                centerTitle = false,
                 actions = {
                     TextButton(
                         onClick = {

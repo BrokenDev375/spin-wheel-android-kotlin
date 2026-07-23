@@ -18,7 +18,7 @@
     <string name="content_description_back">Back</string>
     <string name="content_description_premium">Premium</string>
 
-    <string name="settings_premium">Upgrade Premium</string>
+    <string name="settings_overview">Overview</string>
     <string name="settings_share">Share</string>
     <string name="settings_language">Language</string>
     <string name="settings_rate">Rate app</string>

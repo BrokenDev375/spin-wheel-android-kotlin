@@ -18,10 +18,10 @@
     <string name="content_description_back">Quay lại</string>
     <string name="content_description_premium">Premium</string>
 
-    <string name="settings_premium">Nâng cấp Premium</string>
+    <string name="settings_overview">Tổng quan</string>
     <string name="settings_share">Chia sẻ</string>
     <string name="settings_language">Ngôn ngữ</string>
-    <string name="settings_rate">Đánh giá ứng dụng</string>
+    <string name="settings_rate">Đánh giá</string>
     <string name="settings_music">Nhạc nền</string>
     <string name="settings_game_sound">Âm thanh trò chơi</string>
     <string name="settings_vibration">Rung</string>

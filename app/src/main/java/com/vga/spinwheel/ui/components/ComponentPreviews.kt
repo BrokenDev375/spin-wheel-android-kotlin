@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.theme.AppTheme
 
 @Preview(showBackground = true, backgroundColor = 0xFF292640)
@@ -37,8 +38,7 @@ private fun ComponentPreview() {
                 SpinFeatureCard(
                     title = "Banh Xe",
                     style = SpinFeatureCardStyle(
-                        visual = SpinFeatureVisual.Wheel,
-                        gradient = listOf(Color(0xFF4F3B78), Color(0xFF292640)),
+                        backgroundRes = R.drawable.home_game_wheel,
                     ),
                     onClick = {},
                     modifier = Modifier
@@ -48,8 +48,7 @@ private fun ComponentPreview() {
                 SpinFeatureCard(
                     title = "Dong Xu",
                     style = SpinFeatureCardStyle(
-                        visual = SpinFeatureVisual.Coin,
-                        gradient = listOf(Color(0xFFE29C32), Color(0xFF292640)),
+                        backgroundRes = R.drawable.home_game_coin,
                         titleColor = Color(0xFFFFFF33),
                     ),
                     onClick = {},

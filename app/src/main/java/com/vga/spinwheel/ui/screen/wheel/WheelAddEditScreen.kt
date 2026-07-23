@@ -68,6 +68,7 @@ fun WheelAddEditScreen(
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Quay lại",
                 onNavigationClick = onBack,
+                centerTitle = false,
                 actions = {
                     TextButton(
                         onClick = { viewModel.validateAndSave(onSuccess = onSaveSuccess) }
@@ -129,8 +130,8 @@ fun WheelAddEditScreen(
                             unfocusedContainerColor = Color(0xFF3B3754),
                             focusedTextColor = SpinColors.TextPrimary,
                             unfocusedTextColor = SpinColors.TextPrimary,
-                            focusedBorderColor = Color.White.copy(alpha = 0.3f),
-                            unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
+                            focusedBorderColor = Color(0xFFEC9213),
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.55f),
                             errorBorderColor = Color(0xFFFF5252),
                         ),
                     )
@@ -161,7 +162,7 @@ fun WheelAddEditScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Thêm mục", fontSize = 13.sp, maxLines = 1)
+                            Text("Thêm mục", fontSize = 15.sp, maxLines = 1)
                         }
                     }
 
@@ -183,7 +184,7 @@ fun WheelAddEditScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Thêm nhiều", fontSize = 13.sp, maxLines = 1)
+                            Text("Thêm nhiều", fontSize = 15.sp, maxLines = 1)
                         }
                     }
                 }
@@ -245,7 +246,7 @@ private fun WheelItemRow(
         OutlinedTextField(
             value = item.name,
             onValueChange = onNameChange,
-            placeholder = { Text("Tên muc", color = SpinColors.TextMuted) },
+            placeholder = { Text("Tên mục", color = SpinColors.TextMuted) },
             singleLine = true,
             isError = hasError,
             modifier = Modifier
@@ -256,8 +257,8 @@ private fun WheelItemRow(
                 unfocusedContainerColor = Color(0xFF3B3754),
                 focusedTextColor = SpinColors.TextPrimary,
                 unfocusedTextColor = SpinColors.TextPrimary,
-                focusedBorderColor = Color.White.copy(alpha = 0.3f),
-                unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
+                focusedBorderColor = Color(0xFFEC9213),
+                unfocusedBorderColor = Color.White.copy(alpha = 0.55f),
                 errorBorderColor = Color(0xFFFF5252),
             ),
         )
@@ -265,10 +266,10 @@ private fun WheelItemRow(
         // Priority Box (Square with 'Ưu tiên' label & +/- round buttons)
         Box(
             modifier = Modifier
-                .width(110.dp)
+                .width(76.dp)
                 .clip(RoundedCornerShape(SpinRadius.Control))
                 .background(Color(0xFF3B3754))
-                .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(SpinRadius.Control))
+                .border(1.5.dp, Color.White.copy(alpha = 0.85f), RoundedCornerShape(SpinRadius.Control))
                 .padding(horizontal = 8.dp, vertical = 6.dp),
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -286,7 +287,7 @@ private fun WheelItemRow(
                     // Round Minus Button (Red)
                     Box(
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(25.dp)
                             .clip(CircleShape)
                             .background(Color(0xFFFF5252))
                             .clickable { onPriorityChange(-1) },
@@ -309,7 +310,7 @@ private fun WheelItemRow(
                     // Round Plus Button (Blue)
                     Box(
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(25.dp)
                             .clip(CircleShape)
                             .background(Color(0xFF2979FF))
                             .clickable { onPriorityChange(1) },

@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import com.vga.spinwheel.ui.screen.home.HomeScreen
 import com.vga.spinwheel.ui.screen.finger.FingerScreen
 import com.vga.spinwheel.ui.screen.finger.FingerViewModel
@@ -51,36 +52,36 @@ fun AppNavHost(
                         }
                     }
                 },
-                onSettingsClick = { navController.navigate(Screen.Settings.route) },
+                onSettingsClick = { navController.navigateSingleTop(Screen.Settings.route) },
                 onPaymentClick = { IapLauncher.open(context) },
             )
         }
 
         wheelNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = { navController.popBackStackSafely() },
         )
 
         teamNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = { navController.popBackStackSafely() },
         )
 
         bottleNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = { navController.popBackStackSafely() },
         )
 
         cardNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = { navController.popBackStackSafely() },
         )
 
         composable(Screen.Finger.route) {
             val viewModel: FingerViewModel = hiltViewModel()
             FingerScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
                 onHome = {
                     navController.popBackStack(Screen.Home.route, inclusive = false)
                 },
@@ -96,7 +97,7 @@ fun AppNavHost(
 
         composable(Screen.Settings.route) {
             SettingsRoute(
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
                 onShareClick = {
                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
@@ -109,7 +110,6 @@ fun AppNavHost(
                         LanguageActivity.start(activity, MainActivity::class.java)
                     }
                 },
-                onPremiumClick = { IapLauncher.open(context) },
                 onRateClick = {
                     openStoreListing(context, rateUnavailableText)
                 },
@@ -117,6 +117,22 @@ fun AppNavHost(
         }
 
     }
+}
+
+private fun NavController.navigateSingleTop(route: String) {
+    if (currentDestination?.route == route) return
+    navigate(route) {
+        launchSingleTop = true
+    }
+}
+
+private fun NavController.popBackStackSafely(): Boolean {
+    if (currentDestination?.route == Screen.Home.route) return false
+    val popped = popBackStack()
+    if (!popped && currentDestination == null) {
+        navigateSingleTop(Screen.Home.route)
+    }
+    return popped
 }
 
 private fun openStoreListing(context: android.content.Context, fallbackMessage: String) {

@@ -64,15 +64,16 @@ class MyApplication : BaseApplication() {
 
     override fun iapPublicKey(): String = getString(R.string.public_license_key)
 
-    override fun getFeature1IconRes(): Int = R.drawable.icon_1_iap
+    // Paywall order: ads, unlock, custom wheel, premium themes, support.
+    override fun getFeature1IconRes(): Int = R.drawable.icon_4_iap
 
     override fun getFeature2IconRes(): Int = R.drawable.icon_2_iap
 
-    override fun getFeature3IconRes(): Int = R.drawable.icon_3_iap
+    override fun getFeature3IconRes(): Int = R.drawable.icon_1_iap
 
-    override fun getFeature4IconRes(): Int = R.drawable.icon_4_iap
+    override fun getFeature4IconRes(): Int = R.drawable.icon_5_iap
 
-    override fun getFeature5IconRes(): Int = R.drawable.icon_5_iap
+    override fun getFeature5IconRes(): Int = R.drawable.icon_3_iap
 
     override fun getFeature1TextRes(): Int = R.string.iap_feature_1
 
@@ -134,11 +135,11 @@ class MyApplication : BaseApplication() {
 
     override fun isPurchased(): Boolean = IAPUtils.isPremium()
 
-    override fun enableAdsResume(): Boolean = !IAPUtils.isPremium()
+    override fun enableAdsResume(): Boolean = !BuildConfig.DEBUG && !IAPUtils.isPremium()
 
     override fun buildDebug(): Boolean = BuildConfig.DEBUG
 
-    override fun isForceShowFullAdsTest(): Boolean = BuildConfig.DEBUG
+    override fun isForceShowFullAdsTest(): Boolean = false
 
     override fun getListTestDeviceId(): List<String> = emptyList()
 

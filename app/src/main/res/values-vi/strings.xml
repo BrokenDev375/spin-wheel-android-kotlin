@@ -5,11 +5,11 @@
     <string name="ad_loading">Đang tải quảng cáo...</string>
     <string name="ad_cta_default">Mở</string>
 
-    <string name="iap_feature_1">Không giới hạn bánh xe</string>
-    <string name="iap_feature_2">Thêm công cụ ngẫu nhiên</string>
-    <string name="iap_feature_3">Lưu danh sách tùy chỉnh</string>
-    <string name="iap_feature_4">Xóa quảng cáo</string>
-    <string name="iap_feature_5">Giao diện Premium</string>
+    <string name="iap_feature_1">Xóa toàn bộ quảng cáo</string>
+    <string name="iap_feature_2">Mở khóa tất cả trò chơi &amp; công cụ</string>
+    <string name="iap_feature_3">Tạo vòng quay tùy chỉnh</string>
+    <string name="iap_feature_4">Mở khóa giao diện &amp; chủ đề cao cấp</string>
+    <string name="iap_feature_5">Hỗ trợ khách hàng ưu tiên</string>
 
     <string name="notification_permission_title">Luôn cập nhật</string>
     <string name="notification_permission_content">Nhận nhắc nhở ngẫu nhiên hữu ích từ Spin Wheel.</string>
