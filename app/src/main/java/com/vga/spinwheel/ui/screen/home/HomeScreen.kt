@@ -54,6 +54,7 @@ fun HomeScreen(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 isPremium = IapLauncher.isPremium()
+                navigationPending = false
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -95,6 +96,24 @@ fun HomeScreen(
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(SpinSpacing.CardGap),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(SpinSpacing.CardGap),
         ) {
+            val adInsertionIndex = 4
+            val beforeAd = homeFeatures.take(adInsertionIndex)
+            val afterAd = homeFeatures.drop(adInsertionIndex)
+
+            items(beforeAd, key = { it.screen.route }) { item ->
+                SpinFeatureCard(
+                    title = stringResource(featureTitleRes(item.screen)),
+                    style = item.style,
+                    onClick = {
+                        if (!navigationPending) {
+                            navigationPending = true
+                            onFeatureClick(item.screen)
+                        }
+                    },
+                    modifier = Modifier.aspectRatio(1.18f),
+                )
+            }
+
             if (showNativeHome) {
                 item(
                     key = "ad_native_home",
@@ -104,7 +123,7 @@ fun HomeScreen(
                 }
             }
 
-            items(homeFeatures, key = { it.screen.route }) { item ->
+            items(afterAd, key = { it.screen.route }) { item ->
                 SpinFeatureCard(
                     title = stringResource(featureTitleRes(item.screen)),
                     style = item.style,

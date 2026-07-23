@@ -22,6 +22,14 @@ import com.vga.spinwheel.advertisement.AdManager
 import com.vga.spinwheel.core.MainActivity
 import com.vga.spinwheel.platform.IapLauncher
 import com.vga.spinwheel.R
+import android.content.Context
+import android.content.ContextWrapper
+
+tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
 
 @Composable
 fun AppNavHost(
@@ -39,10 +47,32 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
+        val onBackWithAd: () -> Unit = {
+            val activity = context.findActivity()
+            if (activity == null) {
+                navController.popBackStack()
+            } else {
+                AdManager.showInter(activity, "inter_back") {
+                    navController.popBackStack()
+                }
+            }
+        }
+
+        val onHomeWithAd: () -> Unit = {
+            val activity = context.findActivity()
+            if (activity == null) {
+                navController.popBackStack(Screen.Home.route, inclusive = false)
+            } else {
+                AdManager.showInter(activity, "inter_back") {
+                    navController.popBackStack(Screen.Home.route, inclusive = false)
+                }
+            }
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 onFeatureClick = { screen ->
-                    val activity = context as? Activity
+                    val activity = context.findActivity()
                     if (activity == null) {
                         navController.navigate(screen.route)
                     } else {
@@ -58,41 +88,48 @@ fun AppNavHost(
 
         wheelNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = onBackWithAd,
         )
 
         teamNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = onBackWithAd,
         )
 
         bottleNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = onBackWithAd,
         )
 
         cardNavGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = onBackWithAd,
         )
 
         composable(Screen.Finger.route) {
             val viewModel: FingerViewModel = hiltViewModel()
             FingerScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onHome = {
-                    navController.popBackStack(Screen.Home.route, inclusive = false)
-                },
+                onBack = onBackWithAd,
+                onHome = onHomeWithAd,
             )
         }
         coinGraph(
             navController = navController,
-            onBack = { navController.popBackStack() },
+            onBack = onBackWithAd,
         )
-        numberGraph(navController = navController)
-        drawingNavGraph(navController = navController)
-        diceGraph(navController = navController)
+        numberGraph(
+            navController = navController,
+            onBack = onBackWithAd,
+        )
+        drawingNavGraph(
+            navController = navController,
+            onBack = onBackWithAd,
+        )
+        diceGraph(
+            navController = navController,
+            onBack = onBackWithAd,
+        )
 
         composable(Screen.Settings.route) {
             SettingsRoute(

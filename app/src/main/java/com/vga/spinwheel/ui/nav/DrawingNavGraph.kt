@@ -20,6 +20,7 @@ import com.vga.spinwheel.ui.screen.drawing.DrawingViewModel
 
 fun NavGraphBuilder.drawingNavGraph(
     navController: NavController,
+    onBack: () -> Unit,
 ) {
     navigation(
         startDestination = DrawingRoutes.HOME,
@@ -32,7 +33,7 @@ fun NavGraphBuilder.drawingNavGraph(
             val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
             DrawingHomeScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
+                onBack = onBack,
                 onAddWheel = { 
                     viewModel.prepareNewForm()
                     navController.navigate(DrawingRoutes.ADD) 
