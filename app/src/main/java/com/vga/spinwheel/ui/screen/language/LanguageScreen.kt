@@ -1,5 +1,8 @@
 package com.vga.spinwheel.ui.screen.language
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,9 +32,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.brian.base_application.language.LanguageRouter
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -43,12 +50,18 @@ fun LanguageScreen(
     modifier: Modifier = Modifier,
     viewModel: LanguageViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val activity = context.findActivity()
     val state by viewModel.uiState.collectAsState()
+    val languageLabels = viewModel.languages.associateWith { language ->
+        stringResource(language.localNameRes) to stringResource(language.englishNameRes)
+    }
     val filteredLanguages = viewModel.languages.filter { language ->
         val query = state.query.trim()
+        val labels = languageLabels.getValue(language)
         query.isBlank() ||
-            language.localName.contains(query, ignoreCase = true) ||
-            language.englishName.contains(query, ignoreCase = true)
+            labels.first.contains(query, ignoreCase = true) ||
+            labels.second.contains(query, ignoreCase = true)
     }
 
     Column(
@@ -65,21 +78,25 @@ fun LanguageScreen(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Đổi ngôn ngữ",
+                    text = stringResource(R.string.language_title),
                     color = Color(0xFF0C1020),
                     style = MaterialTheme.typography.headlineLarge,
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Vui lòng chọn ngôn ngữ mẹ đẻ của bạn. Bạn có thể đổi ngôn ngữ trong cài đặt sau.",
+                    text = stringResource(R.string.language_description),
                     color = Color(0xFF0C1020),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
             SpinPrimaryButton(
-                text = "Xong",
+                text = stringResource(R.string.language_done),
                 onClick = {
-                    viewModel.saveSelection(onSaved = onDone)
+                    val selectedCode = viewModel.selectedCode()
+                    if (activity != null) {
+                        LanguageRouter.confirmLanguageSelection(activity, selectedCode, null, false)
+                    }
+                    onDone()
                 },
                 modifier = Modifier.size(width = 112.dp, height = 64.dp),
             )
@@ -95,7 +112,7 @@ fun LanguageScreen(
                 .height(64.dp),
             placeholder = {
                 Text(
-                    text = "Tìm ở đây...",
+                    text = stringResource(R.string.language_search_hint),
                     color = Color(0xFF9CA3AF),
                 )
             },
@@ -118,6 +135,8 @@ fun LanguageScreen(
             items(filteredLanguages, key = { it.code }) { language ->
                 LanguageRow(
                     language = language,
+                    localName = languageLabels.getValue(language).first,
+                    englishName = languageLabels.getValue(language).second,
                     selected = language.code == state.selectedCode,
                     onClick = { viewModel.selectLanguage(language.code) },
                 )
@@ -129,6 +148,8 @@ fun LanguageScreen(
 @Composable
 private fun LanguageRow(
     language: LanguageOption,
+    localName: String,
+    englishName: String,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -157,12 +178,12 @@ private fun LanguageRow(
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = language.localName,
+                text = localName,
                 color = Color(0xFF0C1020),
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                text = language.englishName,
+                text = englishName,
                 color = Color(0xFF8C8FA3),
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -189,3 +210,10 @@ private fun flagColor(code: String): Color = when (code) {
     "uk" -> Color(0xFF2563EB)
     else -> Color(0xFF0EA5E9)
 }
+
+private tailrec fun Context.findActivity(): Activity? =
+    when (this) {
+        is Activity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> null
+    }

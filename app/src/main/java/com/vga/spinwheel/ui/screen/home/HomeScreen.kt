@@ -17,10 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.vga.spinwheel.R
 import com.vga.spinwheel.advertisement.NativeAdSlot
 import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.platform.IapLauncher
@@ -64,14 +67,14 @@ fun HomeScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Spin Wheel",
+                title = stringResource(R.string.screen_home),
                 navigationIcon = SpinIconGlyph.Settings,
-                navigationDescription = "Cai dat",
+                navigationDescription = stringResource(R.string.content_description_settings),
                 onNavigationClick = onSettingsClick,
             ) {
                 SpinIconButton(
                     glyph = SpinIconGlyph.Crown,
-                    contentDescription = "Pro",
+                    contentDescription = stringResource(R.string.content_description_premium),
                     onClick = onPaymentClick,
                     tint = SpinColors.Premium,
                 )
@@ -103,7 +106,7 @@ fun HomeScreen(
 
             items(homeFeatures, key = { it.screen.route }) { item ->
                 SpinFeatureCard(
-                    title = item.screen.title,
+                    title = stringResource(featureTitleRes(item.screen)),
                     style = item.style,
                     onClick = {
                         if (!navigationPending) {
@@ -122,6 +125,20 @@ private data class HomeFeature(
     val screen: Screen,
     val style: SpinFeatureCardStyle,
 )
+
+@StringRes
+private fun featureTitleRes(screen: Screen): Int = when (screen) {
+    Screen.Wheel -> R.string.feature_wheel
+    Screen.Finger -> R.string.feature_finger
+    Screen.Coin -> R.string.feature_coin
+    Screen.Team -> R.string.feature_team
+    Screen.Number -> R.string.feature_number
+    Screen.Drawing -> R.string.feature_drawing
+    Screen.Bottle -> R.string.feature_bottle
+    Screen.Dice -> R.string.feature_dice
+    Screen.Card -> R.string.feature_card
+    else -> R.string.screen_home
+}
 
 private val homeFeatures = listOf(
     HomeFeature(

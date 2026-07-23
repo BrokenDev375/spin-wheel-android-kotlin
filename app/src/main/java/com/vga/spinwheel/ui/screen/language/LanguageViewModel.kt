@@ -1,22 +1,22 @@
 package com.vga.spinwheel.ui.screen.language
 
+import android.content.Context
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.vga.spinwheel.data.model.AppSettingKeys
-import com.vga.spinwheel.data.model.RandomFeature
-import com.vga.spinwheel.data.repo.SettingsRepository
+import com.vga.spinwheel.R
+import com.vga.spinwheel.core.AppStorage
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 data class LanguageOption(
     val code: String,
-    val localName: String,
-    val englishName: String,
+    @StringRes val localNameRes: Int,
+    @StringRes val englishNameRes: Int,
     val flag: String,
 )
 
@@ -27,21 +27,17 @@ data class LanguageUiState(
 
 @HiltViewModel
 class LanguageViewModel @Inject constructor(
-    private val settingsRepository: SettingsRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         LanguageUiState(
-            selectedCode = settingsRepository.getString(
-                RandomFeature.APP,
-                AppSettingKeys.LANGUAGE_CODE,
-                DEFAULT_LANGUAGE_CODE,
-            )
+            selectedCode = AppStorage.languageCode(context),
         )
     )
     val uiState: StateFlow<LanguageUiState> = _uiState.asStateFlow()
 
-    val languages: List<LanguageOption> = defaultLanguages
+    val languages: List<LanguageOption> = supportedLanguages
 
     fun setQuery(value: String) {
         _uiState.update { it.copy(query = value) }
@@ -51,30 +47,26 @@ class LanguageViewModel @Inject constructor(
         _uiState.update { it.copy(selectedCode = code) }
     }
 
+    fun selectedCode(): String = _uiState.value.selectedCode
+
     fun saveSelection(onSaved: () -> Unit) {
-        val code = _uiState.value.selectedCode
-        viewModelScope.launch {
-            settingsRepository.putString(
-                feature = RandomFeature.APP,
-                key = AppSettingKeys.LANGUAGE_CODE,
-                value = code,
-            )
-            onSaved()
-        }
+        onSaved()
     }
 }
 
 private const val DEFAULT_LANGUAGE_CODE = "vi"
 
-private val defaultLanguages = listOf(
-    LanguageOption("vi", "Tiếng Việt", "Vietnamese", "VN"),
-    LanguageOption("ru", "русский", "Russian", "RU"),
-    LanguageOption("hi", "हिन्दी", "Hindi", "IN"),
-    LanguageOption("nl", "Nederlands", "Dutch", "NL"),
-    LanguageOption("tr", "Türk", "Turkish", "TR"),
-    LanguageOption("zh", "简体中文", "Chinese (Simplified)", "CN"),
-    LanguageOption("zh-TW", "繁體中文", "Chinese (Traditional)", "TW"),
-    LanguageOption("fa", "فارسی", "Persian", "IR"),
-    LanguageOption("uk", "Українська", "Ukrainian", "UA"),
-    LanguageOption("en", "English", "English", "US"),
+private val supportedLanguages = listOf(
+    LanguageOption(
+        code = "vi",
+        localNameRes = R.string.language_option_vi_local,
+        englishNameRes = R.string.language_option_vi_english,
+        flag = "VN",
+    ),
+    LanguageOption(
+        code = "en",
+        localNameRes = R.string.language_option_en_local,
+        englishNameRes = R.string.language_option_en_english,
+        flag = "US",
+    ),
 )

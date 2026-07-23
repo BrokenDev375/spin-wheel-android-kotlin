@@ -54,8 +54,6 @@ class Remote private constructor() {
         }
 
     companion object {
-        const val KEY_COUNT_APP_OPEN = "count_app_open"
-        const val KEY_ORGANIC_NUMBER_NOT_GUIDE = "organic_number_not_guide"
         const val KEY_POSITION_INTRO = "positionIntrol"
 
         val instance: Remote by lazy { Remote() }

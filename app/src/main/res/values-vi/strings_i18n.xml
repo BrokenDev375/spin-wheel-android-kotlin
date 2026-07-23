@@ -1,0 +1,52 @@
+<resources>
+    <string name="screen_intro">Giới thiệu</string>
+    <string name="screen_home">Spin Wheel</string>
+    <string name="screen_settings">Cài đặt</string>
+    <string name="screen_language">Ngôn ngữ</string>
+
+    <string name="feature_wheel">Bánh xe</string>
+    <string name="feature_finger">Chọn ngón tay</string>
+    <string name="feature_coin">Đồng xu</string>
+    <string name="feature_team">Đội</string>
+    <string name="feature_number">Số ngẫu nhiên</string>
+    <string name="feature_drawing">Bốc thăm</string>
+    <string name="feature_bottle">Quay chai</string>
+    <string name="feature_dice">Xúc xắc</string>
+    <string name="feature_card">Lật thẻ</string>
+
+    <string name="content_description_settings">Cài đặt</string>
+    <string name="content_description_back">Quay lại</string>
+    <string name="content_description_premium">Premium</string>
+
+    <string name="settings_premium">Nâng cấp Premium</string>
+    <string name="settings_share">Chia sẻ</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_rate">Đánh giá ứng dụng</string>
+    <string name="settings_music">Nhạc nền</string>
+    <string name="settings_game_sound">Âm thanh trò chơi</string>
+    <string name="settings_vibration">Rung</string>
+
+    <string name="share_app_text">Spin Wheel &amp; Random Tools</string>
+    <string name="share_chooser_title">Chia sẻ</string>
+    <string name="rate_unavailable">Không thể mở cửa hàng ứng dụng.</string>
+
+    <string name="language_title">Đổi ngôn ngữ</string>
+    <string name="language_description">Chọn ngôn ngữ bạn muốn sử dụng. Bạn có thể đổi lại trong Cài đặt.</string>
+    <string name="language_done">Xong</string>
+    <string name="language_search_hint">Tìm ở đây...</string>
+    <string name="language_option_vi_local">Tiếng Việt</string>
+    <string name="language_option_vi_english">Tiếng Việt</string>
+    <string name="language_option_en_local">English</string>
+    <string name="language_option_en_english">Tiếng Anh</string>
+
+    <string name="intro_title_1">Ngẫu nhiên - Trò chơi vòng quay</string>
+    <string name="intro_description_1">Spin Wheel nơi mỗi vòng quay đều mang đến một bất ngờ mới.</string>
+    <string name="intro_title_2">Chọn ngón tay, xu và lăn xúc xắc</string>
+    <string name="intro_description_2">Đưa ra quyết định nhanh, công bằng và vui vẻ trong mọi tình huống.</string>
+    <string name="intro_title_3">Ghép đội công bằng và lựa chọn ngẫu nhiên</string>
+    <string name="intro_description_3">Tạo đội, tạo số và chọn người chiến thắng mà không ai đoán trước.</string>
+    <string name="intro_title_4">Trải nghiệm hấp dẫn</string>
+    <string name="intro_description_4">Tùy chỉnh từng trò chơi để phù hợp với sở thích của bạn.</string>
+    <string name="intro_continue">Tiếp tục</string>
+    <string name="intro_start">Bắt đầu</string>
+</resources>

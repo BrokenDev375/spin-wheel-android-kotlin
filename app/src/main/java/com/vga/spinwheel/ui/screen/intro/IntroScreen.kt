@@ -36,12 +36,15 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.vga.spinwheel.advertisement.AdManager
 import com.vga.spinwheel.advertisement.AdPositions
 import com.vga.spinwheel.advertisement.NativeAdSlot
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -60,7 +63,7 @@ fun IntroScreen(
     var pageIndex by remember { mutableIntStateOf(0) }
     var continueEnabled by remember { mutableStateOf(false) }
     var advancePending by remember { mutableStateOf(false) }
-    val page = introPages[pageIndex]
+    val page = introPagesI18n[pageIndex]
     val slideNumber = pageIndex + 1
     val hasInlineAd = adPositions.hasInline(slideNumber)
 
@@ -105,14 +108,14 @@ fun IntroScreen(
         Spacer(modifier = Modifier.height(22.dp))
 
         Text(
-            text = page.title,
+            text = stringResource(page.titleRes),
             color = SpinColors.Action,
             style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = page.description,
+            text = stringResource(page.descriptionRes),
             color = SpinColors.TextPrimary,
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
@@ -120,7 +123,7 @@ fun IntroScreen(
         Spacer(modifier = Modifier.height(22.dp))
 
         PageIndicator(
-            pageCount = introPages.size,
+            pageCount = introPagesI18n.size,
             activeIndex = pageIndex,
             onPageClick = { pageIndex = it },
         )
@@ -128,12 +131,18 @@ fun IntroScreen(
         Spacer(modifier = Modifier.height(28.dp))
 
         SpinPrimaryButton(
-            text = if (pageIndex == introPages.lastIndex) "BẮT ĐẦU" else "TIẾP TỤC",
+            text = stringResource(
+                if (pageIndex == introPagesI18n.lastIndex) {
+                    R.string.intro_start
+                } else {
+                    R.string.intro_continue
+                }
+            ),
             onClick = {
                 if (!advancePending) {
                     advancePending = true
                     val advance = {
-                        if (pageIndex == introPages.lastIndex) {
+                        if (pageIndex == introPagesI18n.lastIndex) {
                             viewModel.markIntroDone(onSaved = onFinished)
                         } else {
                             pageIndex += 1
@@ -321,12 +330,6 @@ private fun IntroVisual(
     }
 }
 
-private data class IntroPage(
-    val title: String,
-    val description: String,
-    val type: IntroVisualType,
-)
-
 private enum class IntroVisualType {
     WHEEL,
     GRID,
@@ -334,25 +337,31 @@ private enum class IntroVisualType {
     AI,
 }
 
-private val introPages = listOf(
-    IntroPage(
-        title = "Ngẫu nhiên - Trò chơi vòng quay",
-        description = "Spin Wheel nơi mỗi vòng quay đều mang đến một bất ngờ mới.",
+private data class IntroPageI18n(
+    @StringRes val titleRes: Int,
+    @StringRes val descriptionRes: Int,
+    val type: IntroVisualType,
+)
+
+private val introPagesI18n = listOf(
+    IntroPageI18n(
+        titleRes = R.string.intro_title_1,
+        descriptionRes = R.string.intro_description_1,
         type = IntroVisualType.WHEEL,
     ),
-    IntroPage(
-        title = "Chọn ngón tay, xu và lăn xúc xắc",
-        description = "Đưa ra quyết định nhanh, công bằng và vui vẻ trong mọi tình huống.",
+    IntroPageI18n(
+        titleRes = R.string.intro_title_2,
+        descriptionRes = R.string.intro_description_2,
         type = IntroVisualType.GRID,
     ),
-    IntroPage(
-        title = "Ghép đôi công bằng và lựa chọn ngẫu nhiên",
-        description = "Tạo đội, tạo số và chọn người chiến thắng mà không ai đoán trước.",
+    IntroPageI18n(
+        titleRes = R.string.intro_title_3,
+        descriptionRes = R.string.intro_description_3,
         type = IntroVisualType.FINGER,
     ),
-    IntroPage(
-        title = "Trải nghiệm hấp dẫn",
-        description = "Tùy chỉnh từng trò chơi để phù hợp với sở thích của bạn.",
+    IntroPageI18n(
+        titleRes = R.string.intro_title_4,
+        descriptionRes = R.string.intro_description_4,
         type = IntroVisualType.AI,
     ),
 )

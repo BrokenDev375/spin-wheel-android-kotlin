@@ -4,14 +4,25 @@ import android.content.Context
 
 object AppStorage {
 
-    fun goToHomeNumber(context: Context): Int =
-        preferences(context).getInt(KEY_GO_TO_HOME_NUMBER, DEFAULT_GO_TO_HOME_NUMBER)
-            .coerceAtLeast(DEFAULT_GO_TO_HOME_NUMBER)
+    fun languageCode(context: Context): String =
+        preferences(context).getString(KEY_LANGUAGE, DEFAULT_LANGUAGE_CODE)
+            ?.takeIf { it.isNotBlank() }
+            ?: DEFAULT_LANGUAGE_CODE
 
-    fun setGoToHomeNumber(context: Context, value: Int) {
+    fun setLanguageCode(context: Context, languageCode: String) {
         preferences(context)
             .edit()
-            .putInt(KEY_GO_TO_HOME_NUMBER, value.coerceAtLeast(DEFAULT_GO_TO_HOME_NUMBER))
+            .putString(KEY_LANGUAGE, languageCode.ifBlank { DEFAULT_LANGUAGE_CODE })
+            .apply()
+    }
+
+    fun isOnboardingDone(context: Context): Boolean =
+        preferences(context).getBoolean(KEY_ONBOARDING_DONE, false)
+
+    fun setOnboardingDone(context: Context, done: Boolean) {
+        preferences(context)
+            .edit()
+            .putBoolean(KEY_ONBOARDING_DONE, done)
             .apply()
     }
 
@@ -33,8 +44,9 @@ object AppStorage {
         context.applicationContext.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
     private const val PREFERENCES_NAME = "AppStorage"
-    private const val KEY_GO_TO_HOME_NUMBER = "goToHomeNumber"
+    private const val KEY_LANGUAGE = "language_pres"
+    private const val KEY_ONBOARDING_DONE = "onboarding_done"
     private const val KEY_IS_ADS_CAMPAIGN = "is_ads_campaign"
     private const val KEY_ADS_CAMPAIGN_RESOLVED = "ads_campaign_resolved"
-    private const val DEFAULT_GO_TO_HOME_NUMBER = 1
+    private const val DEFAULT_LANGUAGE_CODE = "vi"
 }

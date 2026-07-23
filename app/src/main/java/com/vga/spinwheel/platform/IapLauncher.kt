@@ -3,20 +3,20 @@ package com.vga.spinwheel.platform
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 import com.brian.base_iap.utils.IAPUtils
 import com.brian.base_iap.utils.NativeCodecSnowFlakeCortexAI
 
 object IapLauncher {
 
-    fun open(context: Context): Boolean {
+    fun open(context: Context) {
         val activity = context.findActivity()
         if (activity == null) {
-            println("IAP paywall ERR activity unavailable")
-            return false
+            Log.w(TAG, "no Activity to open IAP")
+            return
         }
 
         NativeCodecSnowFlakeCortexAI.nativeAiStartIapActivity(activity)
-        return true
     }
 
     fun isPremium(): Boolean = IAPUtils.isPremium()
@@ -27,4 +27,6 @@ object IapLauncher {
             is ContextWrapper -> baseContext.findActivity()
             else -> null
         }
+
+    private const val TAG = "IapLauncher"
 }

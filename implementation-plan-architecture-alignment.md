@@ -287,8 +287,12 @@ Quy uoc trang thai:
 - `assembleRelease`: pass, van tao APK unsigned nhu baseline.
 - Chua test mo/paywall runtime tren may that vi moi truong khong co lenh `adb`.
 - Da duoc nguoi dung phe duyet ket qua development va yeu cau commit rieng.
+- Correction sau review trong Chang 6: `MainActivity` duoc chuyen sang `AppCompatActivity`
+  de dung nen `FragmentActivity/AppCompatActivity` theo yeu cau cua lib Language/IAP; `IapLauncher.open()`
+  duoc can theo pattern chi tim `Activity` va goi thang
+  `NativeCodecSnowFlakeCortexAI.nativeAiStartIapActivity(activity)`.
 
-## [ ] Chang 6 - Dong bo Language va i18n
+## [x] Chang 6 - Dong bo Language va i18n
 
 ### Pham vi
 
@@ -314,6 +318,39 @@ Quy uoc trang thai:
 ### Diem dung phe duyet
 
 - Nguoi dung review it nhat tieng Viet va tieng Anh tren cac man chinh.
+
+### Ket qua thuc hien - Da phe duyet
+
+- Da sua correction lien quan Chang 5: `MainActivity : AppCompatActivity`, khong con
+  `ComponentActivity`; `IapLauncher.open()` mo paywall lib theo pattern tham khao.
+- Da them `LocaleHelper.updateLocale()` de `MainActivity` ap lai language mirror khi tao UI.
+- `MyApplication.notifyLanguageSaved()` chi dong bo language ve `AppStorage`; lib tu ap locale
+  khi nguoi dung chon language.
+- `AppStorage` la mirror language duy nhat cua app; `LanguageViewModel` doc selected code
+  tu `AppStorage`.
+- Settings mo man Language co san cua lib bang
+  `LanguageActivity.start(activity, MainActivity::class.java)`, khong route vao man Language
+  rieng cua app.
+- Da tach text chinh cua Home, Settings, Language, Intro va title route sang
+  `values/strings_i18n.xml` va `values-vi/strings_i18n.xml`.
+- Da them `values-vi/strings.xml` cho cac string lib/user-visible con nam trong
+  `values/strings.xml` de lint khong loi `MissingTranslation`.
+- Da thay rate mock bang mo Play Store/web fallback.
+- Correction sau review: da chuyen Intro/Onboarding ve dung pattern base-application:
+  `getHomeActivity()` re nhanh sang `IntroActivity` hoac `MainActivity` theo
+  `AppStorage.isOnboardingDone()`, `MainActivity` khong con tu route vao Intro.
+- `IntroActivity` tu luu `onboarding_done` va mo `MainActivity` voi
+  `FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK` khi user hoan tat onboarding.
+- Da go `IntroGate`, route `Screen.Intro`, counter `goToHomeNumber` va test cu vi khong con
+  dung trong luong chuan.
+- `testDebugUnitTest`: pass.
+- `processDebugManifest` va `compileDebugKotlin`: pass sau correction Intro/Onboarding.
+- `lintDebug`: pass.
+- `assembleDebug`: pass.
+- `assembleRelease`: pass, van tao APK unsigned nhu baseline.
+- Chua test runtime doi ngon ngu/paywall tren may that vi moi truong khong co ADB device.
+- Da duoc nguoi dung phe duyet ket qua va yeu cau commit rieng.
+- Commit Chang 6/correction trong commit rieng.
 
 ## [ ] Chang 7 - Release config, asset va signing
 
@@ -381,7 +418,7 @@ Quy uoc trang thai:
 | 3. Ads core | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 4. Ads UI/flow | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
 | 5. IAP | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
-| 6. Language + i18n | Chua lam | Chua | Chua | Chua |
+| 6. Language + i18n | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
 | 7. Release config | Chua lam | Chua | Chua | Chua |
 | 8. QA + release candidate | Chua lam | Chua | Chua | Chua |
 
@@ -409,6 +446,6 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Co the bat dau **Chang 6 - Dong bo Language va i18n** sau khi nguoi dung phe duyet.
+Co the bat dau **Chang 7 - Release config, asset va signing** sau khi nguoi dung phe duyet.
 Phan nghiem thu Billing production cua Chang 5 van bi chan den khi co product/subscription
 id va Google Play public license key that.

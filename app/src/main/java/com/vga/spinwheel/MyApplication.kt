@@ -1,12 +1,12 @@
 package com.vga.spinwheel
 
 import android.app.Activity
-import android.content.Context
 import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
-import com.vga.spinwheel.core.InstallReferrerHelper
+import com.vga.spinwheel.core.AppStorage
+import com.vga.spinwheel.core.IntroActivity
 import com.vga.spinwheel.core.MainActivity
 import dagger.hilt.android.HiltAndroidApp
 
@@ -16,10 +16,14 @@ class MyApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         registerRemoteConfigDefaults()
-        InstallReferrerHelper.resolve(this)
     }
 
-    override fun getHomeActivity(): Class<out Activity> = MainActivity::class.java
+    override fun getHomeActivity(): Class<out Activity> =
+        if (AppStorage.isOnboardingDone(this)) {
+            MainActivity::class.java
+        } else {
+            IntroActivity::class.java
+        }
 
     override fun getAppNameRes(): Int = R.string.app_name
 
@@ -47,10 +51,7 @@ class MyApplication : BaseApplication() {
     override fun setupKoin() = Unit
 
     override fun notifyLanguageSaved(languageCode: String) {
-        getSharedPreferences(packageName, Context.MODE_PRIVATE)
-            .edit()
-            .putString(KEY_LANGUAGE, languageCode)
-            .apply()
+        AppStorage.setLanguageCode(this, languageCode)
     }
 
     override fun iapPremiumKey(): String = defaultIapPremiumKey()
@@ -150,7 +151,6 @@ class MyApplication : BaseApplication() {
     }
 
     private companion object {
-        const val KEY_LANGUAGE = "language_pres"
         const val NOTIFICATION_CHANNEL_PREFIX = "SpinWheel"
         const val GOOGLE_TEST_APP_OPEN_ID = "ca-app-pub-3940256099942544/9257395921"
         const val MOCK_KEY_PREFIX = "mock_"
