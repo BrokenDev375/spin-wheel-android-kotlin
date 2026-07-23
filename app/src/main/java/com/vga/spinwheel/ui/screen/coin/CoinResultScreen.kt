@@ -4,9 +4,11 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,29 +49,29 @@ fun CoinResultScreen(
             context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
         },
         onRetry = { navController.popBackStack() },
+        cardHeight = 450.dp,
+        cardContentPadding = 0.dp,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(Color(0xFF292640)),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isHeads) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.height(66.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp)
+                    .background(Color(0xFF292640)),
+                contentAlignment = Alignment.Center
+            ) {
                 Image(
-                    painter = painterResource(id = skin.headDrawable),
-                    contentDescription = "Coin Head",
-                    modifier = Modifier.size(240.dp)
-                )
-            } else {
-                Image(
-                    painter = painterResource(id = skin.tailDrawable),
-                    contentDescription = "Coin Tail",
+                    painter = painterResource(
+                        id = if (isHeads) skin.headDrawable else skin.tailDrawable
+                    ),
+                    contentDescription = if (isHeads) "Coin Head" else "Coin Tail",
                     modifier = Modifier
-                        .size(240.dp)
+                        .size(320.dp)
                         .graphicsLayer { rotationY = 180f }
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

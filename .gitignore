@@ -33,3 +33,6 @@ Thumbs.db
 
 # Temporary project inspection files
 .tmp-aar-inspect/
+
+# External asset drop; selected resources are copied into app/src/main/res.
+/res/

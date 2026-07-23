@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.annotation.StringRes
@@ -29,7 +28,6 @@ import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.platform.IapLauncher
 import com.vga.spinwheel.ui.components.SpinFeatureCard
 import com.vga.spinwheel.ui.components.SpinFeatureCardStyle
-import com.vga.spinwheel.ui.components.SpinFeatureVisual
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -163,68 +161,59 @@ private val homeFeatures = listOf(
     HomeFeature(
         screen = Screen.Wheel,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Wheel,
-            gradient = listOf(Color(0xFF4F3B78), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_wheel,
         ),
     ),
     HomeFeature(
         screen = Screen.Finger,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Finger,
-            gradient = listOf(Color(0xFFB83B5E), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_finger,
         ),
     ),
     HomeFeature(
         screen = Screen.Coin,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Coin,
-            gradient = listOf(Color(0xFFE29C32), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_coin,
             titleColor = SpinColors.WarningText,
         ),
     ),
     HomeFeature(
         screen = Screen.Team,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Team,
-            gradient = listOf(Color(0xFF1C728E), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_team,
             titleColor = SpinColors.Success,
         ),
     ),
     HomeFeature(
         screen = Screen.Number,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Number,
-            gradient = listOf(Color(0xFF111111), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_number,
         ),
     ),
     HomeFeature(
         screen = Screen.Drawing,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Drawing,
-            gradient = listOf(Color(0xFFD33C5E), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_drawing,
             titleColor = SpinColors.BlueText,
         ),
     ),
     HomeFeature(
         screen = Screen.Bottle,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Bottle,
-            gradient = listOf(Color(0xFF6C3272), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_bottle,
             titleColor = SpinColors.WarningText,
         ),
     ),
     HomeFeature(
         screen = Screen.Dice,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Dice,
-            gradient = listOf(Color(0xFFCC447A), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_dice,
         ),
     ),
     HomeFeature(
         screen = Screen.Card,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Card,
-            gradient = listOf(Color(0xFF329CA8), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_card,
         ),
     ),
 )

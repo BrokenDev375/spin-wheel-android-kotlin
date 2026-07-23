@@ -1,6 +1,7 @@
 package com.vga.spinwheel.ui.screen.wheel
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinResultScreen
+import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
 fun WheelResultScreen(
@@ -62,35 +64,43 @@ fun WheelResultScreen(
             viewModel.resetSpin()
             onRetry()
         },
+        cardHeight = 500.dp,
+        cardContentPadding = 0.dp,
         modifier = modifier,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(2.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = winnerName,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            WheelCanvas(
-                items = activeItems,
-                palette = palette,
-                spinStatus = spinStatus,
-                durationSeconds = 0,
-                onSpinFinished = {},
-                onClickSpin = {},
+            Spacer(modifier = Modifier.height(44.dp))
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp),
-            )
+                    .fillMaxSize()
+                    .background(SpinColors.Background)
+                    .padding(top = 14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = winnerName,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                WheelCanvas(
+                    items = activeItems,
+                    palette = palette,
+                    spinStatus = spinStatus,
+                    durationSeconds = 0,
+                    onSpinFinished = {},
+                    onClickSpin = {},
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }

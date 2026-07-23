@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -45,10 +46,12 @@ fun SpinIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     tint: Color = SpinColors.IconMuted,
+    enabled: Boolean = true,
 ) {
     IconButton(
         onClick = onClick,
         modifier = modifier.size(SpinSpacing.HeaderButton),
+        enabled = enabled,
     ) {
         SpinIcon(
             glyph = glyph,
@@ -290,12 +293,14 @@ fun SpinRetryButton(
 @Composable
 fun SpinResultCard(
     modifier: Modifier = Modifier,
+    cardHeight: Dp = 450.dp,
+    contentPadding: Dp = 18.dp,
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(450.dp)
+            .height(cardHeight)
             .clip(RoundedCornerShape(18.dp))
             .background(Color(0xFF3D3D3C))
             .border(
@@ -303,7 +308,7 @@ fun SpinResultCard(
                 color = Color.White.copy(alpha = 0.62f),
                 shape = RoundedCornerShape(18.dp),
             )
-            .padding(18.dp),
+            .padding(contentPadding),
         contentAlignment = Alignment.Center,
     ) {
         content()

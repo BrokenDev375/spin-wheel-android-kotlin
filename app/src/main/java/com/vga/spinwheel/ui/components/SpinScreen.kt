@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -117,6 +118,7 @@ fun SpinScreen(
     navigationDescription: String = "Back",
     onNavigationClick: (() -> Unit)? = null,
     centerTitle: Boolean = true,
+    topBarTitleStartPadding: Dp = 48.dp,
     confirmExitOnBack: Boolean = false,
     onConfirmExit: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -151,6 +153,7 @@ fun SpinScreen(
                 navigationDescription = navigationDescription,
                 onNavigationClick = { triggerBack() },
                 centerTitle = centerTitle,
+                titleStartPadding = topBarTitleStartPadding,
                 actions = actions,
             )
         }
@@ -190,6 +193,8 @@ fun SpinResultScreen(
     shareBackgroundColor: Color = Color(0xFF39A9F2),
     retryText: String = "Thử lại",
     retryBackgroundColor: Color = Color(0xFFDE3D2D),
+    cardHeight: Dp = 450.dp,
+    cardContentPadding: Dp = 18.dp,
     cardContent: @Composable () -> Unit,
 ) {
     var showExitDialog by remember { mutableStateOf(false) }
@@ -237,7 +242,10 @@ fun SpinResultScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // 1. Result Card
-            SpinResultCard {
+            SpinResultCard(
+                cardHeight = cardHeight,
+                contentPadding = cardContentPadding,
+            ) {
                 cardContent()
             }
 

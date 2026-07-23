@@ -430,38 +430,82 @@ Quy uoc trang thai:
 - Da duoc nguoi dung phe duyet ket qua va yeu cau danh dau hoan thanh, commit.
 - Commit Chang 7 va correction xoa man Language rieng trong commit hien tai.
 
-## [ ] Chang 8 - Release config, asset va signing
+## [ ] Chang 8 - Trial config, asset va debug build
+
+Trang thai: Da thuc hien, cho nguoi dung phe duyet ket qua.
 
 ### Pham vi
 
-- Tach test ad unit cho debug va ad unit that cho release.
-- Dien AppsFlyer, AdMob, Facebook va IAP config that khi duoc cung cap.
-- Thay icon notification bang PNG alpha-only du 5 density.
-- Thay anh preview IAP dung kich thuoc 365 x 174.
-- Them monochrome launcher icon neu can.
-- Cau hinh release signing bang file/local property khong commit secret.
-- Bo `getResumeAdId()` test khoi release.
-- Kiem tra ProGuard/R8 va Crashlytics mapping.
+- Du an hien chi chay thu nghiem, khong release production that.
+- Giu Google test ad unit cho debug/trial; khong yeu cau AdMob production ad unit id.
+- Giu cau hinh debug-safe ads: khong force show full ads test va khong bat Ads Resume trong debug.
+- Co the map tai nguyen tu folder `res/` nguoi dung cung cap vao app neu can demo icon/splash/notification/IAP.
+- Asset release chuan nhu notification PNG 5 density, preview IAP 365 x 174, monochrome launcher icon la tuy chon trong trial.
+- Khong cau hinh signing release that va khong commit keystore/secret.
+- Chi tao debug APK hoac artifact local phuc vu test neu can.
+- Kiem tra ProGuard/R8/Crashlytics mapping chi thuc hien neu nguoi dung doi build release thu nghiem.
+
+### Ket qua thuc hien
+
+- Nguoi dung xac nhan folder `res/` ngang hang voi `app/` la nguon asset cho Chang 8.
+- Da map `res/drawable-nodpi/d6983776.png` thanh
+  `app/src/main/res/drawable-nodpi/spin_wheel_logo.png`; `icon_app.xml` dung logo nay
+  cho splash va adaptive launcher.
+- Da map `res/raw/splash_loading.json` vao splash cua app.
+- Da thay 5 icon IAP placeholder bang bo icon premium tu `res/`: custom wheel,
+  unlock all, support, no ads va VIP crown.
+- Da map 14 icon noi bo tu `res/` voi ten resource ro nghia: Back, Home, Settings,
+  Crown, Share, Language, Rate, Music, Sound, Vibration, History, Reset, Sliders va
+  Shuffle. `SpinIcon` uu tien cac drawable nay tren toan app.
+- Da sua cac icon thay the sai nghia trong Settings: Share khong con dung chevron,
+  Language khong con dung Home, Rate khong con dung Crown, Music khong con dung
+  Settings, Sound khong con dung Check va Vibration khong con dung Minus.
+- Da map 9 anh nen game goc tu `res/` cho cac the Home: Wheel, Finger, Coin, Team,
+  Number, Drawing, Bottle, Dice va Card. `SpinFeatureCard` hien render drawable bang
+  `ContentScale.Crop` thay cho artwork Canvas tam.
+- Da tach y nghia icon Settings/Customize: gear giu tai header Home va header cua
+  Drawing/Dice; nut tuy chinh phia duoi Drawing/Dice dung icon sliders/cong tac.
+- Giu `icon_notification.xml`, 5 anh notification va `img_document_preview.xml`
+  hien tai: folder nguon khong co bo status icon PNG 5 density duoc dinh danh ro;
+  cac asset release nay la tuy chon trong trial.
+- Khong import `values/strings.xml`, `xml/config.xml`, font, audio hoac drawable gameplay
+  khong dung tu folder nguon. Folder `res/` duoc ignore de khong vo tinh commit ID/key
+  production-looking; chi asset da chon loc nam trong source set cua app.
+- Them `app/src/debug/AndroidManifest.xml` de tat Firebase Analytics va Crashlytics
+  collection trong debug.
+- Da xac nhan `Remote` tra Google test ad unit trong debug,
+  `enableAdsResume()` tra `false` trong debug va `isForceShowFullAdsTest()` luon `false`.
+- `default_ads_config.json` co 16 placement va tat ca deu dung Google test ad unit.
+- `app/google-services.json` dang la mock, khop `com.vga.spinwheel`; khong them
+  keystore, signing config, password hoac secret production.
+- `testDebugUnitTest`: 28 test pass.
+- `lintDebug`: pass, 0 Fatal, 0 Error; con 48 warning khong chan build.
+- `assembleDebug`: pass; tao `app/build/outputs/apk/debug/app-debug.apk`
+  (79,607,464 byte, SHA-256
+  `6770496501B2C6EEA31079CA8DDEDB382712FEAC71A388B0999AA748B52353A3`).
+- Chua test runtime bang ADB vi moi truong khong co thiet bi.
+- Khong build release, khong cau hinh signing va khong thay production ad/IAP/Firebase.
 
 ### Du lieu can nguoi dung cung cap
 
-- AdMob app id va ad unit id production.
-- Facebook app id/client token neu dung mediation.
-- AppsFlyer key.
-- Keystore, alias va password qua kenh local an toan.
-- Asset branding chinh thuc.
+- Xac nhan co can map folder `res/` vao app hay chi giu tai nguyen hien tai.
+- Neu map `res/`, can xac nhan file nao la app icon, notification icon, IAP preview/splash.
+- Neu muon test Firebase/Crashlytics/Remote Config theo project rieng, can `google-services.json` khop `applicationId`.
+- Neu muon test ads that tren AdMob, cung cap ad unit staging/production; neu khong thi giu Google test id.
+- Neu muon build artifact release thu nghiem, cung cap signing local rieng va khong commit secret.
 
 ### Nghiem thu
 
-- Khong con `mock_`, test app id hay test ad unit trong release path.
-- Tao duoc APK/AAB release da ky.
-- `assembleRelease` va lint pass.
+- `lintDebug` va `assembleDebug` pass.
+- Debug khong con treo man trang do force full ads/Ads Resume.
+- `default_ads_config.json` du placement can dung va co the giu Google test id trong trial.
+- Khong dua production secret vao Git.
 - Khong commit keystore/password/secret vao Git.
 
 ### Diem dung phe duyet
 
-- Bao cao checksum/ten artifact va ket qua kiem tra signing, khong hien secret.
-- Dung lai truoc khi cai/phat hanh artifact.
+- Bao cao file da map, cau hinh debug/trial va ket qua build.
+- Dung lai truoc khi bat ky buoc release/signing production nao.
 
 ## [ ] Chang 9 - QA feature, UI polish va release candidate
 
@@ -498,7 +542,7 @@ Quy uoc trang thai:
 | 5. IAP | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
 | 6. Language + i18n | Da hoan thanh development | Da phe duyet | Da phe duyet | Da |
 | 7. Ads runtime audit | Da hoan thanh | Da phe duyet | Da phe duyet | Da |
-| 8. Release config | Chua lam | Chua | Chua | Chua |
+| 8. Trial config | Cho phe duyet | Da phe duyet | Chua | Chua |
 | 9. QA + release candidate | Chua lam | Chua | Chua | Chua |
 
 ## 6. Mau bao cao sau moi chang
@@ -525,7 +569,9 @@ Can phe duyet:
 
 ## 7. Buoc tiep theo
 
-Co the bat dau **Chang 8 - Release config, asset va signing** sau khi nguoi dung cung cap
-ad unit/IAP/signing production va phe duyet bat dau.
-Phan nghiem thu Billing production cua Chang 5 van bi chan den khi co product/subscription
-id va Google Play public license key that.
+**Chang 8 - Trial config, asset va debug build** da thuc hien xong trong pham vi trial
+va dang cho nguoi dung phe duyet ket qua. Dung tai day truoc release/signing production
+va truoc khi bat dau Chang 9.
+Phan nghiem thu Billing production cua Chang 5 khong ap dung cho trial; chi mo lai khi
+du an chuyen sang release that va co product/subscription id + Google Play public license
+key that.

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -41,7 +40,7 @@ fun WheelAddManyModal(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF2D2845)),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF3B3754)),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
@@ -62,7 +61,7 @@ fun WheelAddManyModal(
                     }
                     Text(
                         text = "Thêm nhiều tùy chọn",
-                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 18.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                     )

@@ -14,8 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -35,7 +36,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.data.model.Wheel
@@ -71,6 +74,7 @@ fun WheelHomeScreen(
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Quay lại",
                 onNavigationClick = onBack,
+                centerTitle = false,
             )
         },
     ) { innerPadding ->
@@ -87,10 +91,16 @@ fun WheelHomeScreen(
                 onClick = { viewModel.showAiModal(true) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(Color(0xFF00A8FF), Color(0xFF00EA97)),
+                        )
+                    ),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF00E676),
+                    containerColor = Color.Transparent,
                     contentColor = Color.White,
                 ),
             ) {
@@ -119,8 +129,13 @@ fun WheelHomeScreen(
                 onClick = onAddWheel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
+                    .height(56.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.White.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(12.dp),
+                    ),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF3B3754),
                     contentColor = Color.White,
@@ -148,8 +163,10 @@ fun WheelHomeScreen(
 
             if (wheels.isEmpty()) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 36.dp),
+                    contentAlignment = Alignment.TopCenter,
                 ) {
                     Text(
                         text = "Không có bánh xe. Thêm mới đi!",
@@ -158,9 +175,11 @@ fun WheelHomeScreen(
                     )
                 }
             } else {
-                LazyColumn(
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(bottom = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     items(wheels, key = { it.id }) { wheel ->
@@ -224,59 +243,61 @@ private fun WheelItemCard(
     onEdit: () -> Unit,
     onDuplicate: () -> Unit,
     onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
+            .height(108.dp)
             .clip(RoundedCornerShape(SpinRadius.Card))
             .background(Color(0xFF3B3754))
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = wheel.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = SpinColors.TextPrimary,
+            Text(
+                text = wheel.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = SpinColors.TextPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(end = 34.dp),
+            )
+            Text(
+                text = "${wheel.items.size} options",
+                style = MaterialTheme.typography.bodyMedium,
+                color = SpinColors.TextMuted,
+            )
+        }
+        Box(modifier = Modifier.align(Alignment.TopEnd)) {
+            SpinIconButton(
+                glyph = SpinIconGlyph.More,
+                contentDescription = "Menu",
+                onClick = { menuExpanded = true },
+                modifier = Modifier.size(32.dp),
+            )
+            DropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false },
+                modifier = Modifier.background(Color(0xFF2D2845)),
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Sửa", color = SpinColors.TextPrimary) },
+                    onClick = { menuExpanded = false; onEdit() },
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "${wheel.items.size} options",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = SpinColors.TextMuted,
+                DropdownMenuItem(
+                    text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
+                    onClick = { menuExpanded = false; onDuplicate() },
                 )
-            }
-            Box {
-                SpinIconButton(
-                    glyph = SpinIconGlyph.More,
-                    contentDescription = "Menu",
-                    onClick = { menuExpanded = true },
+                DropdownMenuItem(
+                    text = { Text("Xoá", color = Color(0xFFFF5252)) },
+                    onClick = { menuExpanded = false; onDelete() },
                 )
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
-                    modifier = Modifier.background(Color(0xFF2D2845)),
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Sửa", color = SpinColors.TextPrimary) },
-                        onClick = { menuExpanded = false; onEdit() },
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
-                        onClick = { menuExpanded = false; onDuplicate() },
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Xoá", color = Color(0xFFFF5252)) },
-                        onClick = { menuExpanded = false; onDelete() },
-                    )
-                }
             }
         }
     }

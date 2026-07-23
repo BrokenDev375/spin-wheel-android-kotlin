@@ -13,10 +13,10 @@ object WheelPalettes {
         id = 0,
         name = "Cổ điển",
         colors = listOf(
-            Color(0xFFFFC107), // Yellow
-            Color(0xFFFF5252), // Orange-Red
-            Color(0xFF607D8B), // Grey
-            Color(0xFF1DE9B6), // Teal
+            Color(0xFFFFCE17),
+            Color(0xFFFF6B61),
+            Color(0xFF727A87),
+            Color(0xFF35CF9E),
         ),
     )
 
@@ -24,10 +24,10 @@ object WheelPalettes {
         id = 1,
         name = "Sáng rực",
         colors = listOf(
-            Color(0xFFFFC107), // Yellow
-            Color(0xFFFF3D00), // Bright Red
-            Color(0xFF2979FF), // Bright Blue
-            Color(0xFF00E676), // Bright Green
+            Color(0xFFF9A00E),
+            Color(0xFFF34245),
+            Color(0xFF4383EA),
+            Color(0xFF14BD89),
         ),
     )
 
@@ -35,10 +35,10 @@ object WheelPalettes {
         id = 2,
         name = "Nhẹ nhàng",
         colors = listOf(
-            Color(0xFFFFF176), // Pastel Yellow
-            Color(0xFFFF80AB), // Pastel Pink
-            Color(0xFF82B1FF), // Pastel Blue
-            Color(0xFFA7FFEB), // Pastel Green
+            Color(0xFFFFD65A),
+            Color(0xFFEFA0D2),
+            Color(0xFF9FABEE),
+            Color(0xFF68DDB0),
         ),
     )
 
@@ -46,10 +46,10 @@ object WheelPalettes {
         id = 3,
         name = "Tối",
         colors = listOf(
-            Color(0xFF90A4AE), // Light Grey
-            Color(0xFF546E7A), // Mid Grey
-            Color(0xFF37474F), // Dark Grey
-            Color(0xFF212121), // Charcoal
+            Color(0xFF6D7582),
+            Color(0xFF3A4558),
+            Color(0xFF202C3B),
+            Color(0xFF525D6E),
         ),
     )
 

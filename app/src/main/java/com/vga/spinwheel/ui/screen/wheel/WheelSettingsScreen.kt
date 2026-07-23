@@ -60,6 +60,7 @@ fun WheelSettingsScreen(
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Quay lại",
                 onNavigationClick = onBack,
+                centerTitle = false,
             )
         },
     ) { innerPadding ->

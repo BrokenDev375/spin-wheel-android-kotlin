@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,7 +36,6 @@ import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 import com.vga.spinwheel.ui.components.SpinScreen
 
@@ -66,6 +66,8 @@ fun WheelSpinScreen(
         navigationIcon = SpinIconGlyph.Back,
         navigationDescription = "Quay lại",
         onNavigationClick = onBack,
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
         confirmExitOnBack = true,
         actions = {
             SpinIconButton(
@@ -80,19 +82,19 @@ fun WheelSpinScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Wheel Name Pill Tag
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF3B3754))
-                        .padding(horizontal = 24.dp, vertical = 10.dp),
+                        .padding(horizontal = 24.dp, vertical = 6.dp),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -103,7 +105,7 @@ fun WheelSpinScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Result Text
                 val resultText = when (val status = spinStatus) {
@@ -114,12 +116,14 @@ fun WheelSpinScreen(
 
                 Text(
                     text = resultText,
-                    fontSize = 28.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                 )
             }
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             // Wheel Canvas Component
             WheelCanvas(
@@ -135,9 +139,7 @@ fun WheelSpinScreen(
                         viewModel.startSpin()
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                modifier = Modifier.size(304.dp),
             )
 
             // When spin is finished, navigate to result screen
@@ -152,19 +154,21 @@ fun WheelSpinScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 28.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    .padding(top = 26.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // Settings / Sliders Icon Button
                 Button(
                     onClick = onOpenSettings,
-                    modifier = Modifier.size(52.dp),
-                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .width(48.dp)
+                        .height(36.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B3754)),
                     contentPadding = PaddingValues(0.dp),
                 ) {
-                    SpinIcon(glyph = SpinIconGlyph.Sliders, tint = Color.White, modifier = Modifier.size(22.dp))
+                    SpinIcon(glyph = SpinIconGlyph.Sliders, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
 
                 // Primary Spin Button
@@ -173,8 +177,8 @@ fun WheelSpinScreen(
                     enabled = spinStatus !is SpinStatus.Spinning && activeItems.size >= 2,
                     modifier = Modifier
                         .weight(1f)
-                        .height(52.dp),
-                    shape = RoundedCornerShape(14.dp),
+                        .height(36.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF3B3754),
                         contentColor = Color.White,
@@ -182,33 +186,39 @@ fun WheelSpinScreen(
                 ) {
                     Text(
                         text = if (spinStatus is SpinStatus.Spinning) "ĐANG QUAY..." else "NHẤN ĐỂ QUAY",
-                        fontSize = 16.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
+                        maxLines = 1,
                     )
                 }
 
                 // Shuffle Button
                 Button(
                     onClick = viewModel::shuffleActiveItems,
-                    modifier = Modifier.size(52.dp),
-                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .width(48.dp)
+                        .height(36.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B3754)),
                     contentPadding = PaddingValues(0.dp),
                 ) {
-                    SpinIcon(glyph = SpinIconGlyph.Shuffle, tint = Color.White, modifier = Modifier.size(22.dp))
+                    SpinIcon(glyph = SpinIconGlyph.Shuffle, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
 
                 // Reset Button
                 Button(
                     onClick = viewModel::resetSpin,
-                    modifier = Modifier.size(52.dp),
-                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .width(48.dp)
+                        .height(36.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B3754)),
                     contentPadding = PaddingValues(0.dp),
                 ) {
-                    SpinIcon(glyph = SpinIconGlyph.Reset, tint = Color.White, modifier = Modifier.size(22.dp))
+                    SpinIcon(glyph = SpinIconGlyph.Reset, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
             }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

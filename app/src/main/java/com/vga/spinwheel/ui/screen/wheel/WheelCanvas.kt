@@ -20,13 +20,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.data.model.WheelItem
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -60,7 +57,7 @@ fun WheelCanvas(
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .padding(16.dp)
+            .padding(2.dp)
             .clickable(enabled = spinStatus !is SpinStatus.Spinning, onClick = onClickSpin),
         contentAlignment = Alignment.Center,
     ) {
@@ -68,14 +65,19 @@ fun WheelCanvas(
             if (items.isEmpty()) return@Canvas
 
             val center = Offset(size.width / 2f, size.height / 2f)
-            val radius = size.width.coerceAtMost(size.height) / 2f - 20f
+            val radius = size.width.coerceAtMost(size.height) / 2f
             val sectorAngle = 360f / items.size
-            val currentRotation = rotationAnim.value
+            val currentRotation = if (spinStatus is SpinStatus.Finished && rotationAnim.value == 0f) {
+                val winnerIndex = items.indexOfFirst { it.id == spinStatus.winner.id }.coerceAtLeast(0)
+                270f - (winnerIndex * sectorAngle + sectorAngle / 2f)
+            } else {
+                rotationAnim.value
+            }
 
             // 1. Draw Sectors
             for (i in items.indices) {
                 val startAngle = currentRotation + (i * sectorAngle)
-                val color = palette.colors[i % palette.colors.size]
+                val color = palette.colors[(i + 1) % palette.colors.size]
 
                 drawArc(
                     color = color,
@@ -87,7 +89,7 @@ fun WheelCanvas(
                 )
             }
 
-            // 2. Draw Sector Borders
+            // Keep same-color adjacent slices distinguishable without outlining the wheel.
             for (i in items.indices) {
                 val startAngle = currentRotation + (i * sectorAngle)
                 val rad = Math.toRadians(startAngle.toDouble())
@@ -95,35 +97,26 @@ fun WheelCanvas(
                 val endY = center.y + (radius * sin(rad)).toFloat()
 
                 drawLine(
-                    color = Color.White.copy(alpha = 0.4f),
+                    color = Color.Black.copy(alpha = 0.08f),
                     start = center,
                     end = Offset(endX, endY),
-                    strokeWidth = 2.dp.toPx(),
+                    strokeWidth = 1.dp.toPx(),
                 )
             }
 
-            // 3. Draw Outer Border Circle
-            drawCircle(
-                color = Color.White,
-                radius = radius,
-                center = center,
-                style = Stroke(width = 6.dp.toPx()),
-            )
-
-            // 4. Draw Item Text Labels
+            // Draw labels near the fixed center pointer, matching the original wheel.
             val textPaint = Paint().apply {
                 color = android.graphics.Color.WHITE
-                textSize = (radius * 0.12f).coerceIn(24f, 42f)
+                textSize = (radius * 0.085f).coerceIn(20f, 34f)
                 isAntiAlias = true
                 textAlign = Paint.Align.CENTER
                 typeface = Typeface.DEFAULT_BOLD
-                setShadowLayer(4f, 2f, 2f, android.graphics.Color.BLACK)
             }
 
             for (i in items.indices) {
                 val midAngle = currentRotation + (i * sectorAngle) + (sectorAngle / 2f)
                 val midRad = Math.toRadians(midAngle.toDouble())
-                val textRadius = radius * 0.62f
+                val textRadius = radius * 0.27f
 
                 val textX = center.x + (textRadius * cos(midRad)).toFloat()
                 val textY = center.y + (textRadius * sin(midRad)).toFloat()
@@ -139,38 +132,18 @@ fun WheelCanvas(
                 }
             }
 
-            // 5. Draw Center Cap
-            drawCircle(
-                color = Color(0xFF1D1B2E),
-                radius = radius * 0.22f,
-                center = center,
-            )
-            drawCircle(
-                color = Color(0xFFFFD21E),
-                radius = radius * 0.16f,
-                center = center,
-            )
-
-            // 6. Draw Top Pointer/Indicator
-            val pointerWidth = 36.dp.toPx()
-            val pointerHeight = 44.dp.toPx()
-            val pointerTop = center.y - radius - 10.dp.toPx()
-
+            // The original uses a white center cap with an upward pointer.
             val pointerPath = Path().apply {
-                moveTo(center.x, pointerTop + pointerHeight)
-                lineTo(center.x - pointerWidth / 2f, pointerTop)
-                lineTo(center.x + pointerWidth / 2f, pointerTop)
+                moveTo(center.x, center.y - radius * 0.28f)
+                lineTo(center.x - radius * 0.11f, center.y - radius * 0.08f)
+                lineTo(center.x + radius * 0.11f, center.y - radius * 0.08f)
                 close()
             }
-
-            drawPath(
-                path = pointerPath,
-                color = Color(0xFFFFD21E),
-            )
-            drawPath(
-                path = pointerPath,
+            drawPath(pointerPath, color = Color.White)
+            drawCircle(
                 color = Color.White,
-                style = Stroke(width = 3.dp.toPx()),
+                radius = radius * 0.17f,
+                center = center,
             )
         }
     }

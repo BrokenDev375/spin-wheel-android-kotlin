@@ -11,11 +11,11 @@
     <string name="ad_loading">Loading ad...</string>
     <string name="ad_cta_default">Open</string>
 
-    <string name="iap_feature_1">Unlimited wheels</string>
-    <string name="iap_feature_2">More random tools</string>
-    <string name="iap_feature_3">Save custom lists</string>
-    <string name="iap_feature_4">Remove ads</string>
-    <string name="iap_feature_5">Premium themes</string>
+    <string name="iap_feature_1">Remove all ads</string>
+    <string name="iap_feature_2">Unlock all games &amp; tools</string>
+    <string name="iap_feature_3">Create custom wheels</string>
+    <string name="iap_feature_4">Unlock premium themes &amp; appearance</string>
+    <string name="iap_feature_5">Priority customer support</string>
 
     <string name="notification_permission_title">Stay updated</string>
     <string name="notification_permission_content">Get useful random reminders from Spin Wheel.</string>

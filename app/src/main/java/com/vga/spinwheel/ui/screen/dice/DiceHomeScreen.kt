@@ -202,7 +202,7 @@ fun DiceHomeScreen(
                 contentAlignment = Alignment.Center
             ) {
                 SpinIcon(
-                    glyph = SpinIconGlyph.Settings,
+                    glyph = SpinIconGlyph.Sliders,
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
