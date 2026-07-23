@@ -71,7 +71,6 @@ fun TeamHomeScreen(
         navigationIcon = SpinIconGlyph.Back,
         navigationDescription = "Quay lại",
         onNavigationClick = onBack,
-        confirmExitOnBack = true,
         modifier = modifier,
     ) {
         Column(
