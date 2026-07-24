@@ -1,13 +1,12 @@
 package com.vga.spinwheel.ui.screen.card
 
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
+import com.vga.spinwheel.R
 
 data class CardFaceStyle(
-    val background: Color,
-    val border: Color,
-    val content: Color,
-    val mark: String,
-    val text: String,
+    @DrawableRes val drawableRes: Int? = null,
+    val fallback: CardFaceFallback = CardFaceFallback.None,
 )
 
 data class CardTheme(
@@ -19,6 +18,11 @@ data class CardTheme(
     val loser: CardFaceStyle,
 )
 
+enum class CardFaceFallback {
+    None,
+    MonochromeLoser,
+}
+
 object CardThemes {
     val all = listOf(
         CardTheme(
@@ -27,18 +31,10 @@ object CardThemes {
             labelBackground = Color(0xFFC4B5FD),
             labelContent = Color(0xFF1E1B4B),
             winner = CardFaceStyle(
-                background = Color(0xFFFFD43B),
-                border = Color(0xFFFF9D00),
-                content = Color.Black,
-                mark = "M",
-                text = "Thắng",
+                drawableRes = R.drawable.card_winner_magician,
             ),
             loser = CardFaceStyle(
-                background = Color(0xFF5A4B66),
-                border = Color(0xFFB09BB8),
-                content = Color.White,
-                mark = "W",
-                text = "Thua",
+                drawableRes = R.drawable.card_loser_witch,
             ),
         ),
         CardTheme(
@@ -47,18 +43,10 @@ object CardThemes {
             labelBackground = Color(0xFFE5E5E5),
             labelContent = Color(0xFF171717),
             winner = CardFaceStyle(
-                background = Color(0xFF262626),
-                border = Color(0xFF000000),
-                content = Color.White,
-                mark = "S",
-                text = "Thắng",
+                drawableRes = R.drawable.card_winner_skull,
             ),
             loser = CardFaceStyle(
-                background = Color(0xFFD9D9D9),
-                border = Color(0xFF8C8C8C),
-                content = Color.Black,
-                mark = "H",
-                text = "Thua",
+                fallback = CardFaceFallback.MonochromeLoser,
             ),
         ),
         CardTheme(
@@ -67,18 +55,10 @@ object CardThemes {
             labelBackground = Color(0xFFD9F99D),
             labelContent = Color(0xFF14532D),
             winner = CardFaceStyle(
-                background = Color(0xFFFEE2E2),
-                border = Color(0xFFFCA5A5),
-                content = Color.Black,
-                mark = "T",
-                text = "Thắng",
+                drawableRes = R.drawable.card_winner_casino,
             ),
             loser = CardFaceStyle(
-                background = Color(0xFFE0F2FE),
-                border = Color(0xFF7DD3FC),
-                content = Color.Black,
-                mark = "J",
-                text = "Thua",
+                drawableRes = R.drawable.card_loser_casino,
             ),
         ),
         CardTheme(
@@ -87,18 +67,10 @@ object CardThemes {
             labelBackground = Color(0xFFA5F3FC),
             labelContent = Color(0xFF164E63),
             winner = CardFaceStyle(
-                background = Color(0xFFFEF08A),
-                border = Color(0xFFFDE047),
-                content = Color.Black,
-                mark = "$",
-                text = "Thắng",
+                drawableRes = R.drawable.card_winner_pirate,
             ),
             loser = CardFaceStyle(
-                background = Color(0xFFCFFAFE),
-                border = Color(0xFF67E8F9),
-                content = Color.Black,
-                mark = "P",
-                text = "Thua",
+                drawableRes = R.drawable.card_loser_pirate,
             ),
         ),
     )
