@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ fun SpinTopBar(
     onNavigationClick: (() -> Unit)? = null,
     centerTitle: Boolean = true,
     titleStartPadding: Dp = 48.dp,
+    navigationTint: Color = SpinColors.IconMuted,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     var navigationClickPending by remember { mutableStateOf(false) }
@@ -65,6 +67,7 @@ fun SpinTopBar(
                     }
                 },
                 modifier = Modifier.align(Alignment.CenterStart),
+                tint = navigationTint,
                 enabled = !navigationClickPending,
             )
         }

@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 data class DiceUiState(
     val diceCount: Int = 1,
-    val duration: Int = 3,
+    val duration: Int = 2,
     val styleIndex: Int = 0,
     val tempStyleIndex: Int = 0,
     val currentResults: List<Int> = emptyList(),
@@ -38,7 +38,7 @@ class DiceViewModel @Inject constructor(
     val uiState: StateFlow<DiceUiState> = combine(
         combine(
             settingsRepository.observeInt(RandomFeature.DICE, "count", 1),
-            settingsRepository.observeInt(RandomFeature.DICE, "duration", 3),
+            settingsRepository.observeInt(RandomFeature.DICE, "duration", 2),
             settingsRepository.observeInt(RandomFeature.DICE, "style", 0)
         ) { count, duration, style -> Triple(count, duration, style) },
         _tempStyleIndex,

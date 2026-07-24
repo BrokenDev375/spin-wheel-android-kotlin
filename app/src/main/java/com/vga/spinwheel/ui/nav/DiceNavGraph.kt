@@ -22,6 +22,7 @@ object DiceRoutes {
 fun NavGraphBuilder.diceGraph(
     navController: NavController,
     onBack: () -> Unit,
+    onHome: () -> Unit,
 ) {
     navigation(
         startDestination = DiceRoutes.HOME,
@@ -70,9 +71,7 @@ fun NavGraphBuilder.diceGraph(
             val viewModel: DiceViewModel = hiltViewModel(parentEntry)
             DicePreviewScreen(
                 viewModel = viewModel,
-                onHome = {
-                    onBack()
-                },
+                onHome = onHome,
                 onRetry = {
                     navController.popBackStack(DiceRoutes.HOME, inclusive = false)
                 }
