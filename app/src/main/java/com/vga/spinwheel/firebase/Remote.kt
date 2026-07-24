@@ -1,5 +1,6 @@
 package com.vga.spinwheel.firebase
 
+import android.util.Log
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.vga.spinwheel.BuildConfig
@@ -9,16 +10,32 @@ class Remote private constructor() {
     private val frc: FirebaseRemoteConfigUtil
         get() = FirebaseRemoteConfigUtil.getInstance()
 
-    fun adUnit(placement: String): String =
-        if (BuildConfig.DEBUG) {
+    fun adUnit(placement: String): String {
+        val source = if (BuildConfig.DEBUG) "debug_test" else "remote_config"
+        val unit = if (BuildConfig.DEBUG) {
             debugTestUnit(placement)
         } else {
             runCatching { frc.getAdsConfigValue(placement) }.getOrDefault("")
         }
+        Log.d(
+            ADS_LOG_TAG,
+            "adUnit placement=$placement source=$source debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} hasUnit=${unit.isNotBlank()} id=${maskAdId(unit)}"
+        )
+        return unit
+    }
 
     fun getBoolean(key: String): Boolean {
-        if (IAPUtils.isPremium() && key.endsWith("_enable")) return false
-        return runCatching { frc.getBoolean(key) }.getOrDefault(false)
+        val premium = IAPUtils.isPremium()
+        if (premium && key.endsWith("_enable")) {
+            Log.d(ADS_LOG_TAG, "getBoolean key=$key value=false reason=premium")
+            return false
+        }
+
+        val value = runCatching { frc.getBoolean(key) }.getOrDefault(false)
+        if (key.endsWith("_enable")) {
+            Log.d(ADS_LOG_TAG, "getBoolean key=$key value=$value premium=$premium")
+        }
+        return value
     }
 
     fun getString(key: String): String =
@@ -53,11 +70,19 @@ class Remote private constructor() {
             else -> GOOGLE_TEST_NATIVE_ID
         }
 
+    private fun maskAdId(adId: String): String =
+        if (adId.isBlank()) {
+            "<blank>"
+        } else {
+            "***${adId.takeLast(8)}"
+        }
+
     companion object {
         const val KEY_POSITION_INTRO = "positionIntrol"
 
         val instance: Remote by lazy { Remote() }
 
+        private const val ADS_LOG_TAG = "ADS_CHECK"
         private const val GOOGLE_TEST_NATIVE_ID = "ca-app-pub-3940256099942544/2247696110"
         private const val GOOGLE_TEST_INTERSTITIAL_ID = "ca-app-pub-3940256099942544/1033173712"
         private const val GOOGLE_TEST_APP_OPEN_ID = "ca-app-pub-3940256099942544/9257395921"

@@ -1,6 +1,7 @@
 package com.vga.spinwheel
 
 import android.app.Activity
+import android.util.Log
 import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
@@ -136,17 +137,38 @@ class MyApplication : BaseApplication() {
 
     override fun getNotificationOutAppContentRes(): Int = R.string.notification_out_app_content
 
-    override fun isPurchased(): Boolean = IAPUtils.isPremium()
+    override fun isPurchased(): Boolean {
+        val premium = IAPUtils.isPremium()
+        Log.d(ADS_LOG_TAG, "isPurchased=$premium")
+        return premium
+    }
 
-    override fun enableAdsResume(): Boolean = !BuildConfig.DEBUG && !IAPUtils.isPremium()
+    override fun enableAdsResume(): Boolean {
+        val premium = IAPUtils.isPremium()
+        val enabled = !BuildConfig.DEBUG && !premium
+        Log.d(
+            ADS_LOG_TAG,
+            "enableAdsResume=$enabled debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} premium=$premium"
+        )
+        return enabled
+    }
 
-    override fun buildDebug(): Boolean = BuildConfig.DEBUG
+    override fun buildDebug(): Boolean {
+        Log.d(ADS_LOG_TAG, "buildDebug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE}")
+        return BuildConfig.DEBUG
+    }
 
     override fun isForceShowFullAdsTest(): Boolean = false
 
     override fun getListTestDeviceId(): List<String> = emptyList()
 
-    override fun getResumeAdId(): String = GOOGLE_TEST_APP_OPEN_ID
+    override fun getResumeAdId(): String {
+        Log.d(
+            ADS_LOG_TAG,
+            "getResumeAdId source=hardcoded_test debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} id=${maskAdId(GOOGLE_TEST_APP_OPEN_ID)}"
+        )
+        return GOOGLE_TEST_APP_OPEN_ID
+    }
 
     private fun registerRemoteConfigDefaults() {
         runCatching {
@@ -154,7 +176,15 @@ class MyApplication : BaseApplication() {
         }
     }
 
+    private fun maskAdId(adId: String): String =
+        if (adId.isBlank()) {
+            "<blank>"
+        } else {
+            "***${adId.takeLast(8)}"
+        }
+
     private companion object {
+        const val ADS_LOG_TAG = "ADS_CHECK"
         const val NOTIFICATION_CHANNEL_PREFIX = "SpinWheel"
         const val GOOGLE_TEST_APP_OPEN_ID = "ca-app-pub-3940256099942544/9257395921"
         const val MOCK_KEY_PREFIX = "mock_"
