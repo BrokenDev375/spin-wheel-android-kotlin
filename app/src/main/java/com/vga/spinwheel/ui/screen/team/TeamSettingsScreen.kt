@@ -106,7 +106,7 @@ private fun TeamSettingRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(60.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF373246))
             .padding(horizontal = 16.dp),

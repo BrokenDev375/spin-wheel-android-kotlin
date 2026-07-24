@@ -214,7 +214,7 @@ fun CoinHomeScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(35.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
                         .clickable { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) },
@@ -231,7 +231,7 @@ fun CoinHomeScreen(
                     onClick = { if (!isFlipping) isFlipping = true },
                     modifier = Modifier
                         .weight(1f)
-                        .height(48.dp),
+                        .height(35.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF393347),
                         contentColor = Color.White
@@ -247,7 +247,7 @@ fun CoinHomeScreen(
 
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(35.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
                         .clickable {

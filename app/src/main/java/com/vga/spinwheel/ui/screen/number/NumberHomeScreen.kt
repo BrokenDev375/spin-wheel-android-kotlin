@@ -67,10 +67,10 @@ fun NumberHomeScreen(
 
     val infiniteTransition = rememberInfiniteTransition(label = "shake")
     val shakeOffset by infiniteTransition.animateFloat(
-        initialValue = -10f,
-        targetValue = 10f,
+        initialValue = -6f,
+        targetValue = 6f,
         animationSpec = infiniteRepeatable(
-            animation = tween(50, easing = LinearEasing),
+            animation = tween(40, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "shakeOffset"
@@ -126,7 +126,7 @@ fun NumberHomeScreen(
                 Text(
                     text = "$min - $max",
                     color = Color.Black,
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Black,
                 )
             }
@@ -148,12 +148,12 @@ fun NumberHomeScreen(
                             .width(210.dp)
                             .graphicsLayer {
                                 if (isSpinning && !showBalls) {
-                                    translationX = shakeOffset
-                                    translationY = shakeOffset / 2f
-                                    rotationZ = shakeOffset / 8f
+                                    translationY = shakeOffset
                                 }
                             },
+                        isSpinning = isSpinning && !showBalls,
                         spreadBalls = showBalls || history.isNotEmpty(),
+                        isDropped = isSpinning || showBalls,
                     )
 
                     if (showBalls && generatedNumbers.isNotEmpty()) {
@@ -182,20 +182,20 @@ fun NumberHomeScreen(
             if (history.isNotEmpty()) {
                 NumberRecentResults(
                     results = history.take(4).map { it.value },
-                    modifier = Modifier.padding(bottom = 18.dp),
+                    modifier = Modifier.padding(bottom = 30.dp),
                 )
             }
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 98.dp),
+                    .padding(bottom = 60.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .size(52.dp)
+                        .size(36.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
                         .clickable(enabled = !isSpinning) {
@@ -215,7 +215,7 @@ fun NumberHomeScreen(
                     enabled = !isSpinning,
                     modifier = Modifier
                         .weight(1f)
-                        .height(52.dp),
+                        .height(36.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF393347),
                         contentColor = Color.White,
@@ -235,7 +235,7 @@ fun NumberHomeScreen(
 
                 Box(
                     modifier = Modifier
-                        .size(52.dp)
+                        .size(36.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
                         .clickable(enabled = !isSpinning) {
@@ -275,7 +275,7 @@ private fun NumberRecentResults(
             Text(
                 text = "Gần đây",
                 color = SpinColors.Action,
-                fontSize = 20.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Black,
             )
         }

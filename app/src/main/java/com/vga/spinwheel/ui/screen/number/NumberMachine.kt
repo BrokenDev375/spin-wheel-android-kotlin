@@ -9,8 +9,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.R
+import kotlin.math.cos
+import kotlin.math.sin
 
 private data class BallPosition(
     val xFraction: Float,
@@ -52,8 +63,27 @@ private val SpreadBallPositions = listOf(
 @Composable
 internal fun NumberMachine(
     modifier: Modifier = Modifier,
+    isSpinning: Boolean = false,
     spreadBalls: Boolean = false,
+    isDropped: Boolean = false,
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "ball_shake")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * Math.PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "progress"
+    )
+    
+    val dropOffset by animateDpAsState(
+        targetValue = if (isDropped) 25.dp else 0.dp,
+        animationSpec = tween(1000),
+        label = "dropOffset"
+    )
+
     BoxWithConstraints(
         modifier = modifier.aspectRatio(NumberMachineAspectRatio),
     ) {
@@ -66,14 +96,22 @@ internal fun NumberMachine(
 
         val positions = if (spreadBalls) SpreadBallPositions else ClusteredBallPositions
         val ballSize = maxWidth * 0.082f
-        positions.forEach { position ->
+        positions.forEachIndexed { index, position ->
+            val shakeX = if (isSpinning) {
+                (sin(progress * 15f + index * 2f) * cos(progress * 9f + index) * 6).dp
+            } else 0.dp
+            
+            val shakeY = if (isSpinning) {
+                (cos(progress * 17f + index * 3f) * sin(progress * 11f + index) * 6).dp
+            } else 0.dp
+
             Image(
                 painter = painterResource(R.drawable.number_ball),
                 contentDescription = null,
                 modifier = Modifier
                     .offset(
-                        x = maxWidth * position.xFraction - ballSize / 2,
-                        y = maxHeight * position.yFraction - ballSize / 2,
+                        x = maxWidth * position.xFraction - ballSize / 2 + shakeX,
+                        y = maxHeight * position.yFraction - ballSize / 2 + shakeY + dropOffset,
                     )
                     .size(ballSize),
                 contentScale = ContentScale.Fit,

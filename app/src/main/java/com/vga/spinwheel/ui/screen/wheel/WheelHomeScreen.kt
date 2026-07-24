@@ -91,7 +91,7 @@ fun WheelHomeScreen(
                 onClick = { viewModel.showAiModal(true) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(50.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(
                         Brush.horizontalGradient(
@@ -129,7 +129,7 @@ fun WheelHomeScreen(
                 onClick = onAddWheel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(50.dp)
                     .border(
                         width = 1.dp,
                         color = Color.White.copy(alpha = 0.1f),
@@ -250,11 +250,11 @@ private fun WheelItemCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(108.dp)
+            .height(100.dp)
             .clip(RoundedCornerShape(SpinRadius.Card))
             .background(Color(0xFF3B3754))
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(14.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
