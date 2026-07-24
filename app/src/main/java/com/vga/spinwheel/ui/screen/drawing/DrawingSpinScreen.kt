@@ -1,7 +1,7 @@
 package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -148,12 +148,12 @@ fun DrawingSpinScreen(
                         val endTime = System.currentTimeMillis() + duration * 1_000L
                         while (System.currentTimeMillis() < endTime) {
                             shakeOffset.animateTo(
-                                targetValue = 16f,
-                                animationSpec = tween(45, easing = FastOutLinearInEasing),
+                                targetValue = 12f,
+                                animationSpec = tween(120, easing = FastOutSlowInEasing),
                             )
                             shakeOffset.animateTo(
-                                targetValue = -16f,
-                                animationSpec = tween(45, easing = FastOutLinearInEasing),
+                                targetValue = -12f,
+                                animationSpec = tween(120, easing = FastOutSlowInEasing),
                             )
                         }
                         shakeOffset.snapTo(0f)
@@ -216,7 +216,7 @@ private fun DrawingBottomControls(
         Box(
             modifier = Modifier
                 .weight(1f)
-                .height(48.dp)
+                .height(36.dp)
                 .clip(RoundedCornerShape(14.dp))
                 .background(
                     if (canStart) Color(0xFFEC9213) else Color(0xFFEC9213).copy(alpha = 0.5f),
@@ -251,7 +251,7 @@ private fun DrawingToolButton(
 ) {
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
             .clickable(enabled = enabled, onClick = onClick),

@@ -72,12 +72,12 @@ fun DrawingSettingsScreen(
                     DrawingStepper(
                         value = "${tempDuration}s",
                         onMinus = {
-                            if (tempDuration > 1) {
+                            if (tempDuration > 2) {
                                 viewModel.setTempDuration(tempDuration - 1)
                             }
                         },
                         onPlus = {
-                            if (tempDuration < 15) {
+                            if (tempDuration < 10) {
                                 viewModel.setTempDuration(tempDuration + 1)
                             }
                         },
@@ -109,7 +109,7 @@ private fun DrawingSettingRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .height(56.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
             .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))

@@ -176,8 +176,8 @@ fun NumberSettingsScreen(
                 trailing = {
                     NumberStepper(
                         value = "${tempDuration}s",
-                        onMinus = { if (tempDuration > 1) viewModel.updateTempSettings(duration = tempDuration - 1) },
-                        onPlus = { if (tempDuration < 15) viewModel.updateTempSettings(duration = tempDuration + 1) },
+                        onMinus = { if (tempDuration > 2) viewModel.updateTempSettings(duration = tempDuration - 1) },
+                        onPlus = { if (tempDuration < 10) viewModel.updateTempSettings(duration = tempDuration + 1) },
                     )
                 }
             )

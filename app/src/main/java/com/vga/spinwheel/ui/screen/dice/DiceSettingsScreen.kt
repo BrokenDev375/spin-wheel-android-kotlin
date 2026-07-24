@@ -73,7 +73,7 @@ private fun DurationSettingRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(50.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(DiceSettingsPanel)
             .padding(horizontal = 16.dp),

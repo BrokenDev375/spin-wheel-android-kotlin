@@ -104,7 +104,7 @@ internal fun DrawingCardStack(
             initialValue = 0f,
             targetValue = items.size.toFloat(),
             animationSpec = infiniteRepeatable(
-                animation = tween(120, easing = LinearEasing),
+                animation = tween(items.size * 240, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
             ),
             label = "phase"

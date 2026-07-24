@@ -219,7 +219,7 @@ private fun DiceBottomBar(
         Box(
             modifier = Modifier
                 .weight(1f)
-                .height(52.dp)
+                .height(36.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(DicePanelColor)
                 .clickable(enabled = !isRolling, onClick = onRoll),
@@ -228,7 +228,7 @@ private fun DiceBottomBar(
             Text(
                 text = "CHƠI",
                 color = Color.White,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Black,
             )
         }
@@ -249,7 +249,7 @@ private fun DiceToolButton(
 ) {
     Box(
         modifier = Modifier
-            .size(52.dp)
+            .size(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(DicePanelColor)
             .clickable(enabled = enabled, onClick = onClick),

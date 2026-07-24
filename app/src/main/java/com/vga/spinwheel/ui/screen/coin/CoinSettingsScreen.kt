@@ -66,7 +66,7 @@ fun CoinSettingsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(50.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFF393347))
                     .padding(horizontal = 16.dp),

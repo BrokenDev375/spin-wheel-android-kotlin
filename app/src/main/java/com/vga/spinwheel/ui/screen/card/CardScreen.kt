@@ -275,7 +275,7 @@ private fun CardHomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
+                .padding(horizontal = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -445,7 +445,7 @@ private fun CardToolButton(
 ) {
     Box(
         modifier = Modifier
-            .size(width = 52.dp, height = 52.dp)
+            .size(width = 52.dp, height = 36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
             .clickable(onClick = onClick),
@@ -467,7 +467,7 @@ private fun CardPrimaryActionButton(
 ) {
     Box(
         modifier = modifier
-            .height(52.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
             .clickable(onClick = onClick)
@@ -496,7 +496,7 @@ private fun CardSettingRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
             .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))

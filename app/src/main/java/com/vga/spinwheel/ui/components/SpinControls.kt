@@ -132,6 +132,7 @@ fun SpinSettingRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .height(52.dp)
             .clip(RoundedCornerShape(SpinRadius.Control))
             .background(Color.White.copy(alpha = 0.08f))
             .then(
@@ -142,7 +143,7 @@ fun SpinSettingRow(
                 )
             )
             .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
-            .padding(horizontal = 14.dp, vertical = 13.dp),
+            .padding(horizontal = 14.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
