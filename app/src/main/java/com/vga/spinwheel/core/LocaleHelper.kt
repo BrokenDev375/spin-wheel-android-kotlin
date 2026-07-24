@@ -15,8 +15,8 @@ object LocaleHelper {
 
         val configuration = Configuration(context.resources.configuration)
         configuration.setLocale(locale)
-        configuration.setLayoutDirection(locale)
         configuration.setLocales(LocaleList(locale))
+        configuration.setLayoutDirection(LTR_LAYOUT_LOCALE)
 
         return context.createConfigurationContext(configuration)
     }
@@ -32,4 +32,6 @@ object LocaleHelper {
             }
         return Locale.forLanguageTag(languageTag)
     }
+
+    private val LTR_LAYOUT_LOCALE = Locale.ENGLISH
 }
