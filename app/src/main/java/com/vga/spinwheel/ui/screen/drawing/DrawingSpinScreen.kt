@@ -128,6 +128,7 @@ fun DrawingSpinScreen(
                         winnerIndex = if (showTempResult) winnerIndex else 0,
                         themeIndex = themeIndex,
                         shakeOffset = if (isSpinning) shakeOffset.value else 0f,
+                        wheelTitle = wheel?.name.orEmpty(),
                     )
 
                     if (showTempResult && currentItems.isNotEmpty()) {

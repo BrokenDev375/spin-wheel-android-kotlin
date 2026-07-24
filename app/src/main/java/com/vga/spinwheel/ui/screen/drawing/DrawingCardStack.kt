@@ -19,6 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.getValue
 import com.vga.spinwheel.data.model.WheelItem
 
 internal data class DrawingTheme(
@@ -80,48 +87,65 @@ internal fun DrawingCardStack(
     modifier: Modifier = Modifier,
     shakeOffset: Float = 0f,
     emphasizeWinner: Boolean = true,
+    wheelTitle: String = "",
 ) {
     if (items.isEmpty()) return
 
     val safeWinnerIndex = winnerIndex.coerceIn(0, items.lastIndex)
     val theme = drawingTheme(themeIndex)
-    val backIndexes = items.indices
-        .filter { it != safeWinnerIndex }
-        .take(4)
-        .toMutableList()
+    val otherIndexes = items.indices.filter { it != safeWinnerIndex }
+    val backIndexes = otherIndexes.take(minOf(4, otherIndexes.size))
+    val totalBack = backIndexes.size
 
-    while (backIndexes.size < minOf(4, items.size)) {
-        backIndexes += backIndexes.size % items.size
-    }
+    val isShuffling = shakeOffset != 0f
+    val nameShift = if (isShuffling && items.isNotEmpty()) {
+        val infiniteTransition = rememberInfiniteTransition(label = "shuffle_names")
+        val phase by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = items.size.toFloat(),
+            animationSpec = infiniteRepeatable(
+                animation = tween(120, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "phase"
+        )
+        phase.toInt() % items.size
+    } else 0
 
     val offsets = listOf(
         -34.dp to 6.dp,
         -16.dp to 22.dp,
-        12.dp to 38.dp,
-        40.dp to 54.dp,
+        8.dp to 38.dp,
+        32.dp to 54.dp,
     )
 
     Box(modifier = modifier.size(width = 336.dp, height = 250.dp)) {
-        backIndexes.take(4).forEachIndexed { order, itemIndex ->
+        backIndexes.forEachIndexed { i, itemIndex ->
+            val order = offsets.size - totalBack + i
             val (x, y) = offsets[order]
+            val displayItemIndex = (itemIndex + nameShift) % items.size
+
             DrawingStackCard(
-                item = items[itemIndex],
+                item = items[displayItemIndex],
                 index = itemIndex,
                 color = theme.colors[theme.colors.lastIndex - order],
+                highlighted = false,
+                wheelTitle = wheelTitle,
                 modifier = Modifier.offset(
                     x = x + if (order % 2 == 0) shakeOffset.dp else (-shakeOffset).dp,
                     y = y,
                 ),
-                highlighted = false,
             )
         }
 
+        val winnerDisplayIndex = (safeWinnerIndex + nameShift) % items.size
         DrawingStackCard(
-            item = items[safeWinnerIndex],
+            item = items[winnerDisplayIndex],
             index = safeWinnerIndex,
             color = theme.colors.first(),
-            modifier = Modifier.offset(x = 28.dp + shakeOffset.dp, y = 76.dp),
             highlighted = emphasizeWinner,
+            wheelTitle = wheelTitle,
+            modifier = Modifier.offset(x = 48.dp + shakeOffset.dp, y = 76.dp),
         )
     }
 }
@@ -132,6 +156,7 @@ private fun DrawingStackCard(
     index: Int,
     color: Color,
     highlighted: Boolean,
+    wheelTitle: String = "",
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(14.dp)
@@ -157,7 +182,7 @@ private fun DrawingStackCard(
         )
 
         Text(
-            text = item.name,
+            text = wheelTitle.ifEmpty { item.name },
             modifier = Modifier.padding(start = 28.dp, top = 23.dp, end = 20.dp),
             color = Color.White,
             fontSize = 24.sp,
@@ -167,13 +192,15 @@ private fun DrawingStackCard(
         )
 
         Text(
-            text = (index + 1).toString(),
+            text = item.name,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 30.dp, bottom = 16.dp),
+                .padding(start = 30.dp, bottom = 16.dp, end = 120.dp),
             color = Color.White,
             fontSize = 18.sp,
             fontWeight = FontWeight.Black,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

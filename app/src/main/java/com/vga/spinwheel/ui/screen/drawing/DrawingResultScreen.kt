@@ -85,6 +85,7 @@ fun DrawingResultScreen(
                     items = wheel?.items.orEmpty(),
                     winnerIndex = winnerIndex,
                     themeIndex = themeIndex,
+                    wheelTitle = wheel?.name.orEmpty(),
                     modifier = Modifier.graphicsLayer {
                         scaleX = 0.92f
                         scaleY = 0.92f
