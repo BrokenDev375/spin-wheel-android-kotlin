@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -38,46 +36,40 @@ fun NumberHistoryScreen(
 ) {
     val history by viewModel.history.collectAsState()
 
-    Scaffold(
-        topBar = {
-            SpinTopBar(
-                title = "Lịch sử",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
-                onNavigationClick = { navController.popBackStack() },
-                actions = {
-                    if (history.isNotEmpty()) {
-                        SpinIconButton(
-                            glyph = SpinIconGlyph.Trash,
-                            contentDescription = "Clear History",
-                            onClick = { viewModel.clearHistory() },
-                            tint = Color.Red
-                        )
-                    }
-                }
-            )
+    SpinScreen(
+        title = "Lịch sử",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = { navController.popBackStack() },
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
+        actions = {
+            if (history.isNotEmpty()) {
+                SpinIconButton(
+                    glyph = SpinIconGlyph.Trash,
+                    contentDescription = "Xóa lịch sử",
+                    onClick = { viewModel.clearHistory() },
+                    tint = Color.Red,
+                )
+            }
         },
-        containerColor = SpinColors.Background
-    ) { padding ->
+    ) { contentModifier ->
         if (history.isEmpty()) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
+                modifier = contentModifier,
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Chưa có lịch sử",
+                    text = "Ồ! Không có lịch sử nào vào lúc này",
                     color = SpinColors.TextMuted,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
                 )
             }
         } else {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(24.dp),
+                modifier = contentModifier,
+                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(history) { item ->

@@ -1,32 +1,28 @@
 package com.vga.spinwheel.ui.screen.number
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,13 +46,9 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
-import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.nav.NumberRoutes
 import com.vga.spinwheel.ui.theme.SpinColors
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
-import kotlin.random.Random
 
 @Composable
 fun NumberHomeScreen(
@@ -67,7 +59,7 @@ fun NumberHomeScreen(
     val duration by viewModel.duration.collectAsState()
     val min by viewModel.min.collectAsState()
     val max by viewModel.max.collectAsState()
-    val count by viewModel.count.collectAsState()
+    val history by viewModel.history.collectAsState()
 
     var isSpinning by remember { mutableStateOf(false) }
     var generatedNumbers by remember { mutableStateOf<List<Int>>(emptyList()) }
@@ -92,9 +84,8 @@ fun NumberHomeScreen(
             val durationMs = duration * 1000L
             delay(durationMs)
             
-            // Show balls dropping
             showBalls = true
-            delay(800L) // Wait for balls to drop
+            delay(1_000L)
             
             viewModel.saveResultToHistory(generatedNumbers.joinToString(", "))
             navController.navigate(NumberRoutes.RESULT)
@@ -108,6 +99,8 @@ fun NumberHomeScreen(
         navigationIcon = SpinIconGlyph.Back,
         navigationDescription = "Back",
         onNavigationClick = { if (!isSpinning) onBack() },
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
         confirmExitOnBack = true,
         actions = {
             SpinIconButton(
@@ -116,144 +109,98 @@ fun NumberHomeScreen(
                 onClick = { if (!isSpinning) navController.navigate(NumberRoutes.HISTORY) }
             )
         }
-    ) {
+    ) { contentModifier ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
+            modifier = contentModifier.padding(horizontal = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Range Display Pill
-            Row(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(12.dp))
                     .background(Color.White)
-                    .padding(horizontal = 20.dp, vertical = 14.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 30.dp, vertical = 9.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Min: $min",
+                    text = "$min - $max",
                     color = Color.Black,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Text(
-                    text = "-",
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
-                Text(
-                    text = "Max: $max",
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(start = 16.dp)
+                    fontWeight = FontWeight.Black,
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Machine Animation Area
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp),
-                contentAlignment = Alignment.BottomCenter
+                    .weight(1f),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                // The Machine
-                Box(
-                    modifier = Modifier
-                        .size(180.dp, 220.dp)
-                        .offset {
-                            IntOffset(
-                                x = if (isSpinning && !showBalls) shakeOffset.roundToInt() else 0,
-                                y = if (isSpinning && !showBalls) (shakeOffset / 2).roundToInt() else 0
-                            )
-                        }
-                        .clip(RoundedCornerShape(40.dp))
-                        .background(Color(0xFF39a9f2)),
-                    contentAlignment = Alignment.TopCenter
+                Column(
+                    modifier = Modifier.padding(
+                        top = if (history.isEmpty()) 98.dp else 46.dp,
+                    ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    // Glass dome
-                    Box(
+                    NumberMachine(
                         modifier = Modifier
-                            .padding(top = 16.dp)
-                            .size(140.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF8be0ff).copy(alpha = 0.6f))
+                            .width(210.dp)
+                            .graphicsLayer {
+                                if (isSpinning && !showBalls) {
+                                    translationX = shakeOffset
+                                    translationY = shakeOffset / 2f
+                                    rotationZ = shakeOffset / 8f
+                                }
+                            },
+                        spreadBalls = showBalls || history.isNotEmpty(),
                     )
-                    
-                    // Dispenser hole
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 20.dp)
-                            .size(40.dp, 20.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.DarkGray)
-                    )
-                }
 
-                // Dropping Balls
-                if (showBalls) {
-                    // Limit number of visual balls to avoid crowding if count is huge
-                    val displayBalls = generatedNumbers.take(10)
-                    displayBalls.forEachIndexed { index, number ->
-                        var ballY by remember { mutableStateOf(0f) }
-                        var ballX by remember { mutableStateOf(0f) }
-                        
-                        LaunchedEffect(Unit) {
-                            val targetX = Random.nextInt(-100, 100).toFloat()
-                            val targetY = Random.nextInt(150, 250).toFloat()
-                            launch {
-                                Animatable(0f).animateTo(targetX, tween(600, easing = FastOutSlowInEasing)) { ballX = value }
-                            }
-                            launch {
-                                Animatable(0f).animateTo(targetY, tween(600, easing = FastOutSlowInEasing)) { ballY = value }
-                            }
-                        }
-
+                    if (showBalls && generatedNumbers.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
                         Box(
                             modifier = Modifier
-                                .offset { IntOffset(ballX.roundToInt(), ballY.roundToInt()) }
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFFec9213)),
-                            contentAlignment = Alignment.Center
+                                .border(
+                                    width = 1.5.dp,
+                                    color = SpinColors.Action,
+                                    shape = RoundedCornerShape(10.dp),
+                                )
+                                .padding(horizontal = 14.dp, vertical = 7.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = number.toString(),
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
+                                text = generatedNumbers.joinToString(", "),
+                                color = SpinColors.Action,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Black,
                             )
                         }
                     }
                 }
             }
-            
-            Spacer(modifier = Modifier.weight(1f))
 
-            // Bottom Controls
+            if (history.isNotEmpty()) {
+                NumberRecentResults(
+                    results = history.take(4).map { it.value },
+                    modifier = Modifier.padding(bottom = 18.dp),
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp),
+                    .padding(bottom = 98.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .size(58.dp)
+                        .size(52.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
-                        .clickable { if (!isSpinning) navController.navigate(NumberRoutes.SETTINGS) },
+                        .clickable(enabled = !isSpinning) {
+                            navController.navigate(NumberRoutes.SETTINGS)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     SpinIcon(
@@ -264,35 +211,98 @@ fun NumberHomeScreen(
                 }
 
                 Button(
-                    onClick = { if (!isSpinning) isSpinning = true },
+                    onClick = { isSpinning = true },
+                    enabled = !isSpinning,
                     modifier = Modifier
                         .weight(1f)
-                        .height(58.dp),
+                        .height(52.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF393347),
-                        contentColor = Color.White
+                        contentColor = Color.White,
+                        disabledContainerColor = Color(0xFF393347).copy(alpha = 0.62f),
                     ),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(14.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp),
                 ) {
                     Text(
                         text = "NHẤN ĐỂ NGẪU NHIÊN",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Black
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip,
                     )
                 }
 
                 Box(
                     modifier = Modifier
-                        .size(58.dp)
+                        .size(52.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
-                        .clickable { if (!isSpinning) viewModel.clearHistory() },
+                        .clickable(enabled = !isSpinning) {
+                            viewModel.clearHistory()
+                            viewModel.clearLastResult()
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     SpinIcon(
                         glyph = SpinIconGlyph.Reset,
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NumberRecentResults(
+    results: List<String>,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            SpinIcon(
+                glyph = SpinIconGlyph.History,
+                tint = Color(0xFFE64C3B),
+                modifier = Modifier.size(22.dp),
+            )
+            Text(
+                text = "Gần đây",
+                color = SpinColors.Action,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            results.forEach { result ->
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color(0xFF393347))
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = 0.08f),
+                            shape = RoundedCornerShape(10.dp),
+                        )
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = result,
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Black,
                     )
                 }
             }

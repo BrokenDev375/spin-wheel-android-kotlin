@@ -44,12 +44,10 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
-import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.screen.wheel.WheelAiGenerateDialog
 import com.vga.spinwheel.ui.screen.wheel.WheelViewModel
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun TeamHomeScreen(
@@ -68,6 +66,8 @@ fun TeamHomeScreen(
 
     SpinScreen(
         title = "Đội",
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
         navigationIcon = SpinIconGlyph.Back,
         navigationDescription = "Quay lại",
         onNavigationClick = onBack,
@@ -76,9 +76,9 @@ fun TeamHomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
+                .padding(horizontal = 16.dp),
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             TeamAiButton(
                 text = "Trình tạo AI",
@@ -92,7 +92,7 @@ fun TeamHomeScreen(
                 onClick = onAddList,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             if (wheels.isEmpty()) {
                 Box(
@@ -181,7 +181,7 @@ private fun TeamAiButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(
                 Brush.horizontalGradient(
@@ -201,13 +201,13 @@ private fun TeamAiButton(
             SpinIcon(
                 glyph = SpinIconGlyph.Sparkles,
                 tint = Color.White,
-                modifier = Modifier.size(26.dp),
+                modifier = Modifier.size(22.dp),
             )
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Text(
                 text = text,
                 color = Color.White,
-                fontSize = 26.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.ExtraBold,
             )
         }
@@ -222,9 +222,9 @@ private fun TeamCreateButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFF37324A))
+            .background(Color(0xFF373246))
             .border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = 0.10f),
@@ -240,13 +240,13 @@ private fun TeamCreateButton(
             SpinIcon(
                 glyph = SpinIconGlyph.Plus,
                 tint = Color.White,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(20.dp),
             )
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Text(
                 text = text,
                 color = Color.White,
-                fontSize = 23.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
             )
         }
@@ -266,9 +266,9 @@ private fun TeamListCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(118.dp)
+            .height(100.dp)
             .clip(RoundedCornerShape(SpinRadius.Card))
-            .background(Color(0xFF343047))
+            .background(Color(0xFF373246))
             .border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = 0.06f),
@@ -284,14 +284,15 @@ private fun TeamListCard(
             Text(
                 text = wheel.name,
                 color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold,
             )
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             Text(
                 text = "${wheel.items.size} options",
                 color = SpinColors.TextMuted,
-                style = MaterialTheme.typography.titleSmall,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
             )
         }
 

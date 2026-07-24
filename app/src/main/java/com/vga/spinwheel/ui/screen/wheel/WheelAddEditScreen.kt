@@ -148,7 +148,7 @@ fun WheelAddEditScreen(
                         onClick = viewModel::addSingleItem,
                         modifier = Modifier
                             .weight(1f)
-                            .height(48.dp),
+                            .height(40.dp),
                         shape = RoundedCornerShape(SpinRadius.Button),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF3B3754),
@@ -170,7 +170,7 @@ fun WheelAddEditScreen(
                         onClick = { viewModel.showAddManyModal(true) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(48.dp),
+                            .height(40.dp),
                         shape = RoundedCornerShape(SpinRadius.Button),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF3B3754),
@@ -275,7 +275,7 @@ private fun WheelItemRow(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "Ưu tiên",
-                    fontSize = 11.sp,
+                    fontSize = 10.sp,
                     color = SpinColors.TextMuted,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -287,9 +287,9 @@ private fun WheelItemRow(
                     // Round Minus Button (Red)
                     Box(
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(20.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFFFF5252))
+                            .background(Color(0xFFE60000))
                             .clickable { onPriorityChange(-1) },
                         contentAlignment = Alignment.Center,
                     ) {
@@ -304,15 +304,15 @@ private fun WheelItemRow(
                         text = item.priority.toString(),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                     )
 
                     // Round Plus Button (Blue)
                     Box(
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(20.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF2979FF))
+                            .background(Color(0xFF0033CC))
                             .clickable { onPriorityChange(1) },
                         contentAlignment = Alignment.Center,
                     ) {

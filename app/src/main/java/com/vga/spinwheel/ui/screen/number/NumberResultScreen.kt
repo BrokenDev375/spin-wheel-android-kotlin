@@ -2,10 +2,15 @@ package com.vga.spinwheel.ui.screen.number
 
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,8 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.nav.Screen
+import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
 fun NumberResultScreen(
@@ -34,6 +38,7 @@ fun NumberResultScreen(
     val context = LocalContext.current
 
     SpinResultScreen(
+        modifier = Modifier.statusBarsPadding(),
         title = "Kết Quả",
         onHome = {
             navController.navigate(Screen.Home.route) {
@@ -51,22 +56,46 @@ fun NumberResultScreen(
             viewModel.clearLastResult()
             navController.popBackStack()
         },
+        cardHeight = 450.dp,
+        cardContentPadding = 0.dp,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF292640)),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
-            Text(
-                text = lastResult ?: "N/A",
-                color = Color.White,
-                fontSize = 72.sp,
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp)
+                    .background(SpinColors.Background),
+                contentAlignment = Alignment.Center,
+            ) {
+                NumberMachine(
+                    modifier = Modifier.width(190.dp),
+                    spreadBalls = true,
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .border(
+                        width = 1.5.dp,
+                        color = SpinColors.Action,
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = lastResult ?: "—",
+                    color = SpinColors.Action,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

@@ -2,19 +2,17 @@ package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,15 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinSettingRow
-import com.vga.spinwheel.ui.components.SpinStepper
-import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinRadius
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun DrawingSettingsScreen(
@@ -41,85 +38,136 @@ fun DrawingSettingsScreen(
     onOpenPalette: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val duration by viewModel.duration.collectAsState()
+    val themeIndex by viewModel.themeIndex.collectAsState()
     val tempDuration by viewModel.tempDuration.collectAsState()
-    val tempThemeIndex by viewModel.tempThemeIndex.collectAsState()
-    val themeColor = getThemeColor(tempThemeIndex)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(duration, themeIndex) {
         viewModel.initTempSettings()
     }
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = "Cài đặt",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
-                onNavigationClick = {
-                    viewModel.saveSettings()
-                    onBack()
+    val saveAndBack = {
+        viewModel.saveSettings()
+        onBack()
+    }
+
+    SpinScreen(
+        title = "Tùy chỉnh",
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = "Quay lại",
+        onNavigationClick = saveAndBack,
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
+        modifier = modifier,
+    ) { contentModifier ->
+        Column(
+            modifier = contentModifier.padding(horizontal = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            DrawingSettingRow(
+                title = "Thời lượng hoạt hình",
+                trailing = {
+                    DrawingStepper(
+                        value = "${tempDuration}s",
+                        onMinus = {
+                            if (tempDuration > 1) {
+                                viewModel.setTempDuration(tempDuration - 1)
+                            }
+                        },
+                        onPlus = {
+                            if (tempDuration < 15) {
+                                viewModel.setTempDuration(tempDuration + 1)
+                            }
+                        },
+                    )
                 },
             )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
 
-            // Duration Setting
-            SpinSettingRow(
-                title = "Thời lượng xáo thẻ",
+            DrawingSettingRow(
+                title = "Vẽ",
+                onClick = onOpenPalette,
                 trailing = {
-                    SpinStepper(
-                        value = "${tempDuration}s",
-                        onMinus = { if (tempDuration > 1) viewModel.setTempDuration(tempDuration - 1) },
-                        onPlus = { if (tempDuration < 10) viewModel.setTempDuration(tempDuration + 1) }
+                    SpinIcon(
+                        glyph = SpinIconGlyph.ChevronRight,
+                        tint = SpinColors.IconMuted,
+                        modifier = Modifier.size(26.dp),
                     )
-                }
+                },
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Theme Setting
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(SpinRadius.Control))
-                    .background(Color(0xFF3B3754))
-                    .clickable(onClick = onOpenPalette)
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "Màu thẻ",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = SpinColors.TextPrimary,
-                    modifier = Modifier.weight(1f),
-                )
-                
-                Spacer(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(themeColor)
-                )
-                
-                Spacer(modifier = Modifier.width(12.dp))
-                SpinIcon(
-                    glyph = SpinIconGlyph.Back,
-                    tint = SpinColors.TextMuted,
-                    modifier = Modifier.size(16.dp),
-                )
-            }
         }
+    }
+}
+
+@Composable
+private fun DrawingSettingRow(
+    title: String,
+    onClick: (() -> Unit)? = null,
+    trailing: @Composable () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF393347))
+            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
+            .padding(horizontal = 18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.weight(1f),
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Black,
+        )
+        trailing()
+    }
+}
+
+@Composable
+private fun DrawingStepper(
+    value: String,
+    onMinus: () -> Unit,
+    onPlus: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        DrawingStepperButton(text = "−", onClick = onMinus)
+        Text(
+            text = value,
+            modifier = Modifier.width(36.dp),
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Black,
+            textAlign = TextAlign.Center,
+        )
+        DrawingStepperButton(text = "+", onClick = onPlus)
+    }
+}
+
+@Composable
+private fun DrawingStepperButton(
+    text: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .size(36.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(Color.White)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            color = Color.Black,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Black,
+        )
     }
 }

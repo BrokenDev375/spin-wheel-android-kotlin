@@ -1,6 +1,7 @@
 package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,16 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,7 +32,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.data.model.Wheel
@@ -42,10 +44,7 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
-import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinRadius
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun DrawingHomeScreen(
@@ -59,93 +58,55 @@ fun DrawingHomeScreen(
 ) {
     val wheels by viewModel.wheels.collectAsState()
     var deleteTargetId by remember { mutableStateOf<String?>(null) }
+    val displayWheels = wheels.ifEmpty { listOf(DrawingViewModel.DRAWING_FALLBACK_WHEEL) }
 
     SpinScreen(
         title = "Vẽ",
         navigationIcon = SpinIconGlyph.Back,
         navigationDescription = "Quay lại",
         onNavigationClick = onBack,
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
         modifier = modifier,
-    ) {
+    ) { contentModifier ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
+            modifier = contentModifier.padding(horizontal = 18.dp),
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            Button(
+            DrawingHomeAction(
+                text = "Trình tạo AI",
+                icon = SpinIconGlyph.Sparkles,
                 onClick = onAiGenerate,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF00E676),
-                    contentColor = Color.White,
+                background = Brush.horizontalGradient(
+                    colors = listOf(Color(0xFF0DA8E8), Color(0xFF22F198)),
                 ),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    SpinIcon(
-                        glyph = SpinIconGlyph.Sparkles,
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp),
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Text(
-                        text = "Trình tạo AI",
-                        fontSize = 18.sp,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    )
-                }
-            }
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Black,
+            )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            Button(
+            DrawingHomeAction(
+                text = "Tạo Bánh xe mới",
+                icon = SpinIconGlyph.Plus,
                 onClick = onAddWheel,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3B3754),
-                    contentColor = Color.White,
+                background = Brush.linearGradient(
+                    colors = listOf(Color(0xFF393347), Color(0xFF393347)),
                 ),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    SpinIcon(
-                        glyph = SpinIconGlyph.Plus,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Spacer(modifier = Modifier.size(6.dp))
-                    Text(
-                        text = "Tạo danh sách mới",
-                        fontSize = 17.sp,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
-                    )
-                }
-            }
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Medium,
+                showBorder = true,
+            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            val displayWheels = if (wheels.isEmpty()) {
-                listOf(DrawingViewModel.DRAWING_FALLBACK_WHEEL)
-            } else {
-                wheels
-            }
-
-            LazyColumn(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 items(displayWheels, key = { it.id }) { wheel ->
                     DrawingItemCard(
@@ -164,13 +125,18 @@ fun DrawingHomeScreen(
         AlertDialog(
             onDismissRequest = { deleteTargetId = null },
             title = { Text("Xác nhận xóa", color = SpinColors.TextPrimary) },
-            text = { Text("Bạn có chắc chắn muốn xóa danh sách này không?", color = SpinColors.TextMuted) },
+            text = {
+                Text(
+                    "Bạn có chắc chắn muốn xóa danh sách này không?",
+                    color = SpinColors.TextMuted,
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        deleteTargetId?.let { viewModel.deleteWheel(it) }
+                        deleteTargetId?.let(viewModel::deleteWheel)
                         deleteTargetId = null
-                    }
+                    },
                 ) {
                     Text("Xoá", color = Color(0xFFFF5252))
                 }
@@ -186,6 +152,53 @@ fun DrawingHomeScreen(
 }
 
 @Composable
+private fun DrawingHomeAction(
+    text: String,
+    icon: SpinIconGlyph,
+    onClick: () -> Unit,
+    background: Brush,
+    fontSize: TextUnit,
+    fontWeight: FontWeight,
+    showBorder: Boolean = false,
+) {
+    val shape = RoundedCornerShape(14.dp)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clip(shape)
+            .background(background)
+            .then(
+                if (showBorder) {
+                    Modifier.border(1.dp, Color.White.copy(alpha = 0.06f), shape)
+                } else {
+                    Modifier
+                },
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(9.dp),
+        ) {
+            SpinIcon(
+                glyph = icon,
+                tint = Color.White,
+                modifier = Modifier.size(if (icon == SpinIconGlyph.Sparkles) 24.dp else 20.dp),
+            )
+            Text(
+                text = text,
+                color = Color.White,
+                fontSize = fontSize,
+                fontWeight = fontWeight,
+            )
+        }
+    }
+}
+
+@Composable
 private fun DrawingItemCard(
     wheel: Wheel,
     onClick: () -> Unit,
@@ -194,60 +207,75 @@ private fun DrawingItemCard(
     onDelete: () -> Unit,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
+    val shape = RoundedCornerShape(14.dp)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(SpinRadius.Card))
-            .background(Color(0xFF3B3754))
+            .height(108.dp)
+            .clip(shape)
+            .background(Color(0xFF393347))
+            .border(1.5.dp, Color.White.copy(alpha = 0.05f), shape)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 14.dp, vertical = 14.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = wheel.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = SpinColors.TextPrimary,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "${wheel.items.size} thẻ",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = SpinColors.TextMuted,
-                )
-            }
-            Box {
-                SpinIconButton(
-                    glyph = SpinIconGlyph.More,
-                    contentDescription = "Menu",
-                    onClick = { menuExpanded = true },
-                )
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
-                    modifier = Modifier.background(Color(0xFF2D2845)),
-                ) {
-                    if (wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id) {
-                        DropdownMenuItem(
-                            text = { Text("Sửa", color = SpinColors.TextPrimary) },
-                            onClick = { menuExpanded = false; onEdit() },
-                        )
-                    }
+        Text(
+            text = wheel.name,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .fillMaxWidth(0.72f),
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Black,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        Text(
+            text = "${wheel.items.size} options",
+            modifier = Modifier.align(Alignment.BottomStart),
+            color = Color.White.copy(alpha = 0.52f),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Black,
+        )
+
+        Box(modifier = Modifier.align(Alignment.TopEnd)) {
+            SpinIconButton(
+                glyph = SpinIconGlyph.More,
+                contentDescription = "Tùy chọn",
+                onClick = { menuExpanded = true },
+                modifier = Modifier.size(30.dp),
+                tint = Color.White.copy(alpha = 0.72f),
+            )
+            DropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false },
+                modifier = Modifier.background(Color(0xFF2D2845)),
+            ) {
+                if (wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id) {
                     DropdownMenuItem(
-                        text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
-                        onClick = { menuExpanded = false; onDuplicate() },
+                        text = { Text("Sửa", color = SpinColors.TextPrimary) },
+                        onClick = {
+                            menuExpanded = false
+                            onEdit()
+                        },
                     )
-                    if (wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id) {
-                        DropdownMenuItem(
-                            text = { Text("Xoá", color = Color(0xFFFF5252)) },
-                            onClick = { menuExpanded = false; onDelete() },
-                        )
-                    }
+                }
+                DropdownMenuItem(
+                    text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
+                    onClick = {
+                        menuExpanded = false
+                        onDuplicate()
+                    },
+                )
+                if (wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id) {
+                    DropdownMenuItem(
+                        text = { Text("Xoá", color = Color(0xFFFF5252)) },
+                        onClick = {
+                            menuExpanded = false
+                            onDelete()
+                        },
+                    )
                 }
             }
         }

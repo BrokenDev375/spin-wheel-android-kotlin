@@ -139,7 +139,11 @@ fun NavGraphBuilder.drawingNavGraph(
 
             DrawingPaletteScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onSave = {
+                    viewModel.saveSettings()
+                    navController.popBackStack()
+                },
             )
         }
 
@@ -157,13 +161,14 @@ fun NavGraphBuilder.drawingNavGraph(
                 wheelId = wheelId,
                 viewModel = viewModel,
                 onRetry = {
-                    navController.navigate(DrawingRoutes.spin(wheelId)) {
-                        popUpTo(Screen.Drawing.route)
-                    }
+                    navController.popBackStack(DrawingRoutes.HOME, inclusive = false)
                 },
                 onHome = {
-                    navController.popBackStack(Screen.Drawing.route, inclusive = false)
-                }
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
     }
