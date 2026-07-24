@@ -135,9 +135,9 @@ fun IntroScreen(
         SpinPrimaryButton(
             text = stringResource(
                 if (pageIndex == introPagesI18n.lastIndex) {
-                    R.string.intro_start
+                    R.string.start
                 } else {
-                    R.string.intro_continue
+                    R.string.continue_btn
                 }
             ),
             onClick = {
@@ -371,23 +371,23 @@ private data class IntroPageI18n(
 
 private val introPagesI18n = listOf(
     IntroPageI18n(
-        titleRes = R.string.intro_title_1,
-        descriptionRes = R.string.intro_description_1,
+        titleRes = R.string.titileIntro1,
+        descriptionRes = R.string.desIntro1,
         type = IntroVisualType.WHEEL,
     ),
     IntroPageI18n(
-        titleRes = R.string.intro_title_2,
-        descriptionRes = R.string.intro_description_2,
+        titleRes = R.string.titileIntro2,
+        descriptionRes = R.string.desIntro2,
         type = IntroVisualType.GRID,
     ),
     IntroPageI18n(
-        titleRes = R.string.intro_title_3,
-        descriptionRes = R.string.intro_description_3,
+        titleRes = R.string.titileIntro3,
+        descriptionRes = R.string.desIntro3,
         type = IntroVisualType.FINGER,
     ),
     IntroPageI18n(
-        titleRes = R.string.intro_title_4,
-        descriptionRes = R.string.intro_description_4,
+        titleRes = R.string.titileIntro4,
+        descriptionRes = R.string.desIntro4,
         type = IntroVisualType.AI,
     ),
 )

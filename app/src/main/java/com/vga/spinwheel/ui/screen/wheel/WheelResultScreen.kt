@@ -16,10 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -39,25 +41,27 @@ fun WheelResultScreen(
     val paletteIdx by viewModel.paletteIndex.collectAsState()
 
     val palette = WheelPalettes.getPalette(paletteIdx)
+    val resultTitle = stringResource(R.string.results)
+    val wheelTitle = stringResource(R.string.spinwheel)
+    val shareTitle = stringResource(R.string.sharereust)
 
     val winnerName = (spinStatus as? SpinStatus.Finished)?.winner?.name
         ?: viewModel.history.collectAsState().value.firstOrNull { it.id == resultId }?.value
-        ?: "Kết Quả"
+        ?: resultTitle
 
     fun shareResult() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Kết quả quay bánh xe")
+            putExtra(Intent.EXTRA_SUBJECT, resultTitle)
             putExtra(
                 Intent.EXTRA_TEXT,
-                "Bánh xe '${currentWheel?.name ?: "Bánh Xe"}' đã quay trúng: ★ $winnerName ★! Tải ứng dụng Spin Wheel ngay!"
+                "$wheelTitle '${currentWheel?.name ?: wheelTitle}': ★ $winnerName ★"
             )
         }
-        context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
+        context.startActivity(Intent.createChooser(shareIntent, shareTitle))
     }
 
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = { shareResult() },
         onRetry = {

@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Spin Wheel</string>
+    <string name="app_name">Spin Wheel &amp; Random Tools</string>
 
-    <string name="app_flyer_id" translatable="false">mock_appsflyer_dev_key</string>
-    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="facebook_app_id" translatable="false">123456789012345</string>
-    <string name="facebook_client_token" translatable="false">mock_facebook_client_token</string>
-    <string name="public_license_key" translatable="false">MOCK_PUBLIC_LICENSE_KEY</string>
+    <string name="app_flyer_id" translatable="false">Qhno4yJY6KHmZp9uS9DRe4</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-9405071173323068~3901440694</string>
+    <string name="facebook_app_id" translatable="false">750596707431100</string>
+    <string name="facebook_client_token" translatable="false">698452aba83fb8616c7ca6d3fdad20ff</string>
+    <string name="public_license_key" translatable="false">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmMGrp0ADDiL18+4UyFJY5nJFLNfr1QkD9WbHmhfJOBngMIpYh8uhtb/iuz4UlgsDx31puVOF6MBJKfro+J936EMzkVpYMJCLpp0HLyZyxuy4VwqgEV4ZOoNyhEY/lv0gCj5GIKDXWyCw5B8km0JJJd3C/6Qrp7gnK24Vd8A5kQCboRvfvVPPjeSY8afz8IVen/7IU7j6subpjde8tIjeSsXt9VQumLpH+BZr2UkNz6jhVcXdL144qMdHjTbsyyugnzBT+nQp2P7uMoytK0kk2dhDgX312bpxHglUj6tDrIpEb4dmG92UkxBcyCZRY8mE1qeeNbP7jtg2UuDd8vvy2wIDAQAB/x5xfT7sw2fqg6extahYyY34LYoAZ4XNRCvplgnjfZtV1bkM7Cnfo6AR6klF7/xWbQInHBbpjDL9VAfaaUlPhBfccldWRlO5n0sCYIKgmUDZjUQlorigjWetj+dvpd9kNH4JXk5xGMfJB1DA/zH22omeiP8CTz5k/qEvS1IjV8k2U6gs0b35gVGzqS98+7fHsndNIdjRLCZ24xaAY+obUnKfQzV8n0Qlziddh7UQIDAQAB</string>
 
     <string name="ad_label">Ad</string>
     <string name="ad_loading">Loading ad...</string>

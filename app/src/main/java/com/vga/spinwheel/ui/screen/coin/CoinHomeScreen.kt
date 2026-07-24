@@ -35,11 +35,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -98,17 +100,17 @@ fun CoinHomeScreen(
     }
 
     SpinScreen(
-        title = "Đồng Xu",
+        title = stringResource(R.string.coin),
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Back",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = { if (!isFlipping) navController.popBackStack() },
         confirmExitOnBack = true,
         actions = {
             SpinIconButton(
                 glyph = SpinIconGlyph.Settings,
-                contentDescription = "Settings",
+                contentDescription = stringResource(R.string.settings),
                 onClick = { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) }
             )
         },
@@ -135,7 +137,7 @@ fun CoinHomeScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = skin.headDrawable),
-                        contentDescription = "Heads",
+                        contentDescription = stringResource(R.string.heads),
                         modifier = Modifier.size(36.dp)
                     )
                     Text(
@@ -164,7 +166,7 @@ fun CoinHomeScreen(
                     )
                     Image(
                         painter = painterResource(id = skin.tailDrawable),
-                        contentDescription = "Tails",
+                        contentDescription = stringResource(R.string.tails),
                         modifier = Modifier.size(36.dp)
                     )
                 }
@@ -185,13 +187,13 @@ fun CoinHomeScreen(
                 if (isHeadVisible) {
                     Image(
                         painter = painterResource(id = skin.headDrawable),
-                        contentDescription = "Coin Head",
+                        contentDescription = stringResource(R.string.heads),
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
                     Image(
                         painter = painterResource(id = skin.tailDrawable),
-                        contentDescription = "Coin Tail",
+                        contentDescription = stringResource(R.string.tails),
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
@@ -239,7 +241,7 @@ fun CoinHomeScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "BẮT ĐẦU",
+                        text = stringResource(R.string.start).uppercase(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Black
                     )

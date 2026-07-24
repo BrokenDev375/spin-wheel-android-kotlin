@@ -78,15 +78,15 @@ class MyApplication : BaseApplication() {
 
     override fun getFeature5IconRes(): Int = R.drawable.icon_3_iap
 
-    override fun getFeature1TextRes(): Int = R.string.iap_feature_1
+    override fun getFeature1TextRes(): Int = R.string.premium_feature_remove_ads
 
-    override fun getFeature2TextRes(): Int = R.string.iap_feature_2
+    override fun getFeature2TextRes(): Int = R.string.premium_feature_unlock_all
 
-    override fun getFeature3TextRes(): Int = R.string.iap_feature_3
+    override fun getFeature3TextRes(): Int = R.string.premium_feature_unlimited
 
-    override fun getFeature4TextRes(): Int = R.string.iap_feature_4
+    override fun getFeature4TextRes(): Int = R.string.premium_feature_premium_skins
 
-    override fun getFeature5TextRes(): Int = R.string.iap_feature_5
+    override fun getFeature5TextRes(): Int = R.string.premium_feature_support
 
     override fun getNotiTitleRes(): Int = R.string.notification_permission_title
 

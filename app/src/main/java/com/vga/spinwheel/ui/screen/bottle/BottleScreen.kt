@@ -53,11 +53,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinResultScreen
@@ -75,11 +77,23 @@ fun BottleScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val resultTitle = stringResource(R.string.results)
+    val bottleTitle = stringResource(R.string.spinBottle)
+    val shareTitle = stringResource(R.string.sharereust)
+    val shareSuccess = stringResource(R.string.share_success)
 
     if (state.stage == BottleStage.Result) {
         BottleResultScreen(
             state = state,
-            onShare = { shareBottleResult(context, viewModel.shareText()) },
+            onShare = {
+                shareBottleResult(
+                    context = context,
+                    text = "$resultTitle $bottleTitle: ${state.lastAngle}°",
+                    subject = "$resultTitle $bottleTitle",
+                    chooserTitle = shareTitle,
+                    fallbackToast = shareSuccess,
+                )
+            },
             onRetry = viewModel::retryFromResult,
             onHome = {
                 viewModel.resetSpin()
@@ -119,7 +133,7 @@ fun BottleSettingsScreen(
         containerColor = SpinColors.Background,
         topBar = {
             BottleHeader(
-                title = "Tùy chỉnh",
+                title = stringResource(R.string.customsize),
                 onBack = onBack,
             )
         },
@@ -133,7 +147,7 @@ fun BottleSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             BottleSettingRow(
-                title = "Thời lượng hoạt hình",
+                title = stringResource(R.string.duration),
                 trailing = {
                     BottleStepper(
                         value = "${state.durationSeconds}s",
@@ -144,7 +158,7 @@ fun BottleSettingsScreen(
             )
 
             BottleSettingRow(
-                title = "Quay Chai",
+                title = stringResource(R.string.spinBottle),
                 onClick = {
                     viewModel.beginStyleSelection()
                     onOpenLabels()
@@ -177,7 +191,7 @@ fun BottleLabelScreen(
         containerColor = SpinColors.Background,
         topBar = {
             BottleHeader(
-                title = "Mẫu Chai",
+                title = stringResource(R.string.Tembottle),
                 onBack = onBack,
                 actions = {
                     TextButton(
@@ -187,7 +201,7 @@ fun BottleLabelScreen(
                         },
                     ) {
                         Text(
-                            text = "Lưu",
+                            text = stringResource(R.string.save),
                             color = SpinColors.Action,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.ExtraBold,
@@ -239,7 +253,7 @@ private fun BottleHomeScreen(
         containerColor = SpinColors.Background,
         topBar = {
             BottleHeader(
-                title = "Quay Chai",
+                title = stringResource(R.string.spinBottle),
                 onBack = onBack,
             )
         },
@@ -279,7 +293,6 @@ private fun BottleResultScreen(
     modifier: Modifier = Modifier,
 ) {
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = onShare,
         onRetry = onRetry,
@@ -307,7 +320,7 @@ private fun BottleHeader(
     SpinTopBar(
         title = title,
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         titleStartPadding = 39.dp,
@@ -323,6 +336,11 @@ private fun BottleBottomBar(
     onStart: () -> Unit,
     onReset: () -> Unit,
 ) {
+    val customizeLabel = stringResource(R.string.customsize)
+    val startLabel = stringResource(R.string.start).uppercase()
+    val spinningLabel = stringResource(R.string.spinning).uppercase()
+    val restartLabel = stringResource(R.string.restart)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -334,19 +352,19 @@ private fun BottleBottomBar(
     ) {
         BottleToolButton(
             glyph = SpinIconGlyph.Sliders,
-            contentDescription = "Tùy chỉnh",
+            contentDescription = customizeLabel,
             enabled = !isSpinning,
             onClick = onOpenSettings,
         )
         BottlePrimaryActionButton(
-            text = if (isSpinning) "ĐANG QUAY..." else "BẮT ĐẦU",
+            text = if (isSpinning) "$spinningLabel..." else startLabel,
             enabled = !isSpinning,
             onClick = onStart,
             modifier = Modifier.weight(1f),
         )
         BottleToolButton(
             glyph = SpinIconGlyph.Reset,
-            contentDescription = "Reset",
+            contentDescription = restartLabel,
             enabled = !isSpinning,
             onClick = onReset,
         )
@@ -397,7 +415,7 @@ private fun BottlePrimaryActionButton(
         Text(
             text = text,
             color = Color.White,
-            fontSize = if (isSpinningText(text)) 16.sp else 21.sp,
+            fontSize = if (text.length > 10) 16.sp else 21.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
             maxLines = 1,
@@ -655,23 +673,23 @@ private fun BottleArt(
     )
 }
 
-private fun isSpinningText(text: String): Boolean =
-    text.contains("QUAY", ignoreCase = true)
-
 private fun shareBottleResult(
     context: Context,
     text: String,
+    subject: String,
+    chooserTitle: String,
+    fallbackToast: String,
 ) {
     val shareIntent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
-        putExtra(Intent.EXTRA_SUBJECT, "Kết quả quay chai")
+        putExtra(Intent.EXTRA_SUBJECT, subject)
         putExtra(Intent.EXTRA_TEXT, text)
     }
     try {
-        context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
+        context.startActivity(Intent.createChooser(shareIntent, chooserTitle))
     } catch (_: ActivityNotFoundException) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("Kết quả quay chai", text))
-        Toast.makeText(context, "Đã sao chép kết quả quay chai", Toast.LENGTH_SHORT).show()
+        clipboard.setPrimaryClip(ClipData.newPlainText(subject, text))
+        Toast.makeText(context, fallbackToast, Toast.LENGTH_SHORT).show()
     }
 }

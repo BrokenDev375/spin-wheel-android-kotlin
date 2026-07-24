@@ -35,11 +35,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinResultScreen
@@ -55,6 +57,10 @@ fun FingerScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val resultTitle = stringResource(R.string.results)
+    val fingerTitle = stringResource(R.string.lucky_finger)
+    val shareTitle = stringResource(R.string.sharereust)
+    val shareText = stringResource(R.string.finger_share_text, state.points.size)
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.cancelRound() }
@@ -66,13 +72,10 @@ fun FingerScreen(
             onShare = {
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
-                    putExtra(Intent.EXTRA_SUBJECT, "Ket qua chon ngon tay")
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "Spin Wheel da chon ngau nhien 1 nguoi thang trong ${state.points.size} ngon tay."
-                    )
+                    putExtra(Intent.EXTRA_SUBJECT, "$resultTitle $fingerTitle")
+                    putExtra(Intent.EXTRA_TEXT, shareText)
                 }
-                context.startActivity(Intent.createChooser(shareIntent, "Chia se ket qua"))
+                context.startActivity(Intent.createChooser(shareIntent, shareTitle))
             },
             onRetry = viewModel::retry,
             onHome = {
@@ -110,7 +113,7 @@ private fun FingerPlayScreen(
         containerColor = FingerPlayBackground,
         topBar = {
             FingerHeader(
-                title = "Chọn",
+                title = stringResource(R.string.lucky_finger),
                 fingerCount = state.fingerCount,
                 onBack = onBack,
                 onFingerCountSelected = onFingerCountSelected,
@@ -140,7 +143,7 @@ private fun FingerHeader(
     SpinTopBar(
         title = title,
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         titleStartPadding = 39.dp,
@@ -278,7 +281,7 @@ private fun FingerHint(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "ĐẶT NGÓN TAY LÊN MÀN\nHÌNH",
+            text = stringResource(R.string.place_finger_prompt).uppercase(),
             color = Color.White,
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
@@ -287,7 +290,7 @@ private fun FingerHint(
         )
         Spacer(modifier = Modifier.height(18.dp))
         Text(
-            text = "Giữ nguyên trong 2 giây để bắt đầu",
+            text = stringResource(R.string.hold_seconds_prompt),
             color = SpinColors.TextMuted,
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
@@ -306,7 +309,6 @@ private fun FingerFinalResultScreen(
     modifier: Modifier = Modifier,
 ) {
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = onShare,
         onRetry = onRetry,
@@ -391,6 +393,7 @@ private fun FingerResultPoint(
     compact: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val winLabel = stringResource(R.string.win).uppercase()
     val pointSize = if (compact) 34.dp else 48.dp
     val haloSize = if (compact) 52.dp else 76.dp
     val calloutWidth = if (compact) 54.dp else 80.dp
@@ -417,7 +420,7 @@ private fun FingerResultPoint(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "THẮNG",
+                    text = winLabel,
                     color = FingerWinRed,
                     fontSize = calloutFontSize,
                     fontWeight = FontWeight.Black,

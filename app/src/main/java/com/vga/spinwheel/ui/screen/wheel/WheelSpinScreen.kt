@@ -27,10 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -62,9 +64,9 @@ fun WheelSpinScreen(
     }
 
     SpinScreen(
-        title = "Bánh xe",
+        title = stringResource(R.string.spinwheel),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
@@ -72,7 +74,7 @@ fun WheelSpinScreen(
         actions = {
             SpinIconButton(
                 glyph = SpinIconGlyph.History,
-                contentDescription = "Lịch sử",
+                contentDescription = stringResource(R.string.history),
                 onClick = onOpenHistory,
                 tint = Color.White,
             )
@@ -98,7 +100,7 @@ fun WheelSpinScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = currentWheel?.name ?: "Bánh Xe",
+                        text = currentWheel?.name ?: stringResource(R.string.spinwheel),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -110,7 +112,7 @@ fun WheelSpinScreen(
                 // Result Text
                 val resultText = when (val status = spinStatus) {
                     is SpinStatus.Finished -> status.winner.name
-                    is SpinStatus.Spinning -> "Đang quay..."
+                    is SpinStatus.Spinning -> stringResource(R.string.spinning)
                     SpinStatus.Idle -> "???"
                 }
 
@@ -185,7 +187,11 @@ fun WheelSpinScreen(
                     ),
                 ) {
                     Text(
-                        text = if (spinStatus is SpinStatus.Spinning) "ĐANG QUAY..." else "NHẤN ĐỂ QUAY",
+                        text = if (spinStatus is SpinStatus.Spinning) {
+                            stringResource(R.string.spinning).uppercase()
+                        } else {
+                            stringResource(R.string.taptospin).uppercase()
+                        },
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,

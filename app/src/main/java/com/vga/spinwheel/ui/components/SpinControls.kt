@@ -29,12 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -231,9 +233,11 @@ fun SpinToggle(
 fun SpinShareButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    text: String = "Chia sẻ kết quả",
+    text: String? = null,
     backgroundColor: Color = Color(0xFF39A9F2),
 ) {
+    val resolvedText = text ?: stringResource(R.string.sharereust)
+
     Box(
         modifier = modifier
             .height(36.dp)
@@ -254,7 +258,7 @@ fun SpinShareButton(
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = text,
+                text = resolvedText,
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -270,9 +274,11 @@ fun SpinShareButton(
 fun SpinRetryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    text: String = "Thử lại",
+    text: String? = null,
     backgroundColor: Color = Color(0xFFDE3D2D),
 ) {
+    val resolvedText = text ?: stringResource(R.string.try_again)
+
     Box(
         modifier = modifier
             .fillMaxWidth(0.9f)
@@ -283,7 +289,7 @@ fun SpinRetryButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = text,
+            text = resolvedText,
             color = Color.White,
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,

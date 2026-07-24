@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -37,7 +39,7 @@ fun DiceSettingsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     SpinScreen(
-        title = "Tùy chỉnh",
+        title = stringResource(R.string.customsize),
         navigationIcon = SpinIconGlyph.Back,
         onNavigationClick = onBack,
         centerTitle = false,
@@ -81,7 +83,7 @@ private fun DurationSettingRow(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Thời lượng hoạt hình",
+            text = stringResource(R.string.duration),
             color = Color.White,
             fontSize = 17.sp,
             fontWeight = FontWeight.Black,
@@ -117,7 +119,7 @@ private fun DiceSkinSettingRow(onClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Xúc Xắc",
+            text = stringResource(R.string.diceRoller),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Black,

@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -33,6 +35,9 @@ fun DrawingResultScreen(
     val winner by viewModel.lastResult.collectAsState()
     val themeIndex by viewModel.themeIndex.collectAsState()
     val context = LocalContext.current
+    val resultTitle = stringResource(R.string.results)
+    val drawingTitle = stringResource(R.string.drawn)
+    val shareTitle = stringResource(R.string.sharereust)
 
     LaunchedEffect(wheelId) {
         if (wheel?.id != wheelId) {
@@ -46,17 +51,17 @@ fun DrawingResultScreen(
         ?: 0
 
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = {
-            val shareText = "Kết quả Vẽ: ${winner?.name.orEmpty()} (${winnerIndex + 1})"
+            val shareText = "$resultTitle $drawingTitle: ${winner?.name.orEmpty()} (${winnerIndex + 1})"
             context.startActivity(
                 Intent.createChooser(
                     Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, "$resultTitle $drawingTitle")
                         putExtra(Intent.EXTRA_TEXT, shareText)
                     },
-                    null,
+                    shareTitle,
                 ),
             )
         },

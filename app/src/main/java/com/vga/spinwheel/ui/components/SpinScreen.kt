@@ -27,11 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
@@ -43,11 +45,16 @@ import com.vga.spinwheel.ui.theme.SpinSpacing
 fun SpinConfirmExitDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    title: String = "Thoát trò chơi",
-    message: String = "Bạn chắc chắn muốn thoát trò chơi",
-    cancelText: String = "Ở lại",
-    confirmText: String = "Thoát",
+    title: String? = null,
+    message: String? = null,
+    cancelText: String? = null,
+    confirmText: String? = null,
 ) {
+    val resolvedTitle = title ?: stringResource(R.string.exitplay)
+    val resolvedMessage = message ?: stringResource(R.string.Areyousure)
+    val resolvedCancelText = cancelText ?: stringResource(R.string.stay)
+    val resolvedConfirmText = confirmText ?: stringResource(R.string.notNow)
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(20.dp),
@@ -58,7 +65,7 @@ fun SpinConfirmExitDialog(
                 modifier = Modifier.padding(24.dp)
             ) {
                 Text(
-                    text = title,
+                    text = resolvedTitle,
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -67,7 +74,7 @@ fun SpinConfirmExitDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = message,
+                    text = resolvedMessage,
                     color = Color.White.copy(alpha = 0.85f),
                     fontSize = 15.sp,
                     lineHeight = 22.sp
@@ -82,7 +89,7 @@ fun SpinConfirmExitDialog(
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            text = cancelText,
+                            text = resolvedCancelText,
                             color = Color(0xFFF12966),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
@@ -93,7 +100,7 @@ fun SpinConfirmExitDialog(
 
                     TextButton(onClick = onConfirm) {
                         Text(
-                            text = confirmText,
+                            text = resolvedConfirmText,
                             color = Color(0xFFF5A623),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
@@ -188,18 +195,20 @@ fun SpinResultScreen(
     onHome: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
-    title: String = "Kết Quả",
+    title: String? = null,
     confirmExitOnBack: Boolean = false,
     onShare: (() -> Unit)? = null,
-    shareText: String = "Chia sẻ kết quả",
+    shareText: String? = null,
     shareBackgroundColor: Color = Color(0xFF39A9F2),
-    retryText: String = "Thử lại",
+    retryText: String? = null,
     retryBackgroundColor: Color = Color(0xFFDE3D2D),
     cardHeight: Dp = 450.dp,
     cardContentPadding: Dp = 18.dp,
     cardBackgroundColor: Color = Color(0xFF3D3D3C),
     cardContent: @Composable () -> Unit,
 ) {
+    val resolvedTitle = title ?: stringResource(R.string.results)
+
     var showExitDialog by remember { mutableStateOf(false) }
 
     val handleHome = {
@@ -223,7 +232,7 @@ fun SpinResultScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = title,
+                title = resolvedTitle,
                 actions = {
                     SpinIconButton(
                         glyph = SpinIconGlyph.Home,

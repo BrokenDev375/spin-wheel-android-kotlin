@@ -23,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -47,7 +49,7 @@ fun DiceHomeScreen(
     }
 
     SpinScreen(
-        title = "Xúc Xắc",
+        title = stringResource(R.string.diceRoller),
         navigationIcon = SpinIconGlyph.Back,
         onNavigationClick = onBack,
         centerTitle = false,
@@ -58,7 +60,7 @@ fun DiceHomeScreen(
             if (!uiState.isRolling) {
                 SpinIconButton(
                     glyph = SpinIconGlyph.Settings,
-                    contentDescription = "Cài đặt",
+                    contentDescription = stringResource(R.string.settings),
                     onClick = onOpenSettings,
                     tint = Color.White,
                 )
@@ -118,7 +120,7 @@ private fun DiceCountSelector(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Dice Count:",
+            text = stringResource(R.string.dice_count),
             color = Color.White,
             fontSize = 16.sp,
             fontWeight = FontWeight.Black,
@@ -226,7 +228,7 @@ private fun DiceBottomBar(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "CHƠI",
+                text = stringResource(R.string.play).uppercase(),
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Black,

@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -36,7 +38,7 @@ fun DiceLabelScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     SpinScreen(
-        title = "Xúc Xắc",
+        title = stringResource(R.string.Templatedice),
         navigationIcon = SpinIconGlyph.Back,
         onNavigationClick = onBack,
         centerTitle = false,
@@ -44,7 +46,7 @@ fun DiceLabelScreen(
         navigationTint = Color.White,
         actions = {
             Text(
-                text = "Lưu",
+                text = stringResource(R.string.save),
                 color = DiceLabelAccent,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Black,

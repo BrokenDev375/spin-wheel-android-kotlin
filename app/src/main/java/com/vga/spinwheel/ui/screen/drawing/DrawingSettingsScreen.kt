@@ -22,10 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -52,9 +54,9 @@ fun DrawingSettingsScreen(
     }
 
     SpinScreen(
-        title = "Tùy chỉnh",
+        title = stringResource(R.string.customsize),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = saveAndBack,
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
@@ -67,7 +69,7 @@ fun DrawingSettingsScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             DrawingSettingRow(
-                title = "Thời lượng hoạt hình",
+                title = stringResource(R.string.duration),
                 trailing = {
                     DrawingStepper(
                         value = "${tempDuration}s",
@@ -86,7 +88,7 @@ fun DrawingSettingsScreen(
             )
 
             DrawingSettingRow(
-                title = "Vẽ",
+                title = stringResource(R.string.drawn),
                 onClick = onOpenPalette,
                 trailing = {
                     SpinIcon(

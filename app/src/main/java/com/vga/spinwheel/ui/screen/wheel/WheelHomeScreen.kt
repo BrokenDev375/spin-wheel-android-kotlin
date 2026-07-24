@@ -38,9 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.Wheel
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
@@ -70,9 +72,9 @@ fun WheelHomeScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Bánh Xe",
+                title = stringResource(R.string.spinwheel),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
                 centerTitle = false,
             )
@@ -115,7 +117,7 @@ fun WheelHomeScreen(
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = "Trình tạo AI",
+                        text = stringResource(R.string.generatorai),
                         fontSize = 18.sp,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                     )
@@ -152,7 +154,7 @@ fun WheelHomeScreen(
                     )
                     Spacer(modifier = Modifier.size(6.dp))
                     Text(
-                        text = "Tạo Bánh xe mới",
+                        text = stringResource(R.string.create),
                         fontSize = 17.sp,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
                     )
@@ -169,7 +171,7 @@ fun WheelHomeScreen(
                     contentAlignment = Alignment.TopCenter,
                 ) {
                     Text(
-                        text = "Không có bánh xe. Thêm mới đi!",
+                        text = stringResource(R.string.no_wheels),
                         style = MaterialTheme.typography.titleMedium,
                         color = SpinColors.TextMuted,
                     )
@@ -199,8 +201,8 @@ fun WheelHomeScreen(
     if (deleteTargetId != null) {
         AlertDialog(
             onDismissRequest = { deleteTargetId = null },
-            title = { Text("Xác nhận xóa", color = SpinColors.TextPrimary) },
-            text = { Text("Bạn có chắc chắn muốn xóa bánh xe này không?", color = SpinColors.TextMuted) },
+            title = { Text(stringResource(R.string.confirm), color = SpinColors.TextPrimary) },
+            text = { Text(stringResource(R.string.confirm_delete), color = SpinColors.TextMuted) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -208,12 +210,12 @@ fun WheelHomeScreen(
                         deleteTargetId = null
                     }
                 ) {
-                    Text("Xoá", color = Color(0xFFFF5252))
+                    Text(stringResource(R.string.delete), color = Color(0xFFFF5252))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { deleteTargetId = null }) {
-                    Text("Hủy", color = SpinColors.TextPrimary)
+                    Text(stringResource(R.string.cancel), color = SpinColors.TextPrimary)
                 }
             },
             containerColor = Color(0xFF2D2845),
@@ -246,6 +248,7 @@ private fun WheelItemCard(
     modifier: Modifier = Modifier,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
+    val itemLabel = stringResource(R.string.item)
 
     Box(
         modifier = modifier
@@ -269,7 +272,7 @@ private fun WheelItemCard(
                 modifier = Modifier.padding(end = 34.dp),
             )
             Text(
-                text = "${wheel.items.size} options",
+                text = "${wheel.items.size} $itemLabel",
                 style = MaterialTheme.typography.bodyMedium,
                 color = SpinColors.TextMuted,
             )
@@ -287,15 +290,15 @@ private fun WheelItemCard(
                 modifier = Modifier.background(Color(0xFF2D2845)),
             ) {
                 DropdownMenuItem(
-                    text = { Text("Sửa", color = SpinColors.TextPrimary) },
+                    text = { Text(stringResource(R.string.edit), color = SpinColors.TextPrimary) },
                     onClick = { menuExpanded = false; onEdit() },
                 )
                 DropdownMenuItem(
-                    text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
+                    text = { Text(stringResource(R.string.duplicate), color = SpinColors.TextPrimary) },
                     onClick = { menuExpanded = false; onDuplicate() },
                 )
                 DropdownMenuItem(
-                    text = { Text("Xoá", color = Color(0xFFFF5252)) },
+                    text = { Text(stringResource(R.string.delete), color = Color(0xFFFF5252)) },
                     onClick = { menuExpanded = false; onDelete() },
                 )
             }

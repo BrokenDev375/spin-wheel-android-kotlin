@@ -49,4 +49,17 @@
     <string name="intro_description_4">Tùy chỉnh từng trò chơi để phù hợp với sở thích của bạn.</string>
     <string name="intro_continue">Tiếp tục</string>
     <string name="intro_start">Bắt đầu</string>
+
+    <string name="dice_count">Số xúc xắc:</string>
+    <string name="number_generate_count">Số lượng tạo:</string>
+    <string name="number_allow_duplicates">Cho phép trùng:</string>
+    <string name="delete_history">Xóa lịch sử</string>
+    <string name="drawing_prompt_label">Nhập chủ đề cho danh sách:</string>
+    <string name="drawing_create_list">Tạo danh sách</string>
+    <string name="drawing_topic_dinner">Bữa tối</string>
+    <string name="drawing_topic_movies">Phim ảnh</string>
+    <string name="drawing_topic_travel">Du lịch</string>
+    <string name="drawing_topic_games">Trò chơi</string>
+    <string name="finger_share_text">Spin Wheel đã chọn ngẫu nhiên 1 người thắng trong %1$d ngón tay.</string>
+    <string name="team_group_title">Đội %1$d</string>
 </resources>

@@ -19,9 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.nav.Screen
 
@@ -33,9 +35,11 @@ fun CoinResultScreen(
 ) {
     val skin by viewModel.currentSkin.collectAsState()
     val context = LocalContext.current
+    val coinTitle = stringResource(R.string.coin)
+    val sideText = stringResource(if (isHeads) R.string.heads else R.string.tails)
+    val shareTitle = stringResource(R.string.sharereust)
 
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = {
             navController.navigate(Screen.Home.route) {
                 popUpTo(Screen.Home.route) { inclusive = true }
@@ -44,9 +48,9 @@ fun CoinResultScreen(
         onShare = {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "Tôi vừa tung được mặt ${if (isHeads) "Sấp" else "Ngửa"}!")
+                putExtra(Intent.EXTRA_TEXT, "$coinTitle: $sideText")
             }
-            context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
+            context.startActivity(Intent.createChooser(shareIntent, shareTitle))
         },
         onRetry = { navController.popBackStack() },
         cardHeight = 450.dp,
@@ -65,7 +69,7 @@ fun CoinResultScreen(
                     painter = painterResource(
                         id = if (isHeads) skin.headDrawable else skin.tailDrawable
                     ),
-                    contentDescription = if (isHeads) "Coin Head" else "Coin Tail",
+                    contentDescription = sideText,
                     modifier = Modifier
                         .size(320.dp)
                         .graphicsLayer { rotationY = 180f }

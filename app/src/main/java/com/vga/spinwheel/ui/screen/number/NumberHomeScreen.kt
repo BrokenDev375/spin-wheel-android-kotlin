@@ -36,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -95,9 +97,9 @@ fun NumberHomeScreen(
     }
 
     SpinScreen(
-        title = "Số Ngẫu Nhiên",
+        title = stringResource(R.string.randerNum),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Back",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = { if (!isSpinning) onBack() },
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
@@ -105,7 +107,7 @@ fun NumberHomeScreen(
         actions = {
             SpinIconButton(
                 glyph = SpinIconGlyph.History,
-                contentDescription = "History",
+                contentDescription = stringResource(R.string.history),
                 onClick = { if (!isSpinning) navController.navigate(NumberRoutes.HISTORY) }
             )
         }
@@ -225,7 +227,7 @@ fun NumberHomeScreen(
                     contentPadding = PaddingValues(horizontal = 8.dp),
                 ) {
                     Text(
-                        text = "NHẤN ĐỂ NGẪU NHIÊN",
+                        text = stringResource(R.string.playtapto).uppercase(),
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Black,
                         maxLines = 1,
@@ -273,7 +275,7 @@ private fun NumberRecentResults(
                 modifier = Modifier.size(22.dp),
             )
             Text(
-                text = "Gần đây",
+                text = stringResource(R.string.recen),
                 color = SpinColors.Action,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Black,

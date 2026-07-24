@@ -22,11 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -39,6 +41,9 @@ fun WheelAiGenerateDialog(
     onDismiss: () -> Unit,
 ) {
     var prompt by remember { mutableStateOf("") }
+    val quotaText = stringResource(R.string.limit_remaining)
+        .replace("{{remaining}}", "4")
+        .replace("{{total}}", "4")
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -55,9 +60,9 @@ fun WheelAiGenerateDialog(
                     .fillMaxSize(),
             ) {
                 SpinTopBar(
-                    title = "Trình tạo AI",
+                    title = stringResource(R.string.generatorai),
                     navigationIcon = SpinIconGlyph.Back,
-                    navigationDescription = "Quay lại",
+                    navigationDescription = stringResource(R.string.content_description_back),
                     onNavigationClick = onDismiss,
                     centerTitle = false,
                 )
@@ -78,7 +83,7 @@ fun WheelAiGenerateDialog(
                                 .padding(18.dp),
                         ) {
                             Text(
-                                text = "Enter a topic for your wheel:",
+                                text = stringResource(R.string.gerai),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
@@ -89,7 +94,7 @@ fun WheelAiGenerateDialog(
                                 onValueChange = { prompt = it },
                                 placeholder = {
                                     Text(
-                                        "e.g. Dinner decisions, Truth or dare",
+                                        stringResource(R.string.pleai),
                                         color = SpinColors.TextMuted,
                                         fontSize = 15.sp,
                                     )
@@ -108,7 +113,7 @@ fun WheelAiGenerateDialog(
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             Text(
-                                text = "Remaining quota f111878b: 4/4",
+                                text = quotaText,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = SpinColors.TextMuted,
@@ -134,7 +139,7 @@ fun WheelAiGenerateDialog(
                         ),
                     ) {
                         Text(
-                            text = "Generate options",
+                            text = stringResource(R.string.gerai),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                         )

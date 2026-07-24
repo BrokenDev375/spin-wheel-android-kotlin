@@ -49,4 +49,17 @@
     <string name="intro_description_4">Tune each game so it fits the way you play.</string>
     <string name="intro_continue">Continue</string>
     <string name="intro_start">Start</string>
+
+    <string name="dice_count">Dice Count:</string>
+    <string name="number_generate_count">Generate Count:</string>
+    <string name="number_allow_duplicates">Allow Duplicates:</string>
+    <string name="delete_history">Delete history</string>
+    <string name="drawing_prompt_label">Enter a topic for the list:</string>
+    <string name="drawing_create_list">Create list</string>
+    <string name="drawing_topic_dinner">Dinner</string>
+    <string name="drawing_topic_movies">Movies</string>
+    <string name="drawing_topic_travel">Travel</string>
+    <string name="drawing_topic_games">Games</string>
+    <string name="finger_share_text">Spin Wheel randomly chose 1 winner from %1$d fingers.</string>
+    <string name="team_group_title">Team %1$d</string>
 </resources>

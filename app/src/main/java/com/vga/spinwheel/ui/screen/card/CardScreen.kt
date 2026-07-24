@@ -52,6 +52,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -78,11 +79,28 @@ fun CardScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val resultTitle = stringResource(R.string.results)
+    val cardTitle = stringResource(R.string.card)
+    val winningCardTitle = stringResource(R.string.cardwin)
+    val shareTitle = stringResource(R.string.sharereust)
+    val shareSuccess = stringResource(R.string.share_success)
 
     if (state.stage == CardStage.Result) {
         CardResultScreen(
             state = state,
-            onShare = { shareCardResult(context, viewModel.shareText()) },
+            onShare = {
+                val winningPositions = state.cards
+                    .withIndex()
+                    .filter { it.value.isWinner }
+                    .joinToString(", ") { (index, _) -> (index + 1).toString() }
+                shareCardResult(
+                    context = context,
+                    text = "$resultTitle $cardTitle: ${state.settings.winners}/${state.settings.totalCards}. $winningCardTitle: $winningPositions.",
+                    subject = "$resultTitle $cardTitle",
+                    chooserTitle = shareTitle,
+                    fallbackToast = shareSuccess,
+                )
+            },
             onRetry = viewModel::retryFromResult,
             onHome = onHome,
             modifier = modifier,
@@ -116,7 +134,7 @@ fun CardSettingsScreen(
         containerColor = SpinColors.Background,
         topBar = {
             CardHeader(
-                title = "Tùy chỉnh",
+                title = stringResource(R.string.customsize),
                 onBack = onBack,
             )
         },
@@ -130,7 +148,7 @@ fun CardSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             CardSettingRow(
-                title = "Thời lượng hoạt hình",
+                title = stringResource(R.string.duration),
                 trailing = {
                     CardStepper(
                         value = "${state.settings.durationSeconds}s",
@@ -141,7 +159,7 @@ fun CardSettingsScreen(
             )
 
             CardSettingRow(
-                title = "Total Cards:",
+                title = stringResource(R.string.numbercard),
                 trailing = {
                     CardStepper(
                         value = state.settings.totalCards.toString(),
@@ -152,7 +170,7 @@ fun CardSettingsScreen(
             )
 
             CardSettingRow(
-                title = "Số người chiến thắng",
+                title = stringResource(R.string.numberwin),
                 trailing = {
                     CardStepper(
                         value = state.settings.winners.toString(),
@@ -163,7 +181,7 @@ fun CardSettingsScreen(
             )
 
             CardSettingRow(
-                title = "Card Deck Theme",
+                title = stringResource(R.string.Temlatecard),
                 onClick = {
                     viewModel.beginThemeSelection()
                     onOpenLabels()
@@ -195,7 +213,7 @@ fun CardLabelScreen(
         containerColor = SpinColors.Background,
         topBar = {
             CardHeader(
-                title = "Thẻ mẫu",
+                title = stringResource(R.string.Temlatecard),
                 onBack = onBack,
                 actions = {
                     TextButton(
@@ -205,7 +223,7 @@ fun CardLabelScreen(
                         },
                     ) {
                         Text(
-                            text = "Lưu",
+                            text = stringResource(R.string.save),
                             color = SpinColors.Action,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.ExtraBold,
@@ -259,7 +277,7 @@ private fun CardHomeScreen(
         containerColor = SpinColors.Background,
         topBar = {
             CardHeader(
-                title = "Lật Thẻ",
+                title = stringResource(R.string.card),
                 onBack = onBack,
             )
         },
@@ -329,7 +347,6 @@ private fun CardResultScreen(
     val theme = CardThemes.get(state.settings.themeIndex)
 
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = onShare,
         onRetry = onRetry,
@@ -355,7 +372,7 @@ private fun CardHeader(
     SpinTopBar(
         title = title,
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         titleStartPadding = 39.dp,
@@ -382,7 +399,7 @@ private fun WinnerCardPreview(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "Thẻ Thắng",
+                text = stringResource(R.string.cardwin),
                 color = Color.White,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
@@ -411,6 +428,10 @@ private fun CardBottomBar(
     onShuffle: () -> Unit,
     onReset: () -> Unit,
 ) {
+    val customizeLabel = stringResource(R.string.customsize)
+    val shuffleLabel = stringResource(R.string.TaptoShuffle).uppercase()
+    val restartLabel = stringResource(R.string.restart)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -421,17 +442,17 @@ private fun CardBottomBar(
     ) {
         CardToolButton(
             glyph = SpinIconGlyph.Sliders,
-            contentDescription = "Tùy chỉnh",
+            contentDescription = customizeLabel,
             onClick = onOpenSettings,
         )
         CardPrimaryActionButton(
-            text = "NHẤN ĐỂ XÁO TRỘN",
+            text = shuffleLabel,
             onClick = onShuffle,
             modifier = Modifier.weight(1f),
         )
         CardToolButton(
             glyph = SpinIconGlyph.Reset,
-            contentDescription = "Reset",
+            contentDescription = restartLabel,
             onClick = onReset,
         )
     }
@@ -592,12 +613,12 @@ private fun CardThemeLabelCard(
         ) {
             CardThemePreviewColumn(
                 face = theme.winner,
-                label = "Người thắng",
+                label = stringResource(R.string.Winner),
                 labelColor = theme.labelContent,
             )
             CardThemePreviewColumn(
                 face = theme.loser,
-                label = "Kẻ thua",
+                label = stringResource(R.string.Lose),
                 labelColor = theme.labelContent,
             )
         }
@@ -862,18 +883,21 @@ private fun MonochromeLoserCard(
 private fun shareCardResult(
     context: Context,
     text: String,
+    subject: String,
+    chooserTitle: String,
+    fallbackToast: String,
 ) {
     val shareIntent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
-        putExtra(Intent.EXTRA_SUBJECT, "Kết quả lật thẻ")
+        putExtra(Intent.EXTRA_SUBJECT, subject)
         putExtra(Intent.EXTRA_TEXT, text)
     }
     try {
-        context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
+        context.startActivity(Intent.createChooser(shareIntent, chooserTitle))
     } catch (_: ActivityNotFoundException) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("Kết quả lật thẻ", text))
-        Toast.makeText(context, "Đã sao chép kết quả lật thẻ", Toast.LENGTH_SHORT).show()
+        clipboard.setPrimaryClip(ClipData.newPlainText(subject, text))
+        Toast.makeText(context, fallbackToast, Toast.LENGTH_SHORT).show()
     }
 }
 

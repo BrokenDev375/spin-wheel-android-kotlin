@@ -25,7 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.RandomResult
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
@@ -53,15 +55,15 @@ fun WheelHistoryScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Lịch sử quay",
+                title = stringResource(R.string.history_spin),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
                 centerTitle = false,
                 actions = {
                     SpinIconButton(
                         glyph = SpinIconGlyph.Trash,
-                        contentDescription = "Xóa lịch sử",
+                        contentDescription = stringResource(R.string.delete_history),
                         onClick = viewModel::clearHistory,
                         enabled = historyList.isNotEmpty(),
                     )
@@ -85,7 +87,7 @@ fun WheelHistoryScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Chưa có lịch sử quay",
+                    text = stringResource(R.string.noResults),
                     style = MaterialTheme.typography.titleMedium,
                     color = SpinColors.TextMuted,
                 )
@@ -141,7 +143,7 @@ private fun HistoryItemCard(item: RandomResult) {
         }
         Spacer(modifier = Modifier.height(14.dp))
         Text(
-            text = "Result: ${item.value}",
+            text = "${stringResource(R.string.results)}: ${item.value}",
             style = MaterialTheme.typography.titleMedium,
             color = SpinColors.Action,
         )

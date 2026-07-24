@@ -18,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -37,9 +39,9 @@ fun NumberHistoryScreen(
     val history by viewModel.history.collectAsState()
 
     SpinScreen(
-        title = "Lịch sử",
+        title = stringResource(R.string.history),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = { navController.popBackStack() },
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
@@ -47,7 +49,7 @@ fun NumberHistoryScreen(
             if (history.isNotEmpty()) {
                 SpinIconButton(
                     glyph = SpinIconGlyph.Trash,
-                    contentDescription = "Xóa lịch sử",
+                    contentDescription = stringResource(R.string.delete_history),
                     onClick = { viewModel.clearHistory() },
                     tint = Color.Red,
                 )
@@ -60,7 +62,7 @@ fun NumberHistoryScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Ồ! Không có lịch sử nào vào lúc này",
+                    text = stringResource(R.string.noResults),
                     color = SpinColors.TextMuted,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,

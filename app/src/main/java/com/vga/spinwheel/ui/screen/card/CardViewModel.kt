@@ -154,15 +154,6 @@ class CardViewModel @Inject constructor(
         }
     }
 
-    fun shareText(): String {
-        val state = _uiState.value
-        val winningPositions = state.cards
-            .mapIndexedNotNull { index, card -> if (card.isWinner) index + 1 else null }
-            .joinToString(", ")
-
-        return "Ket qua lat the: ${state.settings.winners}/${state.settings.totalCards} the thang. Vi tri thang: $winningPositions."
-    }
-
     private fun applySettings(
         settings: CardSettings,
         persistTotalCards: Boolean = false,

@@ -23,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -40,16 +42,16 @@ fun DrawingPaletteScreen(
     val tempThemeIndex by viewModel.tempThemeIndex.collectAsState()
 
     SpinScreen(
-        title = "Vẽ",
+        title = stringResource(R.string.drawn),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         actions = {
             TextButton(onClick = onSave) {
                 Text(
-                    text = "Lưu",
+                    text = stringResource(R.string.save),
                     color = SpinColors.Action,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Black,

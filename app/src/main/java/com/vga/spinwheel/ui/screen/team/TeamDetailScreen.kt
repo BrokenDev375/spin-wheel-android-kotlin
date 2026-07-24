@@ -34,11 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinConfirmExitDialog
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -90,20 +92,20 @@ fun TeamDetailScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Đội",
+                title = stringResource(R.string.homograft),
                 centerTitle = false,
                 titleStartPadding = 39.dp,
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = requestBack,
             )
         },
         bottomBar = {
             TeamDetailBottomBar(
                 primaryText = when (state.status) {
-                    TeamMatchStatus.Idle -> "NHẤN ĐỂ GHÉP NỐI"
-                    TeamMatchStatus.Matching -> "NHẤN ĐỂ GHÉP NỐI"
-                    TeamMatchStatus.ReadyForPreview -> "Next"
+                    TeamMatchStatus.Idle -> stringResource(R.string.tapto).uppercase()
+                    TeamMatchStatus.Matching -> stringResource(R.string.tapto).uppercase()
+                    TeamMatchStatus.ReadyForPreview -> stringResource(R.string.next)
                 },
                 primaryEnabled = state.status != TeamMatchStatus.Matching && members.size >= 2,
                 settingsEnabled = state.status != TeamMatchStatus.Matching,
@@ -127,7 +129,7 @@ fun TeamDetailScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            TeamNameChip(name = list?.name ?: "Đội")
+            TeamNameChip(name = list?.name ?: stringResource(R.string.homograft))
 
             Spacer(
                 modifier = Modifier.height(
@@ -266,7 +268,7 @@ private fun TeamDetailBottomBar(
     ) {
         TeamToolButton(
             glyph = SpinIconGlyph.Sliders,
-            contentDescription = "Tùy chỉnh",
+            contentDescription = stringResource(R.string.customsize),
             enabled = settingsEnabled,
             onClick = onSettings,
         )
@@ -278,7 +280,7 @@ private fun TeamDetailBottomBar(
         )
         TeamToolButton(
             glyph = SpinIconGlyph.Reset,
-            contentDescription = "Reset",
+            contentDescription = stringResource(R.string.restart),
             enabled = settingsEnabled,
             onClick = onReset,
         )

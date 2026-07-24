@@ -34,11 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.Wheel
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
@@ -61,9 +63,9 @@ fun DrawingHomeScreen(
     val displayWheels = wheels.ifEmpty { listOf(DrawingViewModel.DRAWING_FALLBACK_WHEEL) }
 
     SpinScreen(
-        title = "Vẽ",
+        title = stringResource(R.string.drawn),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
@@ -75,7 +77,7 @@ fun DrawingHomeScreen(
             Spacer(modifier = Modifier.height(28.dp))
 
             DrawingHomeAction(
-                text = "Trình tạo AI",
+                text = stringResource(R.string.generatorai),
                 icon = SpinIconGlyph.Sparkles,
                 onClick = onAiGenerate,
                 background = Brush.horizontalGradient(
@@ -88,7 +90,7 @@ fun DrawingHomeScreen(
             Spacer(modifier = Modifier.height(14.dp))
 
             DrawingHomeAction(
-                text = "Tạo Bánh xe mới",
+                text = stringResource(R.string.create),
                 icon = SpinIconGlyph.Plus,
                 onClick = onAddWheel,
                 background = Brush.linearGradient(
@@ -124,10 +126,10 @@ fun DrawingHomeScreen(
     if (deleteTargetId != null) {
         AlertDialog(
             onDismissRequest = { deleteTargetId = null },
-            title = { Text("Xác nhận xóa", color = SpinColors.TextPrimary) },
+            title = { Text(stringResource(R.string.confirm), color = SpinColors.TextPrimary) },
             text = {
                 Text(
-                    "Bạn có chắc chắn muốn xóa danh sách này không?",
+                    stringResource(R.string.confirm_delete),
                     color = SpinColors.TextMuted,
                 )
             },
@@ -138,12 +140,12 @@ fun DrawingHomeScreen(
                         deleteTargetId = null
                     },
                 ) {
-                    Text("Xoá", color = Color(0xFFFF5252))
+                    Text(stringResource(R.string.delete), color = Color(0xFFFF5252))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { deleteTargetId = null }) {
-                    Text("Hủy", color = SpinColors.TextPrimary)
+                    Text(stringResource(R.string.cancel), color = SpinColors.TextPrimary)
                 }
             },
             containerColor = Color(0xFF2D2845),
@@ -208,6 +210,7 @@ private fun DrawingItemCard(
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(14.dp)
+    val itemLabel = stringResource(R.string.item)
 
     Box(
         modifier = Modifier
@@ -232,7 +235,7 @@ private fun DrawingItemCard(
         )
 
         Text(
-            text = "${wheel.items.size} options",
+            text = "${wheel.items.size} $itemLabel",
             modifier = Modifier.align(Alignment.BottomStart),
             color = Color.White.copy(alpha = 0.52f),
             fontSize = 15.sp,
@@ -242,7 +245,7 @@ private fun DrawingItemCard(
         Box(modifier = Modifier.align(Alignment.TopEnd)) {
             SpinIconButton(
                 glyph = SpinIconGlyph.More,
-                contentDescription = "Tùy chọn",
+                contentDescription = stringResource(R.string.customsize),
                 onClick = { menuExpanded = true },
                 modifier = Modifier.size(30.dp),
                 tint = Color.White.copy(alpha = 0.72f),
@@ -254,7 +257,7 @@ private fun DrawingItemCard(
             ) {
                 if (wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id) {
                     DropdownMenuItem(
-                        text = { Text("Sửa", color = SpinColors.TextPrimary) },
+                        text = { Text(stringResource(R.string.edit), color = SpinColors.TextPrimary) },
                         onClick = {
                             menuExpanded = false
                             onEdit()
@@ -262,7 +265,7 @@ private fun DrawingItemCard(
                     )
                 }
                 DropdownMenuItem(
-                    text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
+                    text = { Text(stringResource(R.string.duplicate), color = SpinColors.TextPrimary) },
                     onClick = {
                         menuExpanded = false
                         onDuplicate()
@@ -270,7 +273,7 @@ private fun DrawingItemCard(
                 )
                 if (wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id) {
                     DropdownMenuItem(
-                        text = { Text("Xoá", color = Color(0xFFFF5252)) },
+                        text = { Text(stringResource(R.string.delete), color = Color(0xFFFF5252)) },
                         onClick = {
                             menuExpanded = false
                             onDelete()

@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -91,7 +93,7 @@ private fun TeamBoard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = team.title,
+                text = stringResource(R.string.team_group_title, team.index),
                 color = Color.White,
                 fontSize = titleFontSize,
                 fontWeight = FontWeight.ExtraBold,
@@ -102,7 +104,7 @@ private fun TeamBoard(
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Chỉnh sửa đội",
+                    contentDescription = stringResource(R.string.edit),
                     tint = Color.White,
                     modifier = Modifier.width(22.dp).height(22.dp),
                 )

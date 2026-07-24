@@ -23,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -46,11 +48,11 @@ fun TeamSettingsScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Tùy chỉnh",
+                title = stringResource(R.string.customsize),
                 centerTitle = false,
                 titleStartPadding = 39.dp,
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
             )
         },
@@ -64,7 +66,7 @@ fun TeamSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TeamSettingRow(
-                title = "Các mục của nhóm",
+                title = stringResource(R.string.itemsgroup),
                 trailing = {
                     TeamStepper(
                         value = state.groupSize.toString(),
@@ -75,7 +77,7 @@ fun TeamSettingsScreen(
             )
 
             TeamSettingRow(
-                title = "Thời lượng hoạt hình",
+                title = stringResource(R.string.duration),
                 trailing = {
                     TeamStepper(
                         value = "${state.durationSeconds}s",
@@ -86,7 +88,7 @@ fun TeamSettingsScreen(
             )
 
             TeamSettingRow(
-                title = "Gieo hạt của nhóm",
+                title = stringResource(R.string.Seeding),
                 trailing = {
                     SpinToggle(
                         checked = state.seedEnabled,

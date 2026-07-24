@@ -31,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -71,16 +73,16 @@ fun DrawingSpinScreen(
         ?: 0
 
     SpinScreen(
-        title = "Vẽ",
+        title = stringResource(R.string.drawn),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = onBack,
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         actions = {
             SpinIconButton(
                 glyph = SpinIconGlyph.Settings,
-                contentDescription = "Tùy chỉnh",
+                contentDescription = stringResource(R.string.customsize),
                 onClick = onOpenSettings,
                 tint = Color.White,
             )
@@ -201,6 +203,10 @@ private fun DrawingBottomControls(
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val customizeLabel = stringResource(R.string.customsize)
+    val startLabel = stringResource(R.string.playtapto).uppercase()
+    val restartLabel = stringResource(R.string.restart)
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -208,7 +214,7 @@ private fun DrawingBottomControls(
     ) {
         DrawingToolButton(
             glyph = SpinIconGlyph.Sliders,
-            contentDescription = "Tùy chỉnh",
+            contentDescription = customizeLabel,
             enabled = enabled,
             onClick = onSettings,
         )
@@ -225,7 +231,7 @@ private fun DrawingBottomControls(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "Nhấn để ghép nối",
+                text = startLabel,
                 color = Color(0xFF111111),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Black,
@@ -235,7 +241,7 @@ private fun DrawingBottomControls(
 
         DrawingToolButton(
             glyph = SpinIconGlyph.Reset,
-            contentDescription = "Quay lại từ đầu",
+            contentDescription = restartLabel,
             enabled = enabled,
             onClick = onReset,
         )

@@ -47,7 +47,7 @@ fun SettingsScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = stringResource(R.string.screen_settings),
+                title = stringResource(R.string.settings),
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
@@ -72,27 +72,27 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = stringResource(R.string.settings_overview),
+                text = stringResource(R.string.General),
                 color = SpinColors.TextMuted,
                 style = MaterialTheme.typography.titleLarge,
             )
             SpinSettingRow(
-                title = stringResource(R.string.settings_share),
+                title = stringResource(R.string.share_app),
                 onClick = onShareClick,
                 leading = { SettingsGlyph(SpinIconGlyph.ShareNetwork) },
             )
             SpinSettingRow(
-                title = stringResource(R.string.settings_language),
+                title = stringResource(R.string.language),
                 onClick = onLanguageClick,
                 leading = { SettingsGlyph(SpinIconGlyph.Language) },
             )
             SpinSettingRow(
-                title = stringResource(R.string.settings_rate),
+                title = stringResource(R.string.rate_us),
                 onClick = onRateClick,
                 leading = { SettingsGlyph(SpinIconGlyph.Rate) },
             )
             SpinSettingRow(
-                title = stringResource(R.string.settings_music),
+                title = stringResource(R.string.background_music),
                 leading = { SettingsGlyph(SpinIconGlyph.Music) },
                 trailing = {
                     SpinToggle(
@@ -102,7 +102,7 @@ fun SettingsScreen(
                 },
             )
             SpinSettingRow(
-                title = stringResource(R.string.settings_game_sound),
+                title = stringResource(R.string.game_sound),
                 leading = { SettingsGlyph(SpinIconGlyph.Sound) },
                 trailing = {
                     SpinToggle(
@@ -112,7 +112,7 @@ fun SettingsScreen(
                 },
             )
             SpinSettingRow(
-                title = stringResource(R.string.settings_vibration),
+                title = stringResource(R.string.vibration),
                 leading = { SettingsGlyph(SpinIconGlyph.Vibration) },
                 trailing = {
                     SpinToggle(

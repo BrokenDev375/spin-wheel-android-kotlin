@@ -161,9 +161,6 @@ class BottleViewModel @Inject constructor(
         resetSpin()
     }
 
-    fun shareText(): String =
-        "Kết quả quay chai: ${_uiState.value.lastAngle}°"
-
     private fun isActiveRun(runId: Long): Boolean =
         _uiState.value.runId == runId
 

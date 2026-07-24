@@ -23,12 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -45,11 +47,11 @@ fun CoinSettingsScreen(
     Scaffold(
         topBar = {
             SpinTopBar(
-                title = "Tùy chỉnh",
+                title = stringResource(R.string.customsize),
                 centerTitle = false,
                 titleStartPadding = 39.dp,
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = { navController.popBackStack() },
             )
         },
@@ -73,7 +75,7 @@ fun CoinSettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Thời lượng hoạt hình",
+                    text = stringResource(R.string.duration),
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -115,7 +117,7 @@ fun CoinSettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Mẫu tiền xu",
+                    text = stringResource(R.string.coinsample),
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,

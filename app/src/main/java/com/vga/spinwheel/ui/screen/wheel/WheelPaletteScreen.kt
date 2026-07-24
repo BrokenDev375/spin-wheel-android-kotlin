@@ -36,9 +36,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -60,9 +62,9 @@ fun WheelPaletteScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Bảng màu",
+                title = stringResource(R.string.color),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
                 centerTitle = false,
                 actions = {
@@ -73,7 +75,7 @@ fun WheelPaletteScreen(
                         }
                     ) {
                         Text(
-                            text = "Lưu",
+                            text = stringResource(R.string.save),
                             color = Color(0xFFFFA726),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -109,6 +111,14 @@ private fun PaletteCircleItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
+    val paletteName = when (palette.id) {
+        0 -> stringResource(R.string.Classic)
+        1 -> stringResource(R.string.Vibrant)
+        2 -> stringResource(R.string.Pastel)
+        3 -> stringResource(R.string.Dark)
+        else -> palette.name
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable(onClick = onClick),
@@ -155,7 +165,7 @@ private fun PaletteCircleItem(
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = palette.name,
+            text = paletteName,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

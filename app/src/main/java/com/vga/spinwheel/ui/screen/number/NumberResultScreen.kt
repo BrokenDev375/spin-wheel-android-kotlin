@@ -19,12 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -36,10 +38,11 @@ fun NumberResultScreen(
 ) {
     val lastResult by viewModel.lastResult.collectAsState()
     val context = LocalContext.current
+    val numberTitle = stringResource(R.string.randerNum)
+    val shareTitle = stringResource(R.string.sharereust)
 
     SpinResultScreen(
         modifier = Modifier.statusBarsPadding(),
-        title = "Kết Quả",
         onHome = {
             navController.navigate(Screen.Home.route) {
                 popUpTo(Screen.Home.route) { inclusive = true }
@@ -48,9 +51,9 @@ fun NumberResultScreen(
         onShare = {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "Kết quả số ngẫu nhiên của tôi: ${lastResult ?: ""}")
+                putExtra(Intent.EXTRA_TEXT, "$numberTitle: ${lastResult ?: ""}")
             }
-            context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
+            context.startActivity(Intent.createChooser(shareIntent, shareTitle))
         },
         onRetry = {
             viewModel.clearLastResult()

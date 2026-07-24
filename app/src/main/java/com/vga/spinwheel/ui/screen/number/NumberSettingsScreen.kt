@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -93,16 +95,16 @@ fun NumberSettingsScreen(
     }
 
     SpinScreen(
-        title = "Tùy chỉnh",
+        title = stringResource(R.string.customsize),
         navigationIcon = SpinIconGlyph.Back,
-        navigationDescription = "Quay lại",
+        navigationDescription = stringResource(R.string.content_description_back),
         onNavigationClick = { navController.popBackStack() },
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         actions = {
             TextButton(onClick = saveAndBack) {
                 Text(
-                    text = "Lưu",
+                    text = stringResource(R.string.save),
                     color = SpinColors.Action,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Black,
@@ -117,7 +119,7 @@ fun NumberSettingsScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             SpinSettingRow(
-                title = "Minimum Value (From):",
+                title = stringResource(R.string.form),
                 trailing = {
                     NumberValueInput(
                         value = minText,
@@ -134,7 +136,7 @@ fun NumberSettingsScreen(
             )
 
             SpinSettingRow(
-                title = "Maximum Value (To):",
+                title = stringResource(R.string.to),
                 trailing = {
                     NumberValueInput(
                         value = maxText,
@@ -151,7 +153,7 @@ fun NumberSettingsScreen(
             )
 
             SpinSettingRow(
-                title = "Generate Count:",
+                title = stringResource(R.string.number_generate_count),
                 trailing = {
                     NumberStepper(
                         value = tempCount.toString(),
@@ -162,7 +164,7 @@ fun NumberSettingsScreen(
             )
 
             SpinSettingRow(
-                title = "Allow Duplicates:",
+                title = stringResource(R.string.number_allow_duplicates),
                 trailing = {
                     SpinToggle(
                         checked = tempAllowDuplicates,
@@ -172,7 +174,7 @@ fun NumberSettingsScreen(
             )
 
             SpinSettingRow(
-                title = "Thời lượng hoạt hình",
+                title = stringResource(R.string.duration),
                 trailing = {
                     NumberStepper(
                         value = "${tempDuration}s",
@@ -183,7 +185,7 @@ fun NumberSettingsScreen(
             )
 
             SpinSettingRow(
-                title = "Lịch sử",
+                title = stringResource(R.string.history),
                 onClick = { navController.navigate(com.vga.spinwheel.ui.nav.NumberRoutes.HISTORY) },
                 trailing = {
                     SpinIcon(

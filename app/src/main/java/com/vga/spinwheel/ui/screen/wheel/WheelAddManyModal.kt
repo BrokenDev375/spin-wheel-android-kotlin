@@ -24,10 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -57,10 +59,10 @@ fun WheelAddManyModal(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Hủy", color = Color.White, fontSize = 16.sp)
+                        Text(stringResource(R.string.cancel), color = Color.White, fontSize = 16.sp)
                     }
                     Text(
-                        text = "Thêm nhiều tùy chọn",
+                        text = stringResource(R.string.addOption),
                         fontSize = 18.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
@@ -73,7 +75,7 @@ fun WheelAddManyModal(
                             }
                         }
                     ) {
-                        Text("Xong", color = Color(0xFFFFA726), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.done), color = Color(0xFFFFA726), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
 
@@ -85,7 +87,7 @@ fun WheelAddManyModal(
                     onValueChange = { textInput = it },
                     placeholder = {
                         Text(
-                            text = "Vui lòng nhập các tùy chọn, mỗi dòng một tùy chọn, ví dụ:",
+                            text = stringResource(R.string.pleaseIn),
                             color = Color(0xFF888888),
                             fontSize = 15.sp,
                         )

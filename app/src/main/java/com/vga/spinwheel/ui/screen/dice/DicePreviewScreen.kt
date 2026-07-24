@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -34,23 +36,24 @@ fun DicePreviewScreen(
 
     val results = uiState.currentResults.ifEmpty { List(uiState.diceCount) { 1 } }
     val total = uiState.currentResults.sum()
+    val diceTitle = stringResource(R.string.diceRoller)
+    val appTitle = stringResource(R.string.spinwheel)
+    val shareTitle = stringResource(R.string.share)
 
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 val valuesText = results.joinToString(", ")
-                putExtra(Intent.EXTRA_TEXT, "Tổng điểm Xúc Xắc: $total ($valuesText) - app Spin Wheel")
+                putExtra(Intent.EXTRA_TEXT, "$diceTitle: $total ($valuesText) - $appTitle")
             }
-            context.startActivity(Intent.createChooser(shareIntent, "Share"))
+            context.startActivity(Intent.createChooser(shareIntent, shareTitle))
         },
         onRetry = {
             viewModel.resetResults()
             onRetry()
         },
-        shareText = "Chia sẻ kết quả",
         cardHeight = 450.dp,
         cardContentPadding = 0.dp,
         cardBackgroundColor = SpinColors.Background,

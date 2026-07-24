@@ -29,9 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -56,9 +58,9 @@ fun WheelSettingsScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Tùy chỉnh",
+                title = stringResource(R.string.customsize),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
                 centerTitle = false,
             )
@@ -86,7 +88,7 @@ fun WheelSettingsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "Thời lượng hoạt hình",
+                        text = stringResource(R.string.duration),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                     )
@@ -141,7 +143,7 @@ fun WheelSettingsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "Bảng màu",
+                        text = stringResource(R.string.color),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                     )
@@ -165,7 +167,7 @@ fun WheelSettingsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "Xóa người thắng",
+                        text = stringResource(R.string.removewin),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                     )

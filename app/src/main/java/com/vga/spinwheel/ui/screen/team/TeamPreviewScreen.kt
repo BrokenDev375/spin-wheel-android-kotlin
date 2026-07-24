@@ -12,8 +12,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -34,18 +36,26 @@ fun TeamPreviewScreen(
             TeamRoundRules.createTeams(members, state.groupSize)
         }
     }
+    val resultTitle = stringResource(R.string.results)
+    val shareTitle = stringResource(R.string.sharereust)
+    val fallbackTeamTitle = stringResource(R.string.homograft)
+    val listTitle = state.currentList?.name ?: fallbackTeamTitle
 
     fun shareResult() {
+        val teamText = teams.joinToString(separator = "\n\n") { team ->
+            context.getString(R.string.team_group_title, team.index) +
+                "\n" +
+                team.members.joinToString(separator = "\n") { "- $it" }
+        }
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Kết quả chia đội")
-            putExtra(Intent.EXTRA_TEXT, viewModel.shareText())
+            putExtra(Intent.EXTRA_SUBJECT, resultTitle)
+            putExtra(Intent.EXTRA_TEXT, "$listTitle\n\n$teamText")
         }
-        context.startActivity(Intent.createChooser(shareIntent, "Chia sẻ kết quả"))
+        context.startActivity(Intent.createChooser(shareIntent, shareTitle))
     }
 
     SpinResultScreen(
-        title = "Kết Quả",
         onHome = onHome,
         onShare = { shareResult() },
         onRetry = onRetry,
@@ -55,7 +65,7 @@ fun TeamPreviewScreen(
     ) {
         if (teams.isEmpty()) {
             Text(
-                text = "Chưa có kết quả",
+                text = stringResource(R.string.noResults),
                 color = SpinColors.TextMuted,
                 style = MaterialTheme.typography.titleMedium,
             )

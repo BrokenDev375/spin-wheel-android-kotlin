@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -66,14 +65,14 @@ fun HomeScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = stringResource(R.string.screen_home),
+                title = stringResource(R.string.spinwheel),
                 navigationIcon = SpinIconGlyph.Settings,
-                navigationDescription = stringResource(R.string.content_description_settings),
+                navigationDescription = stringResource(R.string.settings),
                 onNavigationClick = onSettingsClick,
             ) {
                 SpinIconButton(
                     glyph = SpinIconGlyph.Crown,
-                    contentDescription = stringResource(R.string.content_description_premium),
+                    contentDescription = stringResource(R.string.vip),
                     onClick = onPaymentClick,
                     tint = SpinColors.Premium,
                 )
@@ -100,7 +99,7 @@ fun HomeScreen(
 
             items(beforeAd, key = { it.screen.route }) { item ->
                 SpinFeatureCard(
-                    title = stringResource(featureTitleRes(item.screen)),
+                    title = stringResource(item.screen.titleRes),
                     style = item.style,
                     onClick = {
                         if (!navigationPending) {
@@ -123,7 +122,7 @@ fun HomeScreen(
 
             items(afterAd, key = { it.screen.route }) { item ->
                 SpinFeatureCard(
-                    title = stringResource(featureTitleRes(item.screen)),
+                    title = stringResource(item.screen.titleRes),
                     style = item.style,
                     onClick = {
                         if (!navigationPending) {
@@ -142,20 +141,6 @@ private data class HomeFeature(
     val screen: Screen,
     val style: SpinFeatureCardStyle,
 )
-
-@StringRes
-private fun featureTitleRes(screen: Screen): Int = when (screen) {
-    Screen.Wheel -> R.string.feature_wheel
-    Screen.Finger -> R.string.feature_finger
-    Screen.Coin -> R.string.feature_coin
-    Screen.Team -> R.string.feature_team
-    Screen.Number -> R.string.feature_number
-    Screen.Drawing -> R.string.feature_drawing
-    Screen.Bottle -> R.string.feature_bottle
-    Screen.Dice -> R.string.feature_dice
-    Screen.Card -> R.string.feature_card
-    else -> R.string.screen_home
-}
 
 private val homeFeatures = listOf(
     HomeFeature(

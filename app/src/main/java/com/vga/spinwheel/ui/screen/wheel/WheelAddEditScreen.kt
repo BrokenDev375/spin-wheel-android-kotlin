@@ -34,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.WheelItem
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -55,7 +57,11 @@ fun WheelAddEditScreen(
     val formState by viewModel.formState.collectAsState()
     val showAddManyModal by viewModel.showAddManyModal.collectAsState()
 
-    val titleText = if (formState.id == null) "Thêm bánh xe" else "Sửa bánh xe"
+    val titleText = if (formState.id == null) {
+        stringResource(R.string.addspin)
+    } else {
+        stringResource(R.string.edit)
+    }
 
     Scaffold(
         modifier = modifier
@@ -66,7 +72,7 @@ fun WheelAddEditScreen(
             SpinTopBar(
                 title = titleText,
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
                 centerTitle = false,
                 actions = {
@@ -74,7 +80,7 @@ fun WheelAddEditScreen(
                         onClick = { viewModel.validateAndSave(onSuccess = onSaveSuccess) }
                     ) {
                         Text(
-                            text = "Lưu",
+                            text = stringResource(R.string.save),
                             color = Color(0xFFFFA726),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -101,7 +107,7 @@ fun WheelAddEditScreen(
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Tên",
+                            text = stringResource(R.string.name),
                             style = MaterialTheme.typography.titleMedium,
                             color = SpinColors.TextMuted,
                         )
@@ -119,7 +125,7 @@ fun WheelAddEditScreen(
                     OutlinedTextField(
                         value = formState.name,
                         onValueChange = viewModel::updateFormName,
-                        placeholder = { Text("Tên bánh xe", color = SpinColors.TextMuted) },
+                        placeholder = { Text(stringResource(R.string.itemwhell), color = SpinColors.TextMuted) },
                         isError = formState.nameError != null,
                         singleLine = true,
                         modifier = Modifier
@@ -162,7 +168,7 @@ fun WheelAddEditScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Thêm mục", fontSize = 15.sp, maxLines = 1)
+                            Text(stringResource(R.string.addItem), fontSize = 15.sp, maxLines = 1)
                         }
                     }
 
@@ -184,7 +190,7 @@ fun WheelAddEditScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Thêm nhiều", fontSize = 15.sp, maxLines = 1)
+                            Text(stringResource(R.string.addOption), fontSize = 15.sp, maxLines = 1)
                         }
                     }
                 }
@@ -194,7 +200,7 @@ fun WheelAddEditScreen(
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Mục",
+                        text = stringResource(R.string.item),
                         style = MaterialTheme.typography.titleMedium,
                         color = SpinColors.TextMuted,
                     )
@@ -246,7 +252,7 @@ private fun WheelItemRow(
         OutlinedTextField(
             value = item.name,
             onValueChange = onNameChange,
-            placeholder = { Text("Tên mục", color = SpinColors.TextMuted) },
+            placeholder = { Text(stringResource(R.string.itemsname), color = SpinColors.TextMuted) },
             singleLine = true,
             isError = hasError,
             modifier = Modifier
@@ -274,7 +280,7 @@ private fun WheelItemRow(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Ưu tiên",
+                    text = stringResource(R.string.priority),
                     fontSize = 10.sp,
                     color = SpinColors.TextMuted,
                 )
