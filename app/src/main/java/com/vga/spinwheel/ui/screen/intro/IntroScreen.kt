@@ -1,6 +1,8 @@
 package com.vga.spinwheel.ui.screen.intro
 
-import androidx.compose.foundation.Canvas
+import android.view.LayoutInflater
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,27 +20,33 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.nlbn.ads.callback.NativeCallback
+import com.nlbn.ads.util.Admob
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
-import kotlin.math.sin
 
 @Composable
 fun IntroScreen(
@@ -59,7 +66,7 @@ fun IntroScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         IntroVisual(
-            type = page.type,
+            imageRes = page.imageRes,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -67,7 +74,15 @@ fun IntroScreen(
                 .background(SpinColors.BackgroundDeep),
         )
 
-        Spacer(modifier = Modifier.height(22.dp))
+        Spacer(modifier = Modifier.height(14.dp))
+
+        NativeAdIntroSlot(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
 
         Text(
             text = page.title,
@@ -107,6 +122,60 @@ fun IntroScreen(
 }
 
 @Composable
+private fun NativeAdIntroSlot(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    var nativeAdState by remember { mutableStateOf<NativeAd?>(null) }
+    var isFailed by remember { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        val unitId = try {
+            val configId = FirebaseRemoteConfigUtil.getInstance().getAdsConfigValue("native_intro")
+            if (configId.isNullOrBlank()) "ca-app-pub-3940256099942544/2247696110" else configId
+        } catch (e: Exception) {
+            "ca-app-pub-3940256099942544/2247696110"
+        }
+
+        Admob.getInstance().loadNativeAd(
+            context.applicationContext,
+            unitId,
+            object : NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                    nativeAdState = nativeAd
+                }
+
+                override fun onAdFailedToLoad() {
+                    isFailed = true
+                }
+            }
+        )
+
+        onDispose {
+            nativeAdState?.destroy()
+        }
+    }
+
+    if (!isFailed) {
+        val ad = nativeAdState
+        if (ad != null) {
+            AndroidView(
+                factory = { ctx ->
+                    val view = LayoutInflater.from(ctx).inflate(
+                        com.brian.base_application.R.layout.ads_native_bot_2,
+                        null,
+                        false
+                    ) as NativeAdView
+                    Admob.getInstance().pushAdsToViewCustom(ad, view)
+                    view
+                },
+                modifier = modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Composable
 private fun PageIndicator(
     pageCount: Int,
     activeIndex: Int,
@@ -130,179 +199,51 @@ private fun PageIndicator(
 
 @Composable
 private fun IntroVisual(
-    type: IntroVisualType,
+    @DrawableRes imageRes: Int,
     modifier: Modifier = Modifier,
 ) {
-    Canvas(modifier = modifier.aspectRatio(0.72f)) {
-        when (type) {
-            IntroVisualType.WHEEL -> {
-                val center = Offset(size.width * 0.5f, size.height * 0.54f)
-                val radius = size.minDimension * 0.43f
-                val colors = listOf(
-                    Color(0xFFFF6B63),
-                    Color(0xFFFFD21E),
-                    Color(0xFF36D399),
-                    Color(0xFF697586),
-                )
-                repeat(10) { index ->
-                    drawArc(
-                        color = colors[index % colors.size],
-                        startAngle = index * 36f - 90f,
-                        sweepAngle = 36f,
-                        useCenter = true,
-                        topLeft = Offset(center.x - radius, center.y - radius),
-                        size = Size(radius * 2f, radius * 2f),
-                    )
-                }
-                drawCircle(Color.White, radius, center, style = Stroke(width = 9.dp.toPx()))
-                drawCircle(Color.White, radius * 0.17f, center)
-                val pointer = Path().apply {
-                    moveTo(center.x, center.y - radius - 6.dp.toPx())
-                    lineTo(center.x - 18.dp.toPx(), center.y - radius + 42.dp.toPx())
-                    lineTo(center.x + 18.dp.toPx(), center.y - radius + 42.dp.toPx())
-                    close()
-                }
-                drawPath(pointer, Color.White)
-            }
-
-            IntroVisualType.GRID -> {
-                val cardWidth = size.width * 0.38f
-                val cardHeight = size.height * 0.15f
-                val colors = listOf(
-                    Color(0xFF9255FF),
-                    Color(0xFFECA63A),
-                    Color(0xFFFF7EB6),
-                    Color(0xFF3ED8E0),
-                    Color(0xFF222222),
-                    Color(0xFFAEDC65),
-                )
-                repeat(6) { index ->
-                    val col = index % 2
-                    val row = index / 2
-                    val left = size.width * 0.08f + col * size.width * 0.5f
-                    val top = size.height * 0.12f + row * size.height * 0.21f
-                    drawRoundRect(
-                        color = colors[index],
-                        topLeft = Offset(left, top),
-                        size = Size(cardWidth, cardHeight),
-                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(16.dp.toPx()),
-                    )
-                    drawCircle(
-                        color = Color.White.copy(alpha = 0.24f),
-                        radius = cardHeight * 0.35f,
-                        center = Offset(left + cardWidth * 0.72f, top + cardHeight * 0.45f),
-                    )
-                }
-            }
-
-            IntroVisualType.FINGER -> {
-                val circles = listOf(
-                    Offset(size.width * 0.25f, size.height * 0.35f) to Color(0xFFFFD83D),
-                    Offset(size.width * 0.72f, size.height * 0.22f) to Color(0xFFFF7A2F),
-                    Offset(size.width * 0.18f, size.height * 0.7f) to Color(0xFFFF666A),
-                    Offset(size.width * 0.66f, size.height * 0.78f) to Color(0xFF10B8B8),
-                )
-                circles.forEach { (center, color) ->
-                    drawCircle(color, size.minDimension * 0.12f, center)
-                    drawCircle(
-                        color = color.copy(alpha = 0.72f),
-                        radius = size.minDimension * 0.15f,
-                        center = center,
-                        style = Stroke(
-                            width = 5.dp.toPx(),
-                            cap = StrokeCap.Round,
-                        ),
-                    )
-                }
-                drawLine(
-                    color = Color.White.copy(alpha = 0.84f),
-                    start = Offset(size.width * 0.5f, size.height * 0.36f),
-                    end = Offset(size.width * 0.5f, size.height * 0.44f),
-                    strokeWidth = 3.dp.toPx(),
-                    cap = StrokeCap.Round,
-                )
-            }
-
-            IntroVisualType.AI -> {
-                val panel = Size(size.width * 0.78f, size.height * 0.58f)
-                val left = size.width * 0.11f
-                val top = size.height * 0.15f
-                drawRoundRect(
-                    color = Color.White,
-                    topLeft = Offset(left, top),
-                    size = Size(panel.width, panel.height * 0.18f),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx()),
-                )
-                drawRoundRect(
-                    color = Color(0xFFE04335),
-                    topLeft = Offset(left, top + panel.height * 0.24f),
-                    size = Size(panel.width, panel.height * 0.18f),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx()),
-                )
-                drawRoundRect(
-                    color = Color.White.copy(alpha = 0.12f),
-                    topLeft = Offset(left, top + panel.height * 0.5f),
-                    size = Size(panel.width, panel.height * 0.42f),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(12.dp.toPx()),
-                )
-                repeat(8) { index ->
-                    val y = top + panel.height * 0.56f + index * 16.dp.toPx()
-                    val x = left + panel.width * (0.36f + 0.04f * sin(index.toFloat()))
-                    drawCircle(Color(0xFFFFD21E), 4.dp.toPx(), Offset(x, y))
-                    drawLine(
-                        color = Color.White.copy(alpha = 0.72f),
-                        start = Offset(x + 12.dp.toPx(), y),
-                        end = Offset(left + panel.width * 0.72f, y),
-                        strokeWidth = 3.dp.toPx(),
-                        cap = StrokeCap.Round,
-                    )
-                }
-                val fingerBase = Offset(size.width * 0.78f, size.height * 0.72f)
-                drawCircle(Color(0xFFFFD4BE), size.minDimension * 0.16f, fingerBase)
-                drawLine(
-                    color = Color(0xFFFFE0CC),
-                    start = Offset(fingerBase.x, fingerBase.y),
-                    end = Offset(size.width * 0.7f, size.height * 0.42f),
-                    strokeWidth = size.minDimension * 0.16f,
-                    cap = StrokeCap.Round,
-                )
-            }
-        }
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+        )
     }
 }
 
 private data class IntroPage(
     val title: String,
     val description: String,
-    val type: IntroVisualType,
+    @DrawableRes val imageRes: Int,
 )
-
-private enum class IntroVisualType {
-    WHEEL,
-    GRID,
-    FINGER,
-    AI,
-}
 
 private val introPages = listOf(
     IntroPage(
         title = "Ngẫu nhiên - Trò chơi vòng quay",
         description = "Spin Wheel nơi mỗi vòng quay đều mang đến một bất ngờ mới.",
-        type = IntroVisualType.WHEEL,
+        imageRes = R.drawable.img_intro_1,
     ),
     IntroPage(
         title = "Chọn ngón tay, xu và lăn xúc xắc",
         description = "Đưa ra quyết định nhanh, công bằng và vui vẻ trong mọi tình huống.",
-        type = IntroVisualType.GRID,
+        imageRes = R.drawable.img_intro_2,
     ),
     IntroPage(
         title = "Ghép đôi công bằng và lựa chọn ngẫu nhiên",
         description = "Tạo đội, tạo số và chọn người chiến thắng mà không ai đoán trước.",
-        type = IntroVisualType.FINGER,
+        imageRes = R.drawable.img_intro_3,
     ),
     IntroPage(
         title = "Trải nghiệm hấp dẫn",
         description = "Tùy chỉnh từng trò chơi để phù hợp với sở thích của bạn.",
-        type = IntroVisualType.AI,
+        imageRes = R.drawable.img_intro_4,
     ),
 )
+
+
