@@ -5,16 +5,28 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.vga.spinwheel.R
+import com.vga.spinwheel.advertisement.NativeAdSlot
+import com.vga.spinwheel.firebase.Remote
+import com.vga.spinwheel.platform.IapLauncher
 import com.vga.spinwheel.ui.components.SpinFeatureCard
 import com.vga.spinwheel.ui.components.SpinFeatureCardStyle
-import com.vga.spinwheel.ui.components.SpinFeatureVisual
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
@@ -29,6 +41,23 @@ fun HomeScreen(
     onPaymentClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var navigationPending by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var isPremium by remember { mutableStateOf(IapLauncher.isPremium()) }
+    val nativeHomeConfigured = remember { Remote.instance.isAdEnabled("native_home") }
+    val showNativeHome = nativeHomeConfigured && !isPremium
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isPremium = IapLauncher.isPremium()
+                navigationPending = false
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -36,14 +65,14 @@ fun HomeScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Spin Wheel",
+                title = stringResource(R.string.spinwheel),
                 navigationIcon = SpinIconGlyph.Settings,
-                navigationDescription = "Cai dat",
+                navigationDescription = stringResource(R.string.settings),
                 onNavigationClick = onSettingsClick,
             ) {
                 SpinIconButton(
                     glyph = SpinIconGlyph.Crown,
-                    contentDescription = "Pro",
+                    contentDescription = stringResource(R.string.vip),
                     onClick = onPaymentClick,
                     tint = SpinColors.Premium,
                 )
@@ -64,11 +93,43 @@ fun HomeScreen(
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(SpinSpacing.CardGap),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(SpinSpacing.CardGap),
         ) {
-            items(homeFeatures, key = { it.screen.route }) { item ->
+            val adInsertionIndex = 4
+            val beforeAd = homeFeatures.take(adInsertionIndex)
+            val afterAd = homeFeatures.drop(adInsertionIndex)
+
+            items(beforeAd, key = { it.screen.route }) { item ->
                 SpinFeatureCard(
-                    title = item.screen.title,
+                    title = stringResource(item.screen.titleRes),
                     style = item.style,
-                    onClick = { onFeatureClick(item.screen) },
+                    onClick = {
+                        if (!navigationPending) {
+                            navigationPending = true
+                            onFeatureClick(item.screen)
+                        }
+                    },
+                    modifier = Modifier.aspectRatio(1.18f),
+                )
+            }
+
+            if (showNativeHome) {
+                item(
+                    key = "ad_native_home",
+                    span = { GridItemSpan(maxLineSpan) },
+                ) {
+                    NativeAdSlot(placement = "native_home")
+                }
+            }
+
+            items(afterAd, key = { it.screen.route }) { item ->
+                SpinFeatureCard(
+                    title = stringResource(item.screen.titleRes),
+                    style = item.style,
+                    onClick = {
+                        if (!navigationPending) {
+                            navigationPending = true
+                            onFeatureClick(item.screen)
+                        }
+                    },
                     modifier = Modifier.aspectRatio(1.18f),
                 )
             }
@@ -85,68 +146,59 @@ private val homeFeatures = listOf(
     HomeFeature(
         screen = Screen.Wheel,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Wheel,
-            gradient = listOf(Color(0xFF4F3B78), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_wheel,
         ),
     ),
     HomeFeature(
         screen = Screen.Finger,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Finger,
-            gradient = listOf(Color(0xFFB83B5E), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_finger,
         ),
     ),
     HomeFeature(
         screen = Screen.Coin,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Coin,
-            gradient = listOf(Color(0xFFE29C32), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_coin,
             titleColor = SpinColors.WarningText,
         ),
     ),
     HomeFeature(
         screen = Screen.Team,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Team,
-            gradient = listOf(Color(0xFF1C728E), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_team,
             titleColor = SpinColors.Success,
         ),
     ),
     HomeFeature(
         screen = Screen.Number,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Number,
-            gradient = listOf(Color(0xFF111111), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_number,
         ),
     ),
     HomeFeature(
         screen = Screen.Drawing,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Drawing,
-            gradient = listOf(Color(0xFFD33C5E), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_drawing,
             titleColor = SpinColors.BlueText,
         ),
     ),
     HomeFeature(
         screen = Screen.Bottle,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Bottle,
-            gradient = listOf(Color(0xFF6C3272), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_bottle,
             titleColor = SpinColors.WarningText,
         ),
     ),
     HomeFeature(
         screen = Screen.Dice,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Dice,
-            gradient = listOf(Color(0xFFCC447A), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_dice,
         ),
     ),
     HomeFeature(
         screen = Screen.Card,
         style = SpinFeatureCardStyle(
-            visual = SpinFeatureVisual.Card,
-            gradient = listOf(Color(0xFF329CA8), Color(0xFF292640)),
+            backgroundRes = R.drawable.home_game_card,
         ),
     ),
 )

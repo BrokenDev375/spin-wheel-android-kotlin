@@ -1,11 +1,14 @@
 package com.vga.spinwheel
 
 import android.app.Activity
-import android.content.Context
+import android.util.Log
 import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
+import com.nlbn.ads.util.AppOpenManager
+import com.vga.spinwheel.core.AppStorage
+import com.vga.spinwheel.core.IntroActivity
 import com.vga.spinwheel.core.MainActivity
 import dagger.hilt.android.HiltAndroidApp
 
@@ -13,11 +16,18 @@ import dagger.hilt.android.HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
-        primeAdsRemoteConfigDefaults()
+        AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
         super.onCreate()
+        registerRemoteConfigDefaults()
     }
 
-    override fun getHomeActivity(): Class<out Activity> = MainActivity::class.java
+    override fun getHomeActivity(): Class<out Activity> =
+        if (AppStorage.isOnboardingDone(this)) {
+            MainActivity::class.java
+        } else {
+            IntroActivity::class.java
+        }
 
     override fun getAppNameRes(): Int = R.string.app_name
 
@@ -45,10 +55,7 @@ class MyApplication : BaseApplication() {
     override fun setupKoin() = Unit
 
     override fun notifyLanguageSaved(languageCode: String) {
-        getSharedPreferences(packageName, Context.MODE_PRIVATE)
-            .edit()
-            .putString(KEY_LANGUAGE, languageCode)
-            .apply()
+        AppStorage.setLanguageCode(this, languageCode)
     }
 
     override fun iapPremiumKey(): String = defaultIapPremiumKey()
@@ -61,25 +68,26 @@ class MyApplication : BaseApplication() {
 
     override fun iapPublicKey(): String = getString(R.string.public_license_key)
 
-    override fun getFeature1IconRes(): Int = R.drawable.icon_1_iap
+    // Paywall order: ads, unlock, custom wheel, premium themes, support.
+    override fun getFeature1IconRes(): Int = R.drawable.icon_4_iap
 
     override fun getFeature2IconRes(): Int = R.drawable.icon_2_iap
 
-    override fun getFeature3IconRes(): Int = R.drawable.icon_3_iap
+    override fun getFeature3IconRes(): Int = R.drawable.icon_1_iap
 
-    override fun getFeature4IconRes(): Int = R.drawable.icon_4_iap
+    override fun getFeature4IconRes(): Int = R.drawable.icon_5_iap
 
-    override fun getFeature5IconRes(): Int = R.drawable.icon_5_iap
+    override fun getFeature5IconRes(): Int = R.drawable.icon_3_iap
 
-    override fun getFeature1TextRes(): Int = R.string.iap_feature_1
+    override fun getFeature1TextRes(): Int = R.string.premium_feature_remove_ads
 
-    override fun getFeature2TextRes(): Int = R.string.iap_feature_2
+    override fun getFeature2TextRes(): Int = R.string.premium_feature_unlock_all
 
-    override fun getFeature3TextRes(): Int = R.string.iap_feature_3
+    override fun getFeature3TextRes(): Int = R.string.premium_feature_unlimited
 
-    override fun getFeature4TextRes(): Int = R.string.iap_feature_4
+    override fun getFeature4TextRes(): Int = R.string.premium_feature_premium_skins
 
-    override fun getFeature5TextRes(): Int = R.string.iap_feature_5
+    override fun getFeature5TextRes(): Int = R.string.premium_feature_support
 
     override fun getNotiTitleRes(): Int = R.string.notification_permission_title
 
@@ -129,33 +137,56 @@ class MyApplication : BaseApplication() {
 
     override fun getNotificationOutAppContentRes(): Int = R.string.notification_out_app_content
 
-    override fun isPurchased(): Boolean = IAPUtils.isPremium()
+    override fun isPurchased(): Boolean {
+        val premium = IAPUtils.isPremium()
+        Log.d(ADS_LOG_TAG, "isPurchased=$premium")
+        return premium
+    }
 
-    override fun enableAdsResume(): Boolean = !IAPUtils.isPremium()
+    override fun enableAdsResume(): Boolean {
+        val premium = IAPUtils.isPremium()
+        val enabled = !BuildConfig.DEBUG && !premium
+        Log.d(
+            ADS_LOG_TAG,
+            "enableAdsResume=$enabled debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} premium=$premium"
+        )
+        return enabled
+    }
 
-    override fun buildDebug(): Boolean = BuildConfig.DEBUG
+    override fun buildDebug(): Boolean {
+        Log.d(ADS_LOG_TAG, "buildDebug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE}")
+        return BuildConfig.DEBUG
+    }
 
-    override fun isForceShowFullAdsTest(): Boolean = BuildConfig.DEBUG
+    override fun isForceShowFullAdsTest(): Boolean = false
 
     override fun getListTestDeviceId(): List<String> = emptyList()
 
-    override fun getResumeAdId(): String = GOOGLE_TEST_APP_OPEN_ID
+    override fun getResumeAdId(): String {
+        Log.d(
+            ADS_LOG_TAG,
+            "getResumeAdId source=hardcoded_test debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} id=${maskAdId(GOOGLE_TEST_APP_OPEN_ID)}"
+        )
+        return GOOGLE_TEST_APP_OPEN_ID
+    }
 
-    private fun primeAdsRemoteConfigDefaults() {
+    private fun registerRemoteConfigDefaults() {
         runCatching {
-            val adsConfigJson = assets.open(DEFAULT_ADS_CONFIG_ASSET)
-                .bufferedReader()
-                .use { it.readText() }
-            FirebaseRemoteConfigUtil.getInstance().setDefaultAdsConfigJson(adsConfigJson)
-            FirebaseRemoteConfigUtil.getInstance().setAppDefaults(emptyMap())
+            FirebaseRemoteConfigUtil.getInstance().setAppDefaultsFromXml(R.xml.config)
         }
     }
 
+    private fun maskAdId(adId: String): String =
+        if (adId.isBlank()) {
+            "<blank>"
+        } else {
+            "***${adId.takeLast(8)}"
+        }
+
     private companion object {
-        const val KEY_LANGUAGE = "language_pres"
+        const val ADS_LOG_TAG = "ADS_CHECK"
         const val NOTIFICATION_CHANNEL_PREFIX = "SpinWheel"
         const val GOOGLE_TEST_APP_OPEN_ID = "ca-app-pub-3940256099942544/9257395921"
-        const val DEFAULT_ADS_CONFIG_ASSET = "default_ads_config.json"
         const val MOCK_KEY_PREFIX = "mock_"
     }
 }

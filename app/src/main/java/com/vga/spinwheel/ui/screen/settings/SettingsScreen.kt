@@ -7,17 +7,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vga.spinwheel.BuildConfig
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinSettingRow
@@ -44,10 +47,17 @@ fun SettingsScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Cài đặt",
+                title = stringResource(R.string.settings),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
+                actions = {
+                    Text(
+                        text = "v${BuildConfig.VERSION_NAME}",
+                        color = SpinColors.TextMuted,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
             )
         },
     ) { innerPadding ->
@@ -61,24 +71,29 @@ fun SettingsScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Text(
+                text = stringResource(R.string.General),
+                color = SpinColors.TextMuted,
+                style = MaterialTheme.typography.titleLarge,
+            )
             SpinSettingRow(
-                title = "Chia sẻ",
+                title = stringResource(R.string.share_app),
                 onClick = onShareClick,
-                leading = { SettingsGlyph(SpinIconGlyph.ChevronRight) },
+                leading = { SettingsGlyph(SpinIconGlyph.ShareNetwork) },
             )
             SpinSettingRow(
-                title = "Ngôn ngữ",
+                title = stringResource(R.string.language),
                 onClick = onLanguageClick,
-                leading = { SettingsGlyph(SpinIconGlyph.Home) },
+                leading = { SettingsGlyph(SpinIconGlyph.Language) },
             )
             SpinSettingRow(
-                title = "Đánh giá ứng dụng",
+                title = stringResource(R.string.rate_us),
                 onClick = onRateClick,
-                leading = { SettingsGlyph(SpinIconGlyph.Crown) },
+                leading = { SettingsGlyph(SpinIconGlyph.Rate) },
             )
             SpinSettingRow(
-                title = "Nhạc nền",
-                leading = { SettingsGlyph(SpinIconGlyph.Settings) },
+                title = stringResource(R.string.background_music),
+                leading = { SettingsGlyph(SpinIconGlyph.Music) },
                 trailing = {
                     SpinToggle(
                         checked = state.musicEnabled,
@@ -87,8 +102,8 @@ fun SettingsScreen(
                 },
             )
             SpinSettingRow(
-                title = "Âm thanh trò chơi",
-                leading = { SettingsGlyph(SpinIconGlyph.Check) },
+                title = stringResource(R.string.game_sound),
+                leading = { SettingsGlyph(SpinIconGlyph.Sound) },
                 trailing = {
                     SpinToggle(
                         checked = state.gameSoundEnabled,
@@ -97,8 +112,8 @@ fun SettingsScreen(
                 },
             )
             SpinSettingRow(
-                title = "Rung",
-                leading = { SettingsGlyph(SpinIconGlyph.Minus) },
+                title = stringResource(R.string.vibration),
+                leading = { SettingsGlyph(SpinIconGlyph.Vibration) },
                 trailing = {
                     SpinToggle(
                         checked = state.vibrationEnabled,
@@ -113,18 +128,13 @@ fun SettingsScreen(
 @Composable
 private fun SettingsGlyph(glyph: SpinIconGlyph) {
     Box(
-        modifier = Modifier
-            .size(42.dp)
-            .clip(CircleShape)
-            .background(Color.White.copy(alpha = 0.08f)),
+        modifier = Modifier.size(42.dp),
+        contentAlignment = Alignment.Center,
     ) {
         SpinIcon(
             glyph = glyph,
             tint = Color(0xFF50C450),
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(26.dp)
-                .padding(2.dp),
+            modifier = Modifier.size(30.dp),
         )
     }
 }

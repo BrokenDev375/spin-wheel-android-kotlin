@@ -6,10 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,11 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -56,13 +56,15 @@ fun CoinLabelScreen(
     Scaffold(
         topBar = {
             SpinTopBar(
-                title = "Mẫu tiền xu",
+                title = stringResource(R.string.coinsample),
+                centerTitle = false,
+                titleStartPadding = 39.dp,
                 navigationIcon = com.vga.spinwheel.ui.components.SpinIconGlyph.Back,
-                navigationDescription = "Back",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = { navController.popBackStack() },
                 actions = {
                     Text(
-                        text = "Lưu",
+                        text = stringResource(R.string.save),
                         color = SpinColors.Action,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -82,8 +84,11 @@ fun CoinLabelScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            contentPadding = PaddingValues(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(
+                horizontal = 16.dp,
+                vertical = 28.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             itemsIndexed(CoinSkins.AllSkins) { index, skin ->
                 val isSelected = index == tempSkinIndex
@@ -91,31 +96,33 @@ fun CoinLabelScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(SpinColors.Card)
+                        .height(156.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xFF393347))
                         .border(
-                            width = if (isSelected) 2.dp else 0.dp,
+                            width = if (isSelected) 1.5.dp else 0.dp,
                             color = if (isSelected) SpinColors.Action else Color.Transparent,
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(14.dp)
                         )
                         .clickable { viewModel.setTempSkinIndex(index) }
-                        .padding(24.dp)
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = skin.headDrawable),
-                            contentDescription = "Head",
-                            modifier = Modifier.size(120.dp)
+                            contentDescription = stringResource(R.string.heads),
+                            modifier = Modifier.size(136.dp)
                         )
                         
                         Image(
                             painter = painterResource(id = skin.tailDrawable),
-                            contentDescription = "Tail",
-                            modifier = Modifier.size(120.dp)
+                            contentDescription = stringResource(R.string.tails),
+                            modifier = Modifier.size(136.dp)
                         )
                     }
 
@@ -123,16 +130,17 @@ fun CoinLabelScreen(
                         Box(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
-                                .size(28.dp)
+                                .padding(10.dp)
+                                .size(24.dp)
                                 .clip(CircleShape)
                                 .background(SpinColors.Success),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                contentDescription = "Selected",
+                                contentDescription = stringResource(R.string.choose),
                                 tint = Color.White,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                         }
                     }

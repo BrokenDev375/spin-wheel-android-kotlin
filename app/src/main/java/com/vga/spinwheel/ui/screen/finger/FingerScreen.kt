@@ -3,26 +3,22 @@ package com.vga.spinwheel.ui.screen.finger
 import android.content.Intent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,16 +35,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
-import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinResultScreen
+import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun FingerScreen(
@@ -59,6 +57,10 @@ fun FingerScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val resultTitle = stringResource(R.string.results)
+    val fingerTitle = stringResource(R.string.lucky_finger)
+    val shareTitle = stringResource(R.string.sharereust)
+    val shareText = stringResource(R.string.finger_share_text, state.points.size)
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.cancelRound() }
@@ -70,13 +72,10 @@ fun FingerScreen(
             onShare = {
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
-                    putExtra(Intent.EXTRA_SUBJECT, "Ket qua chon ngon tay")
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "Spin Wheel da chon ngau nhien 1 nguoi thang trong ${state.points.size} ngon tay."
-                    )
+                    putExtra(Intent.EXTRA_SUBJECT, "$resultTitle $fingerTitle")
+                    putExtra(Intent.EXTRA_TEXT, shareText)
                 }
-                context.startActivity(Intent.createChooser(shareIntent, "Chia se ket qua"))
+                context.startActivity(Intent.createChooser(shareIntent, shareTitle))
             },
             onRetry = viewModel::retry,
             onHome = {
@@ -114,7 +113,7 @@ private fun FingerPlayScreen(
         containerColor = FingerPlayBackground,
         topBar = {
             FingerHeader(
-                title = "Chọn",
+                title = stringResource(R.string.lucky_finger),
                 fingerCount = state.fingerCount,
                 onBack = onBack,
                 onFingerCountSelected = onFingerCountSelected,
@@ -141,69 +140,58 @@ private fun FingerHeader(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(82.dp)
-            .background(SpinColors.Background)
-            .padding(horizontal = SpinSpacing.ScreenHorizontal),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SpinIconButton(
-            glyph = SpinIconGlyph.Back,
-            contentDescription = "Quay lại",
-            onClick = onBack,
-            tint = SpinColors.TextPrimary,
-        )
-        Text(
-            text = title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 12.dp),
-            color = SpinColors.TextPrimary,
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Box {
-            Box(
-                modifier = Modifier
-                    .size(54.dp)
-                    .clip(CircleShape)
-                    .background(FingerMenuGreen)
-                    .clickable { expanded = true },
-                contentAlignment = Alignment.Center,
-            ) {
-                SpinIcon(
-                    glyph = SpinIconGlyph.ChevronDown,
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp),
-                )
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .background(FingerMenuBackground)
-                    .defaultMinSize(minWidth = 118.dp),
-            ) {
-                (FingerRoundRules.MIN_FINGER_COUNT..FingerRoundRules.MAX_FINGER_COUNT).forEach { count ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = count.toString(),
-                                color = if (count == fingerCount) FingerMenuGreen else Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Medium,
-                            )
-                        },
-                        onClick = {
-                            expanded = false
-                            onFingerCountSelected(count)
-                        },
+    SpinTopBar(
+        title = title,
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = stringResource(R.string.content_description_back),
+        onNavigationClick = onBack,
+        centerTitle = false,
+        titleStartPadding = 39.dp,
+        modifier = modifier,
+        actions = {
+            Box(modifier = Modifier.offset(x = 6.dp)) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(FingerMenuGreen)
+                        .clickable { expanded = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    SpinIcon(
+                        glyph = SpinIconGlyph.ChevronDown,
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp),
                     )
                 }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .background(FingerMenuBackground)
+                        .defaultMinSize(minWidth = 112.dp),
+                ) {
+                    (FingerRoundRules.MIN_FINGER_COUNT..FingerRoundRules.MAX_FINGER_COUNT).forEach { count ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = count.toString(),
+                                    color = if (count == fingerCount) FingerMenuGreen else Color.White,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                            },
+                            onClick = {
+                                expanded = false
+                                onFingerCountSelected(count)
+                            },
+                            modifier = Modifier.height(64.dp),
+                        )
+                    }
+                }
             }
-        }
-    }
+        },
+    )
 }
 
 @Composable
@@ -250,10 +238,10 @@ private fun FingerPlayArea(
                 text = "${state.stage.secondsLeft}S",
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 56.dp),
+                    .padding(top = 38.dp),
                 color = Color.White,
-                fontSize = 64.sp,
-                lineHeight = 68.sp,
+                fontSize = 38.sp,
+                lineHeight = 42.sp,
                 fontWeight = FontWeight.Black,
             )
         }
@@ -293,21 +281,21 @@ private fun FingerHint(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "ĐẶT NGÓN TAY LÊN MÀN\nHÌNH",
+            text = stringResource(R.string.place_finger_prompt).uppercase(),
             color = Color.White,
             textAlign = TextAlign.Center,
-            fontSize = 30.sp,
-            lineHeight = 36.sp,
+            fontSize = 20.sp,
+            lineHeight = 24.sp,
             fontWeight = FontWeight.Black,
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(18.dp))
         Text(
-            text = "Giữ nguyên trong 2 giây để bắt đầu",
+            text = stringResource(R.string.hold_seconds_prompt),
             color = SpinColors.TextMuted,
             textAlign = TextAlign.Center,
-            fontSize = 25.sp,
-            lineHeight = 30.sp,
-            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Medium,
         )
     }
 }
@@ -320,39 +308,14 @@ private fun FingerFinalResultScreen(
     onHome: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background)
-            .padding(horizontal = 20.dp),
+    SpinResultScreen(
+        onHome = onHome,
+        onShare = onShare,
+        onRetry = onRetry,
+        modifier = modifier,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(86.dp),
-        ) {
-            Text(
-                text = "Kết Quả",
-                modifier = Modifier.align(Alignment.Center),
-                color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            SpinIconButton(
-                glyph = SpinIconGlyph.Home,
-                contentDescription = "Về trang chủ",
-                onClick = onHome,
-                modifier = Modifier.align(Alignment.CenterEnd),
-                tint = Color.White,
-            )
-        }
-
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .clip(RoundedCornerShape(18.dp))
-                .background(FingerResultCard)
-                .border(1.5.dp, Color.White.copy(alpha = 0.62f), RoundedCornerShape(18.dp)),
+            modifier = Modifier.fillMaxSize(),
         ) {
             FingerResultPoints(
                 points = state.points,
@@ -362,57 +325,6 @@ private fun FingerFinalResultScreen(
                 constrainToCard = true,
             )
         }
-
-        Spacer(modifier = Modifier.height(34.dp))
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Row(
-                modifier = Modifier
-                    .height(58.dp)
-                    .clip(RoundedCornerShape(9.dp))
-                    .background(FingerShareBlue)
-                    .clickable(onClick = onShare)
-                    .padding(horizontal = 18.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                SpinIcon(
-                    glyph = SpinIconGlyph.Share,
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp),
-                )
-                Text(
-                    text = "Chia sẻ kết\nquả",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(74.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(FingerRetryRed)
-                .clickable(onClick = onRetry),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = "Thử lại",
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(28.dp))
     }
 }
 
@@ -423,7 +335,7 @@ private fun FingerTouchPulse(
     maxHeight: Dp,
     modifier: Modifier = Modifier,
 ) {
-    val size = 106.dp
+    val size = 76.dp
     val color = fingerColor(point.colorIndex)
 
     Canvas(
@@ -436,9 +348,9 @@ private fun FingerTouchPulse(
     ) {
         val center = Offset(this.size.width / 2f, this.size.height / 2f)
         drawCircle(color.copy(alpha = 0.11f), radius = this.size.minDimension * 0.49f, center = center)
-        drawCircle(color.copy(alpha = 0.17f), radius = this.size.minDimension * 0.34f, center = center)
-        drawCircle(color.copy(alpha = 0.34f), radius = this.size.minDimension * 0.25f, center = center)
-        drawCircle(color, radius = this.size.minDimension * 0.22f, center = center)
+        drawCircle(color.copy(alpha = 0.17f), radius = this.size.minDimension * 0.40f, center = center)
+        drawCircle(color.copy(alpha = 0.34f), radius = this.size.minDimension * 0.32f, center = center)
+        drawCircle(color, radius = this.size.minDimension * 0.265f, center = center)
     }
 }
 
@@ -467,6 +379,7 @@ private fun FingerResultPoints(
                 isWinner = point.id == winnerId,
                 x = maxWidth * xRatio,
                 y = maxHeight * yRatio,
+                compact = constrainToCard,
             )
         }
     }
@@ -477,34 +390,41 @@ private fun FingerResultPoint(
     isWinner: Boolean,
     x: Dp,
     y: Dp,
+    compact: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val pointSize = 66.dp
-    val haloSize = 118.dp
+    val winLabel = stringResource(R.string.win).uppercase()
+    val pointSize = if (compact) 34.dp else 48.dp
+    val haloSize = if (compact) 52.dp else 76.dp
+    val calloutWidth = if (compact) 54.dp else 80.dp
+    val calloutHeight = if (compact) 34.dp else 42.dp
+    val calloutOffsetY = if (compact) 58.dp else 68.dp
+    val calloutFontSize = if (compact) 13.sp else 20.sp
 
     Box(modifier = modifier.fillMaxSize()) {
         if (isWinner) {
             Box(
                 modifier = Modifier
-                    .offset(x = x - 72.dp, y = y - 104.dp)
+                    .width(calloutWidth)
+                    .height(calloutHeight)
+                    .offset(x = x - calloutWidth / 2, y = y - calloutOffsetY)
                     .clip(
                         RoundedCornerShape(
-                            topStart = 18.dp,
-                            topEnd = 18.dp,
-                            bottomEnd = 18.dp,
+                            topStart = 14.dp,
+                            topEnd = 14.dp,
+                            bottomEnd = 14.dp,
                             bottomStart = 0.dp,
                         )
                     )
-                    .background(Color.White)
-                    .padding(horizontal = 20.dp, vertical = 14.dp),
+                    .background(Color.White),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "THẮNG",
+                    text = winLabel,
                     color = FingerWinRed,
-                    fontSize = 25.sp,
-                    lineHeight = 28.sp,
+                    fontSize = calloutFontSize,
                     fontWeight = FontWeight.Black,
+                    maxLines = 1,
                 )
             }
         }
@@ -530,7 +450,7 @@ private fun FingerResultPoint(
             ) {
                 Text(
                     text = if (isWinner) "🎉" else "😢",
-                    fontSize = 28.sp,
+                    fontSize = if (compact) 17.sp else 26.sp,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -549,8 +469,5 @@ private fun fingerColor(index: Int): Color = when (index % 5) {
 private val FingerPlayBackground = Color(0xFF151126)
 private val FingerMenuGreen = Color(0xFF21822F)
 private val FingerMenuBackground = Color(0xFF393347)
-private val FingerResultCard = Color(0xFF3D3D3C)
 private val FingerPointDark = Color(0xFF100D1F)
-private val FingerShareBlue = Color(0xFF39A9F2)
-private val FingerRetryRed = Color(0xFFDE3D2D)
 private val FingerWinRed = Color(0xFFF04B55)

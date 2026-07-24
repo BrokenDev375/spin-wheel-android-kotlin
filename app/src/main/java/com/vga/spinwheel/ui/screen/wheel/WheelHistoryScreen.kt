@@ -1,7 +1,6 @@
 package com.vga.spinwheel.ui.screen.wheel
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,9 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.RandomResult
 import com.vga.spinwheel.ui.components.SpinIcon
+import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -52,10 +55,19 @@ fun WheelHistoryScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Lịch Sử Quay",
+                title = stringResource(R.string.history_spin),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
+                centerTitle = false,
+                actions = {
+                    SpinIconButton(
+                        glyph = SpinIconGlyph.Trash,
+                        contentDescription = stringResource(R.string.delete_history),
+                        onClick = viewModel::clearHistory,
+                        enabled = historyList.isNotEmpty(),
+                    )
+                },
             )
         },
     ) { innerPadding ->
@@ -64,7 +76,7 @@ fun WheelHistoryScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(32.dp),
+                    .padding(25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -75,7 +87,7 @@ fun WheelHistoryScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Chưa có lịch sử quay",
+                    text = stringResource(R.string.noResults),
                     style = MaterialTheme.typography.titleMedium,
                     color = SpinColors.TextMuted,
                 )
@@ -102,45 +114,38 @@ fun WheelHistoryScreen(
 @Composable
 private fun HistoryItemCard(item: RandomResult) {
     val dateStr = remember(item.createdAt) {
-        val sdf = SimpleDateFormat("HH:mm - dd/MM/yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
         sdf.format(Date(item.createdAt))
     }
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(SpinRadius.Card))
-            .background(SpinColors.Card)
-            .border(1.dp, SpinColors.CardBorder, RoundedCornerShape(SpinRadius.Card))
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .background(Color(0xFF3B3754))
+            .padding(horizontal = 16.dp, vertical = 18.dp),
     ) {
-        SpinIcon(
-            glyph = SpinIconGlyph.Wheel,
-            tint = SpinColors.Action,
-            modifier = Modifier.size(32.dp),
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = item.value,
-                style = MaterialTheme.typography.titleMedium,
-                color = SpinColors.Premium,
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
                 text = item.title,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = SpinColors.TextPrimary,
             )
+            Text(
+                text = dateStr,
+                style = MaterialTheme.typography.bodySmall,
+                color = SpinColors.TextMuted,
+            )
         }
+        Spacer(modifier = Modifier.height(14.dp))
         Text(
-            text = dateStr,
-            style = MaterialTheme.typography.bodySmall,
-            color = SpinColors.TextMuted,
+            text = "${stringResource(R.string.results)}: ${item.value}",
+            style = MaterialTheme.typography.titleMedium,
+            color = SpinColors.Action,
         )
     }
 }

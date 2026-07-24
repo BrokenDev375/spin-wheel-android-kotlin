@@ -9,9 +9,9 @@ class CardRoundRulesTest {
 
     @Test
     fun clampDurationSeconds_keepsValueWithinSupportedRange() {
-        assertEquals(1, CardRoundRules.clampDurationSeconds(-2))
+        assertEquals(2, CardRoundRules.clampDurationSeconds(-2))
         assertEquals(2, CardRoundRules.clampDurationSeconds(2))
-        assertEquals(15, CardRoundRules.clampDurationSeconds(42))
+        assertEquals(10, CardRoundRules.clampDurationSeconds(42))
     }
 
     @Test

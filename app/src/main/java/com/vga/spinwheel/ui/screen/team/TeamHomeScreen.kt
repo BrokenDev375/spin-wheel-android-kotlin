@@ -36,19 +36,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.Wheel
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.screen.wheel.WheelAiGenerateDialog
 import com.vga.spinwheel.ui.screen.wheel.WheelViewModel
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun TeamHomeScreen(
@@ -65,41 +66,35 @@ fun TeamHomeScreen(
     val showAiModal by wheelFormViewModel.showAiModal.collectAsState()
     var deleteTargetId by remember { mutableStateOf<String?>(null) }
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(SpinColors.Background),
-        containerColor = SpinColors.Background,
-        topBar = {
-            SpinTopBar(
-                title = "Đội",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
-                onNavigationClick = onBack,
-            )
-        },
-    ) { innerPadding ->
+    SpinScreen(
+        title = stringResource(R.string.homograft),
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = stringResource(R.string.content_description_back),
+        onNavigationClick = onBack,
+        modifier = modifier,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = SpinSpacing.ScreenHorizontal),
+                .padding(horizontal = 16.dp),
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             TeamAiButton(
-                text = "Trình tạo AI",
+                text = stringResource(R.string.generatorai),
                 onClick = { wheelFormViewModel.showAiModal(true) },
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             TeamCreateButton(
-                text = "Tạo Bánh Xe mới",
+                text = stringResource(R.string.create),
                 onClick = onAddList,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             if (wheels.isEmpty()) {
                 Box(
@@ -107,7 +102,7 @@ fun TeamHomeScreen(
                     contentAlignment = Alignment.TopCenter,
                 ) {
                     Text(
-                        text = "Không có bánh xe. Thêm mới đi!",
+                        text = stringResource(R.string.no_wheels),
                         modifier = Modifier.padding(top = 48.dp),
                         style = MaterialTheme.typography.titleMedium,
                         color = SpinColors.TextMuted,
@@ -138,10 +133,10 @@ fun TeamHomeScreen(
     if (deleteTargetId != null) {
         AlertDialog(
             onDismissRequest = { deleteTargetId = null },
-            title = { Text("Xác nhận xóa", color = SpinColors.TextPrimary) },
+            title = { Text(stringResource(R.string.confirm), color = SpinColors.TextPrimary) },
             text = {
                 Text(
-                    text = "Bạn có chắc chắn muốn xóa bánh xe này không?",
+                    text = stringResource(R.string.confirm_delete),
                     color = SpinColors.TextMuted,
                 )
             },
@@ -152,12 +147,12 @@ fun TeamHomeScreen(
                         deleteTargetId = null
                     }
                 ) {
-                    Text("Xóa", color = Color(0xFFFF3B30))
+                    Text(stringResource(R.string.delete), color = Color(0xFFFF3B30))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { deleteTargetId = null }) {
-                    Text("Hủy", color = SpinColors.TextPrimary)
+                    Text(stringResource(R.string.cancel), color = SpinColors.TextPrimary)
                 }
             },
             containerColor = Color(0xFF2D2845),
@@ -188,7 +183,7 @@ private fun TeamAiButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(
                 Brush.horizontalGradient(
@@ -208,13 +203,13 @@ private fun TeamAiButton(
             SpinIcon(
                 glyph = SpinIconGlyph.Sparkles,
                 tint = Color.White,
-                modifier = Modifier.size(26.dp),
+                modifier = Modifier.size(22.dp),
             )
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Text(
                 text = text,
                 color = Color.White,
-                fontSize = 26.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.ExtraBold,
             )
         }
@@ -229,9 +224,9 @@ private fun TeamCreateButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFF37324A))
+            .background(Color(0xFF373246))
             .border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = 0.10f),
@@ -247,13 +242,13 @@ private fun TeamCreateButton(
             SpinIcon(
                 glyph = SpinIconGlyph.Plus,
                 tint = Color.White,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(20.dp),
             )
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Text(
                 text = text,
                 color = Color.White,
-                fontSize = 23.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
             )
         }
@@ -269,13 +264,14 @@ private fun TeamListCard(
     onDelete: () -> Unit,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
+    val itemLabel = stringResource(R.string.item)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(118.dp)
+            .height(100.dp)
             .clip(RoundedCornerShape(SpinRadius.Card))
-            .background(Color(0xFF343047))
+            .background(Color(0xFF373246))
             .border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = 0.06f),
@@ -291,21 +287,22 @@ private fun TeamListCard(
             Text(
                 text = wheel.name,
                 color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold,
             )
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             Text(
-                text = "${wheel.items.size} options",
+                text = "${wheel.items.size} $itemLabel",
                 color = SpinColors.TextMuted,
-                style = MaterialTheme.typography.titleSmall,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
             )
         }
 
         Box(modifier = Modifier.align(Alignment.TopEnd)) {
             SpinIconButton(
                 glyph = SpinIconGlyph.More,
-                contentDescription = "Tùy chọn",
+                contentDescription = stringResource(R.string.customsize),
                 onClick = { menuExpanded = true },
                 tint = SpinColors.TextMuted,
             )
@@ -315,21 +312,21 @@ private fun TeamListCard(
                 modifier = Modifier.background(Color(0xFF3B354C)),
             ) {
                 DropdownMenuItem(
-                    text = { Text("Sửa", color = SpinColors.TextPrimary) },
+                    text = { Text(stringResource(R.string.edit), color = SpinColors.TextPrimary) },
                     onClick = {
                         menuExpanded = false
                         onEdit()
                     },
                 )
                 DropdownMenuItem(
-                    text = { Text("Nhân bản", color = SpinColors.TextPrimary) },
+                    text = { Text(stringResource(R.string.duplicate), color = SpinColors.TextPrimary) },
                     onClick = {
                         menuExpanded = false
                         onDuplicate()
                     },
                 )
                 DropdownMenuItem(
-                    text = { Text("Xóa", color = Color(0xFFFF3B30)) },
+                    text = { Text(stringResource(R.string.delete), color = Color(0xFFFF3B30)) },
                     onClick = {
                         menuExpanded = false
                         onDelete()
