@@ -1,7 +1,9 @@
 package com.vga.spinwheel.ui.screen.intro
 
+import android.app.Activity
 import android.view.LayoutInflater
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -43,10 +47,16 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.nlbn.ads.callback.NativeCallback
 import com.nlbn.ads.util.Admob
 import com.vga.spinwheel.R
+import com.vga.spinwheel.advertisement.AdPositions
+import com.vga.spinwheel.advertisement.AdScenario
+import com.vga.spinwheel.advertisement.NativeAdSlot
+import com.vga.spinwheel.advertisement.NativeInterController
+import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
+import kotlinx.coroutines.delay
 
 @Composable
 fun IntroScreen(
@@ -54,8 +64,23 @@ fun IntroScreen(
     modifier: Modifier = Modifier,
     viewModel: IntroViewModel = hiltViewModel(),
 ) {
+    val activity = LocalContext.current as? Activity
+    val adPositions = remember { AdPositions.selected() }
     var pageIndex by remember { mutableIntStateOf(0) }
-    val page = introPages[pageIndex]
+    var continueEnabled by remember { mutableStateOf(false) }
+    var advancePending by remember { mutableStateOf(false) }
+    val page = introPagesI18n[pageIndex]
+    val slideNumber = pageIndex + 1
+    val hasInlineAd = slideNumber in adPositions
+
+    LaunchedEffect(pageIndex, hasInlineAd) {
+        continueEnabled = !hasInlineAd
+        advancePending = false
+        if (hasInlineAd) {
+            delay(INTRO_AD_TIMEOUT_MS)
+            continueEnabled = true
+        }
+    }
 
     Column(
         modifier = modifier
@@ -65,14 +90,26 @@ fun IntroScreen(
             .padding(top = 24.dp, bottom = 22.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        IntroVisual(
-            imageRes = page.imageRes,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clip(RoundedCornerShape(SpinRadius.Sheet))
                 .background(SpinColors.BackgroundDeep),
-        )
+            contentAlignment = Alignment.Center,
+        ) {
+            if (hasInlineAd) {
+                NativeAdSlot(
+                    placement = "native_intro$slideNumber",
+                    onResolved = { continueEnabled = true },
+                )
+            } else {
+                IntroVisual(
+                    imageRes = page.imageRes,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -85,14 +122,14 @@ fun IntroScreen(
         Spacer(modifier = Modifier.height(14.dp))
 
         Text(
-            text = page.title,
+            text = stringResource(page.titleRes),
             color = SpinColors.Action,
             style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = page.description,
+            text = stringResource(page.descriptionRes),
             color = SpinColors.TextPrimary,
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
@@ -100,7 +137,7 @@ fun IntroScreen(
         Spacer(modifier = Modifier.height(22.dp))
 
         PageIndicator(
-            pageCount = introPages.size,
+            pageCount = introPagesI18n.size,
             activeIndex = pageIndex,
             onPageClick = { pageIndex = it },
         )
@@ -108,15 +145,32 @@ fun IntroScreen(
         Spacer(modifier = Modifier.height(28.dp))
 
         SpinPrimaryButton(
-            text = if (pageIndex == introPages.lastIndex) "BẮT ĐẦU" else "TIẾP TỤC",
-            onClick = {
-                if (pageIndex == introPages.lastIndex) {
-                    viewModel.markIntroDone(onSaved = onFinished)
+            text = stringResource(
+                if (pageIndex == introPagesI18n.lastIndex) {
+                    R.string.start
                 } else {
-                    pageIndex += 1
+                    R.string.continue_btn
+                }
+            ),
+            onClick = {
+                if (!advancePending) {
+                    advancePending = true
+                    val advance = {
+                        if (pageIndex == introPagesI18n.lastIndex) {
+                            viewModel.markIntroDone(onSaved = onFinished)
+                        } else {
+                            pageIndex += 1
+                        }
+                    }
+                    if (slideNumber * MODAL_POSITION_MULTIPLIER in adPositions) {
+                        showIntroNativeInter(activity, advance)
+                    } else {
+                        advance()
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth(),
+            enabled = continueEnabled && !advancePending,
         )
     }
 }
@@ -217,33 +271,64 @@ private fun IntroVisual(
     }
 }
 
-private data class IntroPage(
-    val title: String,
-    val description: String,
+private fun showIntroNativeInter(
+    activity: Activity?,
+    onNext: () -> Unit,
+) {
+    if (activity == null) {
+        onNext()
+        return
+    }
+
+    val remote = Remote.instance
+    val placement = INTRO_NATIVE_INTER_PLACEMENT
+    val unitId = remote.adUnit(placement)
+    val shouldShow = remote.isAdEnabled(placement) &&
+        unitId.isNotBlank() &&
+        AdScenario.shouldShow(
+            activity,
+            placement,
+            ratio = remote.getInt("${placement}_ratio"),
+            maxPerDay = remote.getInt("${placement}_max"),
+        )
+
+    if (shouldShow) {
+        NativeInterController.show(placement, onNext)
+    } else {
+        onNext()
+    }
+}
+
+private data class IntroPageI18n(
+    @StringRes val titleRes: Int,
+    @StringRes val descriptionRes: Int,
     @DrawableRes val imageRes: Int,
 )
 
-private val introPages = listOf(
-    IntroPage(
-        title = "Ngẫu nhiên - Trò chơi vòng quay",
-        description = "Spin Wheel nơi mỗi vòng quay đều mang đến một bất ngờ mới.",
+private val introPagesI18n = listOf(
+    IntroPageI18n(
+        titleRes = R.string.titileIntro1,
+        descriptionRes = R.string.desIntro1,
         imageRes = R.drawable.img_intro_1,
     ),
-    IntroPage(
-        title = "Chọn ngón tay, xu và lăn xúc xắc",
-        description = "Đưa ra quyết định nhanh, công bằng và vui vẻ trong mọi tình huống.",
+    IntroPageI18n(
+        titleRes = R.string.titileIntro2,
+        descriptionRes = R.string.desIntro2,
         imageRes = R.drawable.img_intro_2,
     ),
-    IntroPage(
-        title = "Ghép đôi công bằng và lựa chọn ngẫu nhiên",
-        description = "Tạo đội, tạo số và chọn người chiến thắng mà không ai đoán trước.",
+    IntroPageI18n(
+        titleRes = R.string.titileIntro3,
+        descriptionRes = R.string.desIntro3,
         imageRes = R.drawable.img_intro_3,
     ),
-    IntroPage(
-        title = "Trải nghiệm hấp dẫn",
-        description = "Tùy chỉnh từng trò chơi để phù hợp với sở thích của bạn.",
+    IntroPageI18n(
+        titleRes = R.string.titileIntro4,
+        descriptionRes = R.string.desIntro4,
         imageRes = R.drawable.img_intro_4,
     ),
 )
 
+private const val INTRO_AD_TIMEOUT_MS = 5_000L
+private const val MODAL_POSITION_MULTIPLIER = 11
+private const val INTRO_NATIVE_INTER_PLACEMENT = "native_inter_intro"
 

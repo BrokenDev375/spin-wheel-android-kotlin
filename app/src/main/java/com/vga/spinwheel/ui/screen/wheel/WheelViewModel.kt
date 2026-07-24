@@ -270,6 +270,12 @@ class WheelViewModel @Inject constructor(
         }
     }
 
+    fun clearHistory() {
+        viewModelScope.launch {
+            historyRepository.clearFeature(RandomFeature.WHEEL)
+        }
+    }
+
     fun startSpin() {
         val items = _activeItems.value
         if (items.size < 2 || _spinStatus.value is SpinStatus.Spinning) return

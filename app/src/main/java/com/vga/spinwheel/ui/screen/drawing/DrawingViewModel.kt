@@ -38,12 +38,13 @@ class DrawingViewModel @Inject constructor(
 
         val DRAWING_FALLBACK_WHEEL = Wheel(
             id = "drawing-demo",
-            name = "Trò chơi cuối tuần",
+            name = "demo",
             items = listOf(
-                WheelItem(id = "1", name = "Xem phim", priority = 1),
-                WheelItem(id = "2", name = "Đi dạo", priority = 1),
-                WheelItem(id = "3", name = "Chơi game", priority = 1),
-                WheelItem(id = "4", name = "Nấu ăn", priority = 1)
+                WheelItem(id = "1", name = "Vòng quay miễn phí", priority = 1),
+                WheelItem(id = "2", name = "Bảng màu", priority = 1),
+                WheelItem(id = "3", name = "Chọn ngẫu nhiên", priority = 1),
+                WheelItem(id = "4", name = "Chủ đề vui", priority = 1),
+                WheelItem(id = "5", name = "Ý tưởng mới", priority = 1),
             ),
             createdAt = 0L,
             updatedAt = 0L
@@ -225,16 +226,16 @@ class DrawingViewModel @Inject constructor(
     fun cloneWheel(id: String) {
         viewModelScope.launch {
             val existing = wheelRepository.getWheel(id)
-            if (existing != null) {
-                val now = System.currentTimeMillis()
-                val cloned = existing.copy(
-                    id = UUID.randomUUID().toString(),
-                    name = existing.name + " (Sao chép)",
-                    createdAt = now,
-                    updatedAt = now
-                )
-                wheelRepository.upsertWheel(cloned)
-            }
+                ?: DRAWING_FALLBACK_WHEEL.takeIf { id == it.id }
+                ?: return@launch
+            val now = System.currentTimeMillis()
+            val cloned = existing.copy(
+                id = UUID.randomUUID().toString(),
+                name = existing.name + " (Sao chép)",
+                createdAt = now,
+                updatedAt = now,
+            )
+            wheelRepository.upsertWheel(cloned)
         }
     }
 }

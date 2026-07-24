@@ -1,5 +1,6 @@
 package com.vga.spinwheel.ui.screen.team
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,23 +27,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.components.SpinConfirmExitDialog
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinRadius
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun TeamDetailScreen(
@@ -53,6 +58,7 @@ fun TeamDetailScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val list = state.currentList
+    var showExitDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(listId) {
         viewModel.loadList(listId)
@@ -67,6 +73,17 @@ fun TeamDetailScreen(
             TeamRoundRules.createTeams(members, state.groupSize)
         }
     }
+    val requestBack = {
+        if (state.status == TeamMatchStatus.Idle) {
+            showExitDialog = true
+        } else {
+            viewModel.resetMatching()
+        }
+    }
+
+    BackHandler(enabled = true) {
+        requestBack()
+    }
 
     Scaffold(
         modifier = modifier
@@ -75,24 +92,20 @@ fun TeamDetailScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Đội",
+                title = stringResource(R.string.homograft),
+                centerTitle = false,
+                titleStartPadding = 39.dp,
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
-                onNavigationClick = {
-                    if (state.status == TeamMatchStatus.Idle) {
-                        onBack()
-                    } else {
-                        viewModel.resetMatching()
-                    }
-                },
+                navigationDescription = stringResource(R.string.content_description_back),
+                onNavigationClick = requestBack,
             )
         },
         bottomBar = {
             TeamDetailBottomBar(
                 primaryText = when (state.status) {
-                    TeamMatchStatus.Idle -> "NHẤN ĐỂ GHÉP NỐI"
-                    TeamMatchStatus.Matching -> "ĐANG GHÉP..."
-                    TeamMatchStatus.ReadyForPreview -> "Next"
+                    TeamMatchStatus.Idle -> stringResource(R.string.tapto).uppercase()
+                    TeamMatchStatus.Matching -> stringResource(R.string.tapto).uppercase()
+                    TeamMatchStatus.ReadyForPreview -> stringResource(R.string.next)
                 },
                 primaryEnabled = state.status != TeamMatchStatus.Matching && members.size >= 2,
                 settingsEnabled = state.status != TeamMatchStatus.Matching,
@@ -114,11 +127,15 @@ fun TeamDetailScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(46.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            TeamNameChip(name = list?.name ?: "Đội")
+            TeamNameChip(name = list?.name ?: stringResource(R.string.homograft))
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(
+                modifier = Modifier.height(
+                    if (showBoards) 32.dp else 24.dp
+                )
+            )
 
             when {
                 list == null -> {
@@ -142,8 +159,12 @@ fun TeamDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        boardWidth = 240.dp,
-                        contentPadding = PaddingValues(horizontal = SpinSpacing.ScreenHorizontal),
+                        boardWidth = 208.dp,
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 44.dp,
+                        ),
                     )
                 }
 
@@ -152,7 +173,7 @@ fun TeamDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        contentPadding = PaddingValues(horizontal = SpinSpacing.ScreenHorizontal),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
                         itemsIndexed(members, key = { index, name -> "$index-$name" }) { index, name ->
@@ -163,6 +184,16 @@ fun TeamDetailScreen(
             }
         }
     }
+
+    if (showExitDialog) {
+        SpinConfirmExitDialog(
+            onDismiss = { showExitDialog = false },
+            onConfirm = {
+                showExitDialog = false
+                onBack()
+            },
+        )
+    }
 }
 
 @Composable
@@ -171,15 +202,16 @@ private fun TeamNameChip(
 ) {
     Box(
         modifier = Modifier
+            .widthIn(min = 92.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(SpinColors.Action)
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .padding(horizontal = 24.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = name,
             color = Color.White,
-            fontSize = 22.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -195,9 +227,9 @@ private fun TeamMemberRow(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(44.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFF393347))
+            .background(Color(0xFF373246))
             .border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = 0.08f),
@@ -209,7 +241,7 @@ private fun TeamMemberRow(
         Text(
             text = "${index + 1}. $name",
             color = Color.White,
-            style = MaterialTheme.typography.titleMedium,
+            fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -229,18 +261,14 @@ private fun TeamDetailBottomBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF201B2D))
-            .border(
-                width = 1.dp,
-                color = Color.White.copy(alpha = 0.05f)
-            )
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 68.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TeamToolButton(
             glyph = SpinIconGlyph.Sliders,
-            contentDescription = "Tùy chỉnh",
+            contentDescription = stringResource(R.string.customsize),
             enabled = settingsEnabled,
             onClick = onSettings,
         )
@@ -252,7 +280,7 @@ private fun TeamDetailBottomBar(
         )
         TeamToolButton(
             glyph = SpinIconGlyph.Reset,
-            contentDescription = "Reset",
+            contentDescription = stringResource(R.string.restart),
             enabled = settingsEnabled,
             onClick = onReset,
         )
@@ -268,17 +296,17 @@ private fun TeamToolButton(
 ) {
     Box(
         modifier = Modifier
-            .size(width = 48.dp, height = 48.dp)
-            .alpha(if (enabled) 1f else 0.45f)
+            .width(48.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.05f))
+            .background(Color(0xFF373246))
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(
             glyph = glyph,
             tint = Color.White,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(22.dp),
         )
     }
 }
@@ -292,14 +320,9 @@ private fun TeamPrimaryActionButton(
 ) {
     Box(
         modifier = modifier
-            .height(48.dp)
-            .alpha(if (enabled) 1f else 0.65f)
+            .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(
-                brush = androidx.compose.ui.graphics.Brush.linearGradient(
-                    colors = listOf(Color(0xFFFF6B6B), Color(0xFFFF8E53))
-                )
-            )
+            .background(Color(0xFF373246))
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp),
         contentAlignment = Alignment.Center,
@@ -310,7 +333,6 @@ private fun TeamPrimaryActionButton(
             fontSize = 16.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
-            letterSpacing = 0.5.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

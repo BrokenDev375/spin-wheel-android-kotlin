@@ -3,8 +3,8 @@ package com.vga.spinwheel.ui.screen.card
 import kotlin.random.Random
 
 object CardRoundRules {
-    const val MIN_DURATION_SECONDS = 1
-    const val MAX_DURATION_SECONDS = 15
+    const val MIN_DURATION_SECONDS = 2
+    const val MAX_DURATION_SECONDS = 10
     const val MIN_TOTAL_CARDS = 2
     const val MAX_TOTAL_CARDS = 12
 

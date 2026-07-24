@@ -13,7 +13,7 @@ data class TeamGroup(
 object TeamRoundRules {
     const val MIN_GROUP_SIZE = 1
     const val MAX_GROUP_SIZE = 10
-    const val MIN_DURATION_SECONDS = 1
+    const val MIN_DURATION_SECONDS = 2
     const val MAX_DURATION_SECONDS = 10
 
     fun clampGroupSize(value: Int): Int =

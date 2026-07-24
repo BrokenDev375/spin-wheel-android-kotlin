@@ -30,9 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -46,7 +48,12 @@ fun DrawingAiFormScreen(
     modifier: Modifier = Modifier,
 ) {
     var prompt by remember { mutableStateOf("") }
-    val topics = listOf("Bữa tối", "Phim ảnh", "Du lịch", "Trò chơi")
+    val topics = listOf(
+        stringResource(R.string.drawing_topic_dinner),
+        stringResource(R.string.drawing_topic_movies),
+        stringResource(R.string.drawing_topic_travel),
+        stringResource(R.string.drawing_topic_games),
+    )
 
     Scaffold(
         modifier = modifier
@@ -55,9 +62,9 @@ fun DrawingAiFormScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Trình tạo AI",
+                title = stringResource(R.string.generatorai),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
             )
         },
@@ -82,7 +89,7 @@ fun DrawingAiFormScreen(
                         .padding(16.dp),
                 ) {
                     Text(
-                        text = "Nhập chủ đề cho danh sách:",
+                        text = stringResource(R.string.drawing_prompt_label),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -93,7 +100,7 @@ fun DrawingAiFormScreen(
                         onValueChange = { prompt = it },
                         placeholder = {
                             Text(
-                                "Ví dụ: Ăn gì tối nay, Chơi game gì...",
+                                stringResource(R.string.pleai),
                                 color = SpinColors.TextMuted,
                                 fontSize = 15.sp,
                             )
@@ -144,7 +151,7 @@ fun DrawingAiFormScreen(
                 ),
             ) {
                 Text(
-                    text = "Tạo danh sách",
+                    text = stringResource(R.string.drawing_create_list),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                 )

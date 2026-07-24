@@ -13,39 +13,38 @@ data class CoinSkin(
 object CoinSkins {
     val Default = CoinSkin(
         id = 0,
-        headDrawable = R.drawable.ic_coin_head,
-        tailDrawable = R.drawable.ic_coin_tail,
-        name = "Mặc định"
-    )
-    
-    // Add more placeholder skins to match the 5 options in the UI mockup
-    val USCent = CoinSkin(
-        id = 1,
-        headDrawable = R.drawable.ic_coin_head,
-        tailDrawable = R.drawable.ic_coin_tail,
-        name = "US Cent"
+        headDrawable = R.drawable.coin_penny_head,
+        tailDrawable = R.drawable.coin_penny_tail,
+        name = "Penny"
     )
 
     val Quarter = CoinSkin(
-        id = 2,
-        headDrawable = R.drawable.ic_coin_head,
-        tailDrawable = R.drawable.ic_coin_tail,
+        id = 1,
+        headDrawable = R.drawable.coin_quarter_montana,
+        tailDrawable = R.drawable.coin_quarter_washington,
         name = "Quarter"
     )
 
     val Greek = CoinSkin(
-        id = 3,
-        headDrawable = R.drawable.ic_coin_head,
-        tailDrawable = R.drawable.ic_coin_tail,
+        id = 2,
+        headDrawable = R.drawable.coin_greek_head,
+        tailDrawable = R.drawable.coin_greek_tail,
         name = "Greek"
     )
 
     val Poker = CoinSkin(
-        id = 4,
-        headDrawable = R.drawable.ic_coin_head,
-        tailDrawable = R.drawable.ic_coin_tail,
+        id = 3,
+        headDrawable = R.drawable.coin_poker_50,
+        tailDrawable = R.drawable.coin_poker_heart,
         name = "Poker"
     )
 
-    val AllSkins = listOf(Default, USCent, Quarter, Greek, Poker)
+    val Token = CoinSkin(
+        id = 4,
+        headDrawable = R.drawable.coin_token_dollar,
+        tailDrawable = R.drawable.coin_token_paw,
+        name = "Token"
+    )
+
+    val AllSkins = listOf(Default, Quarter, Greek, Poker, Token)
 }

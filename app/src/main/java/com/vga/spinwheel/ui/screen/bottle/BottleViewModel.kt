@@ -26,11 +26,15 @@ data class BottleUiState(
     val styleIndex: Int = 0,
     val tempStyleIndex: Int = 0,
     val lastAngle: Int = 0,
+    val settleDurationMillis: Int = BottleViewModel.DEFAULT_SETTLE_DURATION_MILLIS,
     val stage: BottleStage = BottleStage.Idle,
     val runId: Long = 0L,
 ) {
     val isSpinning: Boolean
         get() = stage == BottleStage.Spinning
+
+    val isRunning: Boolean
+        get() = stage == BottleStage.Spinning || stage == BottleStage.Settled
 }
 
 @HiltViewModel
@@ -65,20 +69,26 @@ class BottleViewModel @Inject constructor(
 
     fun startSpin() {
         val state = _uiState.value
-        if (state.isSpinning) return
+        if (state.isRunning) return
 
         spinJob?.cancel()
         val runId = state.runId + 1
+        val totalDurationMillis = state.durationSeconds * 1_000L
+        val fastSpinDurationMillis = minOf(FAST_SPIN_DURATION_MILLIS, totalDurationMillis)
+        val settleDurationMillis = (totalDurationMillis - fastSpinDurationMillis)
+            .coerceAtLeast(0L)
+            .toInt()
         _uiState.update {
             it.copy(
                 stage = BottleStage.Spinning,
                 lastAngle = 0,
+                settleDurationMillis = settleDurationMillis,
                 runId = runId,
             )
         }
 
         spinJob = viewModelScope.launch {
-            delay(state.durationSeconds * 1_000L)
+            delay(fastSpinDurationMillis)
             if (!isActiveRun(runId)) return@launch
 
             val finalAngle = BottleRoundRules.randomFinalAngle()
@@ -89,7 +99,7 @@ class BottleViewModel @Inject constructor(
                 )
             }
 
-            delay(RESULT_DELAY_MS)
+            delay(settleDurationMillis.toLong())
             if (!isActiveRun(runId)) return@launch
             _uiState.update { it.copy(stage = BottleStage.Result) }
         }
@@ -147,20 +157,18 @@ class BottleViewModel @Inject constructor(
     }
 
     fun cancelOngoingSpin() {
-        if (!_uiState.value.isSpinning) return
+        if (!_uiState.value.isRunning) return
         resetSpin()
     }
-
-    fun shareText(): String =
-        "Ket qua quay chai: ${_uiState.value.lastAngle}°"
 
     private fun isActiveRun(runId: Long): Boolean =
         _uiState.value.runId == runId
 
     companion object {
         const val DEFAULT_DURATION_SECONDS = 2
+        const val DEFAULT_SETTLE_DURATION_MILLIS = 1_000
         private const val SETTING_DURATION = "duration"
         private const val SETTING_STYLE_INDEX = "style_index"
-        private const val RESULT_DELAY_MS = 650L
+        private const val FAST_SPIN_DURATION_MILLIS = 1_000L
     }
 }

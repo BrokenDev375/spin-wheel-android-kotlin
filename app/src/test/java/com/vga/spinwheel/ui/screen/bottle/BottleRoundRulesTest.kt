@@ -9,9 +9,9 @@ class BottleRoundRulesTest {
 
     @Test
     fun clampDurationSeconds_keepsValueWithinSupportedRange() {
-        assertEquals(1, BottleRoundRules.clampDurationSeconds(-4))
+        assertEquals(2, BottleRoundRules.clampDurationSeconds(-4))
         assertEquals(2, BottleRoundRules.clampDurationSeconds(2))
-        assertEquals(15, BottleRoundRules.clampDurationSeconds(40))
+        assertEquals(10, BottleRoundRules.clampDurationSeconds(40))
     }
 
     @Test

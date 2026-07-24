@@ -34,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.data.model.WheelItem
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -54,7 +56,11 @@ fun DrawingAddEditScreen(
 ) {
     val formState by viewModel.formState.collectAsState()
 
-    val titleText = if (formState.id.isEmpty()) "Thêm danh sách" else "Sửa danh sách"
+    val titleText = if (formState.id.isEmpty()) {
+        stringResource(R.string.newList)
+    } else {
+        stringResource(R.string.edit)
+    }
 
     Scaffold(
         modifier = modifier
@@ -65,14 +71,14 @@ fun DrawingAddEditScreen(
             SpinTopBar(
                 title = titleText,
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Quay lại",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
                 actions = {
                     TextButton(
                         onClick = { viewModel.saveWheel(onSuccess = onSaveSuccess, onError = {}) }
                     ) {
                         Text(
-                            text = "Lưu",
+                            text = stringResource(R.string.save),
                             color = Color(0xFFFFA726),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -98,7 +104,7 @@ fun DrawingAddEditScreen(
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Tên",
+                            text = stringResource(R.string.name),
                             style = MaterialTheme.typography.titleMedium,
                             color = SpinColors.TextMuted,
                         )
@@ -107,7 +113,7 @@ fun DrawingAddEditScreen(
                     OutlinedTextField(
                         value = formState.name,
                         onValueChange = viewModel::updateFormName,
-                        placeholder = { Text("Tên danh sách", color = SpinColors.TextMuted) },
+                        placeholder = { Text(stringResource(R.string.mylist), color = SpinColors.TextMuted) },
                         singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -144,7 +150,7 @@ fun DrawingAddEditScreen(
                             modifier = Modifier.size(18.dp),
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Thêm thẻ", fontSize = 15.sp)
+                        Text(stringResource(R.string.addItem), fontSize = 15.sp)
                     }
                 }
             }
@@ -152,7 +158,7 @@ fun DrawingAddEditScreen(
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Các thẻ",
+                        text = stringResource(R.string.item),
                         style = MaterialTheme.typography.titleMedium,
                         color = SpinColors.TextMuted,
                     )
@@ -184,7 +190,7 @@ private fun DrawingItemRow(
         OutlinedTextField(
             value = item.name,
             onValueChange = onNameChange,
-            placeholder = { Text("Tên thẻ", color = SpinColors.TextMuted) },
+            placeholder = { Text(stringResource(R.string.itemsname), color = SpinColors.TextMuted) },
             singleLine = true,
             modifier = Modifier
                 .weight(1f)

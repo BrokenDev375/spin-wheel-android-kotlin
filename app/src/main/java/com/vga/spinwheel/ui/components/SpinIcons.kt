@@ -1,15 +1,19 @@
 package com.vga.spinwheel.ui.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.R
 
 enum class SpinIconGlyph {
     Back,
@@ -17,6 +21,11 @@ enum class SpinIconGlyph {
     Home,
     Settings,
     Crown,
+    Language,
+    Rate,
+    Music,
+    Sound,
+    Vibration,
     Plus,
     Minus,
     ChevronRight,
@@ -31,6 +40,7 @@ enum class SpinIconGlyph {
     Shuffle,
     Reset,
     Share,
+    ShareNetwork,
     AddCircle,
     Layers,
 }
@@ -41,6 +51,21 @@ fun SpinIcon(
     tint: Color,
     modifier: Modifier = Modifier,
 ) {
+    val drawableRes = glyph.drawableRes()
+    if (drawableRes != null) {
+        Image(
+            painter = painterResource(drawableRes),
+            contentDescription = null,
+            colorFilter = if (glyph.preserveSourceColors()) {
+                null
+            } else {
+                ColorFilter.tint(tint)
+            },
+            modifier = modifier,
+        )
+        return
+    }
+
     Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
@@ -279,6 +304,36 @@ fun SpinIcon(
                 }
                 drawPath(bottomLayer, tint, style = Stroke(width = stroke, cap = StrokeCap.Round))
             }
+
+            SpinIconGlyph.Language,
+            SpinIconGlyph.Rate,
+            SpinIconGlyph.Music,
+            SpinIconGlyph.Sound,
+            SpinIconGlyph.Vibration,
+            SpinIconGlyph.ShareNetwork,
+            -> Unit
         }
     }
 }
+
+private fun SpinIconGlyph.drawableRes(): Int? = when (this) {
+    SpinIconGlyph.Back -> R.drawable.spin_ic_back
+    SpinIconGlyph.Home -> R.drawable.spin_ic_home
+    SpinIconGlyph.Settings -> R.drawable.spin_ic_settings
+    SpinIconGlyph.Crown -> R.drawable.spin_ic_crown
+    SpinIconGlyph.Language -> R.drawable.spin_ic_language_globe
+    SpinIconGlyph.Rate -> R.drawable.spin_ic_rate_flat
+    SpinIconGlyph.Music -> R.drawable.spin_ic_music
+    SpinIconGlyph.Sound -> R.drawable.spin_ic_sound
+    SpinIconGlyph.Vibration -> R.drawable.spin_ic_vibration
+    SpinIconGlyph.History -> R.drawable.spin_ic_history
+    SpinIconGlyph.Reset -> R.drawable.spin_ic_reset
+    SpinIconGlyph.Share -> R.drawable.spin_ic_share
+    SpinIconGlyph.ShareNetwork -> R.drawable.spin_ic_share_network
+    SpinIconGlyph.Sliders -> R.drawable.spin_ic_sliders
+    SpinIconGlyph.Shuffle -> R.drawable.spin_ic_shuffle
+    else -> null
+}
+
+private fun SpinIconGlyph.preserveSourceColors(): Boolean =
+    this == SpinIconGlyph.Crown

@@ -197,15 +197,6 @@ class TeamViewModel @Inject constructor(
         startMatching()
     }
 
-    fun shareText(): String {
-        val state = _uiState.value
-        val title = state.currentList?.name ?: "Doi"
-        val teamText = state.teams.joinToString(separator = "\n\n") { team ->
-            "${team.title}\n" + team.members.joinToString(separator = "\n") { "- $it" }
-        }
-        return "$title\n\n$teamText"
-    }
-
     private fun isActiveRun(runId: Long): Boolean =
         _uiState.value.runId == runId
 

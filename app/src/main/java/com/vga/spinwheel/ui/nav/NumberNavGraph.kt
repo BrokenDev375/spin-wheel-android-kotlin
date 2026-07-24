@@ -18,6 +18,7 @@ object NumberRoutes {
 
 fun NavGraphBuilder.numberGraph(
     navController: NavController,
+    onBack: () -> Unit,
 ) {
     navigation(
         startDestination = NumberRoutes.HOME,
@@ -28,7 +29,7 @@ fun NavGraphBuilder.numberGraph(
                 navController.getBackStackEntry(Screen.Number.route)
             }
             val viewModel: com.vga.spinwheel.ui.screen.number.NumberViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
-            NumberHomeScreen(navController, viewModel)
+            NumberHomeScreen(navController, viewModel, onBack)
         }
         composable(NumberRoutes.SETTINGS) { backStackEntry ->
             val parentEntry = androidx.compose.runtime.remember(backStackEntry) {

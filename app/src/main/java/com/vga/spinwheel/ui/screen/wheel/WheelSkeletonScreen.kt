@@ -13,7 +13,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
 import com.vga.spinwheel.ui.components.SpinSecondaryButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -39,9 +41,9 @@ fun WheelSkeletonScreen(
         containerColor = SpinColors.Background,
         topBar = {
             SpinTopBar(
-                title = "Banh Xe",
+                title = stringResource(R.string.spinwheel),
                 navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = onBack,
             )
         },
@@ -62,36 +64,36 @@ fun WheelSkeletonScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "Danh sach banh xe",
+                text = stringResource(R.string.mylist),
                 color = SpinColors.TextPrimary,
             )
             SpinPrimaryButton(
-                text = "Them banh xe",
+                text = stringResource(R.string.addspin),
                 onClick = onAddWheel,
                 modifier = Modifier.fillMaxWidth(),
             )
             SpinSecondaryButton(
-                text = "Sua banh xe",
+                text = stringResource(R.string.edit),
                 onClick = onEditWheel,
                 modifier = Modifier.fillMaxWidth(),
             )
             SpinSecondaryButton(
-                text = "Quay banh xe",
+                text = stringResource(R.string.spin),
                 onClick = onSpinWheel,
                 modifier = Modifier.fillMaxWidth(),
             )
             SpinSecondaryButton(
-                text = "Cai dat banh xe",
+                text = stringResource(R.string.setings),
                 onClick = onWheelSettings,
                 modifier = Modifier.fillMaxWidth(),
             )
             SpinSecondaryButton(
-                text = "Ket qua",
+                text = stringResource(R.string.results),
                 onClick = onWheelResult,
                 modifier = Modifier.fillMaxWidth(),
             )
             SpinSecondaryButton(
-                text = "Lich su",
+                text = stringResource(R.string.history),
                 onClick = onWheelHistory,
                 modifier = Modifier.fillMaxWidth(),
             )

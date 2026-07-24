@@ -1,6 +1,8 @@
 package com.vga.spinwheel.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,6 +27,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -43,8 +47,7 @@ enum class SpinFeatureVisual {
 }
 
 data class SpinFeatureCardStyle(
-    val visual: SpinFeatureVisual,
-    val gradient: List<Color>,
+    @DrawableRes val backgroundRes: Int,
     val titleColor: Color = SpinColors.TextPrimary,
 )
 
@@ -58,11 +61,13 @@ fun SpinFeatureCard(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(SpinRadius.Card))
-            .background(Brush.linearGradient(style.gradient))
+            .background(SpinColors.BackgroundDeep)
             .clickable(onClick = onClick),
     ) {
-        FeatureArtwork(
-            visual = style.visual,
+        Image(
+            painter = painterResource(style.backgroundRes),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
         Box(

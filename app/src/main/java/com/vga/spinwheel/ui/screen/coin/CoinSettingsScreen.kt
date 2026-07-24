@@ -12,9 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,20 +23,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.components.SpinIcon
+import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.nav.CoinRoutes
 import com.vga.spinwheel.ui.theme.SpinColors
-
-import com.vga.spinwheel.ui.components.SpinSettingRow
-import com.vga.spinwheel.ui.components.SpinStepper
-import com.vga.spinwheel.ui.components.SpinIcon
-import com.vga.spinwheel.ui.components.SpinIconGlyph
 
 @Composable
 fun CoinSettingsScreen(
@@ -49,9 +47,11 @@ fun CoinSettingsScreen(
     Scaffold(
         topBar = {
             SpinTopBar(
-                title = "Tùy chỉnh",
-                navigationIcon = com.vga.spinwheel.ui.components.SpinIconGlyph.Back,
-                navigationDescription = "Back",
+                title = stringResource(R.string.customsize),
+                centerTitle = false,
+                titleStartPadding = 39.dp,
+                navigationIcon = SpinIconGlyph.Back,
+                navigationDescription = stringResource(R.string.content_description_back),
                 onNavigationClick = { navController.popBackStack() },
             )
         },
@@ -61,34 +61,97 @@ fun CoinSettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            SpinSettingRow(
-                title = "Thời lượng hoạt hình",
-                trailing = {
-                    SpinStepper(
-                        value = "${duration}s",
-                        onMinus = { viewModel.setDuration(duration - 1) },
-                        onPlus = { viewModel.setDuration(duration + 1) }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFF393347))
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.duration),
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DurationButton(
+                        label = "-",
+                        onClick = { viewModel.setDuration(duration - 1) }
+                    )
+                    Text(
+                        text = "${duration}s",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(40.dp)
+                    )
+                    DurationButton(
+                        label = "+",
+                        onClick = { viewModel.setDuration(duration + 1) }
                     )
                 }
-            )
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            SpinSettingRow(
-                title = "Mẫu tiền xu",
-                onClick = { navController.navigate(CoinRoutes.LABEL) },
-                trailing = {
-                    SpinIcon(
-                        glyph = SpinIconGlyph.ChevronRight,
-                        tint = SpinColors.IconMuted,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFF393347))
+                    .clickable { navController.navigate(CoinRoutes.LABEL) }
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.coinsample),
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                SpinIcon(
+                    glyph = SpinIconGlyph.ChevronRight,
+                    tint = SpinColors.IconMuted,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun DurationButton(
+    label: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(28.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(Color.White)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = label,
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
     }
 }

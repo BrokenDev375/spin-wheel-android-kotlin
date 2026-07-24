@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,18 +35,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.nav.CoinRoutes
-import com.vga.spinwheel.ui.theme.SpinColors
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -102,62 +99,60 @@ fun CoinHomeScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            SpinTopBar(
-                title = "Đồng Xu",
-                navigationIcon = SpinIconGlyph.Back,
-                navigationDescription = "Back",
-                onNavigationClick = { if (!isFlipping) navController.popBackStack() },
-                actions = {
-                    SpinIconButton(
-                        glyph = SpinIconGlyph.More, // Adjust if you have a gear icon
-                        contentDescription = "Settings",
-                        onClick = { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) }
-                    )
-                },
+    SpinScreen(
+        title = stringResource(R.string.coin),
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
+        navigationIcon = SpinIconGlyph.Back,
+        navigationDescription = stringResource(R.string.content_description_back),
+        onNavigationClick = { if (!isFlipping) navController.popBackStack() },
+        confirmExitOnBack = true,
+        actions = {
+            SpinIconButton(
+                glyph = SpinIconGlyph.Settings,
+                contentDescription = stringResource(R.string.settings),
+                onClick = { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) }
             )
         },
-        containerColor = SpinColors.Background
-    ) { padding ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             
             // Scoreboard Pill
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(60.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .background(Color.White)
-                    .padding(horizontal = 20.dp, vertical = 14.dp),
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = skin.headDrawable),
-                        contentDescription = "Heads",
-                        modifier = Modifier.size(44.dp)
+                        contentDescription = stringResource(R.string.heads),
+                        modifier = Modifier.size(36.dp)
                     )
                     Text(
                         text = "$headScore",
                         color = Color.Black,
-                        fontSize = 22.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(start = 10.dp)
+                        modifier = Modifier.padding(start = 8.dp)
                     )
                 }
                 
                 Text(
                     text = "-",
                     color = Color.Black,
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
                 
@@ -165,14 +160,14 @@ fun CoinHomeScreen(
                     Text(
                         text = "$tailScore",
                         color = Color.Black,
-                        fontSize = 22.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(end = 10.dp)
+                        modifier = Modifier.padding(end = 8.dp)
                     )
                     Image(
                         painter = painterResource(id = skin.tailDrawable),
-                        contentDescription = "Tails",
-                        modifier = Modifier.size(44.dp)
+                        contentDescription = stringResource(R.string.tails),
+                        modifier = Modifier.size(36.dp)
                     )
                 }
             }
@@ -182,7 +177,7 @@ fun CoinHomeScreen(
             // Main Coin Area
             Box(
                 modifier = Modifier
-                    .size(300.dp)
+                    .size(240.dp)
                     .graphicsLayer {
                         this.rotationY = animatedRotation
                         this.cameraDistance = 12f * density
@@ -192,13 +187,13 @@ fun CoinHomeScreen(
                 if (isHeadVisible) {
                     Image(
                         painter = painterResource(id = skin.headDrawable),
-                        contentDescription = "Coin Head",
+                        contentDescription = stringResource(R.string.heads),
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
                     Image(
                         painter = painterResource(id = skin.tailDrawable),
-                        contentDescription = "Coin Tail",
+                        contentDescription = stringResource(R.string.tails),
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
@@ -215,14 +210,14 @@ fun CoinHomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(bottom = 68.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .size(58.dp)
-                        .clip(RoundedCornerShape(14.dp))
+                        .size(35.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
                         .clickable { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) },
                     contentAlignment = Alignment.Center
@@ -230,7 +225,7 @@ fun CoinHomeScreen(
                     SpinIcon(
                         glyph = SpinIconGlyph.Sliders,
                         tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 }
 
@@ -238,24 +233,24 @@ fun CoinHomeScreen(
                     onClick = { if (!isFlipping) isFlipping = true },
                     modifier = Modifier
                         .weight(1f)
-                        .height(58.dp),
+                        .height(35.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF393347),
                         contentColor = Color.White
                     ),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "BẮT ĐẦU",
-                        fontSize = 20.sp,
+                        text = stringResource(R.string.start).uppercase(),
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Black
                     )
                 }
 
                 Box(
                     modifier = Modifier
-                        .size(58.dp)
-                        .clip(RoundedCornerShape(14.dp))
+                        .size(35.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
                         .clickable {
                             if (!isFlipping) {
@@ -268,7 +263,7 @@ fun CoinHomeScreen(
                     SpinIcon(
                         glyph = SpinIconGlyph.Reset,
                         tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 }
             }

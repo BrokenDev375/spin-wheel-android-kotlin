@@ -8,10 +8,16 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -22,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class DiceStyle(
@@ -35,7 +42,7 @@ val diceStyles = listOf(
     DiceStyle(
         dieBg = Color(0xFF111116),
         dot = Color(0xFFFFFFFF),
-        dieBorder = Color(0x24FFFFFF), // 0.14
+        dieBorder = Color(0xFF8D8B8F),
         tileBgColors = listOf(Color(0xFF56535E), Color(0xFFDFE0E4))
     ),
     DiceStyle(
@@ -63,7 +70,11 @@ fun DiceFace(
     value: Int,
     styleIndex: Int,
     isShaking: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.size(80.dp),
+    dotSize: Dp = 16.dp,
+    contentPadding: Dp = 18.dp,
+    cornerRadius: Dp = 16.dp,
+    borderWidth: Dp = 2.dp,
 ) {
     val style = diceStyles.getOrNull(styleIndex) ?: diceStyles[0]
 
@@ -80,61 +91,98 @@ fun DiceFace(
 
     Box(
         modifier = modifier
-            .size(80.dp)
             .rotate(rotation)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(cornerRadius))
             .background(style.dieBg)
-            .border(2.dp, style.dieBorder, RoundedCornerShape(16.dp))
-            .padding(8.dp)
+            .border(borderWidth, style.dieBorder, RoundedCornerShape(cornerRadius))
+            .padding(contentPadding)
     ) {
         val safeValue = value.coerceIn(1, 6)
         when (safeValue) {
             1 -> {
-                Dot(style.dot, Alignment.Center)
+                Dot(style.dot, Alignment.Center, dotSize)
             }
             2 -> {
-                Dot(style.dot, Alignment.TopStart)
-                Dot(style.dot, Alignment.BottomEnd)
+                Dot(style.dot, Alignment.TopStart, dotSize)
+                Dot(style.dot, Alignment.BottomEnd, dotSize)
             }
             3 -> {
-                Dot(style.dot, Alignment.TopStart)
-                Dot(style.dot, Alignment.Center)
-                Dot(style.dot, Alignment.BottomEnd)
+                Dot(style.dot, Alignment.TopStart, dotSize)
+                Dot(style.dot, Alignment.Center, dotSize)
+                Dot(style.dot, Alignment.BottomEnd, dotSize)
             }
             4 -> {
-                Dot(style.dot, Alignment.TopStart)
-                Dot(style.dot, Alignment.TopEnd)
-                Dot(style.dot, Alignment.BottomStart)
-                Dot(style.dot, Alignment.BottomEnd)
+                Dot(style.dot, Alignment.TopStart, dotSize)
+                Dot(style.dot, Alignment.TopEnd, dotSize)
+                Dot(style.dot, Alignment.BottomStart, dotSize)
+                Dot(style.dot, Alignment.BottomEnd, dotSize)
             }
             5 -> {
-                Dot(style.dot, Alignment.TopStart)
-                Dot(style.dot, Alignment.TopEnd)
-                Dot(style.dot, Alignment.Center)
-                Dot(style.dot, Alignment.BottomStart)
-                Dot(style.dot, Alignment.BottomEnd)
+                Dot(style.dot, Alignment.TopStart, dotSize)
+                Dot(style.dot, Alignment.TopEnd, dotSize)
+                Dot(style.dot, Alignment.Center, dotSize)
+                Dot(style.dot, Alignment.BottomStart, dotSize)
+                Dot(style.dot, Alignment.BottomEnd, dotSize)
             }
             6 -> {
-                Dot(style.dot, Alignment.TopStart)
-                Dot(style.dot, Alignment.TopEnd)
-                Dot(style.dot, Alignment.CenterStart)
-                Dot(style.dot, Alignment.CenterEnd)
-                Dot(style.dot, Alignment.BottomStart)
-                Dot(style.dot, Alignment.BottomEnd)
+                Dot(style.dot, Alignment.TopStart, dotSize)
+                Dot(style.dot, Alignment.TopEnd, dotSize)
+                Dot(style.dot, Alignment.CenterStart, dotSize)
+                Dot(style.dot, Alignment.CenterEnd, dotSize)
+                Dot(style.dot, Alignment.BottomStart, dotSize)
+                Dot(style.dot, Alignment.BottomEnd, dotSize)
             }
         }
     }
 }
 
 @Composable
-fun BoxScope.Dot(color: Color, alignment: Alignment) {
+fun BoxScope.Dot(color: Color, alignment: Alignment, size: Dp) {
     Box(
         modifier = Modifier
-            .size(14.dp)
+            .size(size)
             .align(alignment)
             .clip(CircleShape)
             .background(color)
     )
+}
+
+@Composable
+fun DiceGrid(
+    values: List<Int>,
+    styleIndex: Int,
+    modifier: Modifier = Modifier,
+    isShaking: Boolean = false,
+    singleDieSize: Dp = 160.dp,
+    gridDieSize: Dp = 104.dp,
+    spacing: Dp = 16.dp,
+) {
+    val columns = if (values.size <= 1) 1 else 2
+    val rows = (values.size.coerceAtLeast(1) + columns - 1) / columns
+    val dieSize = if (values.size <= 1) singleDieSize else gridDieSize
+    val dotSize = if (values.size <= 1) 28.dp else 16.dp
+    val contentPadding = if (values.size <= 1) 32.dp else 18.dp
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(columns),
+        horizontalArrangement = Arrangement.spacedBy(spacing),
+        verticalArrangement = Arrangement.spacedBy(spacing),
+        userScrollEnabled = false,
+        modifier = modifier
+            .width(dieSize * columns + spacing * (columns - 1))
+            .height(dieSize * rows + spacing * (rows - 1)),
+    ) {
+        items(values) { value ->
+            DiceFace(
+                value = value,
+                styleIndex = styleIndex,
+                isShaking = isShaking,
+                dotSize = dotSize,
+                contentPadding = contentPadding,
+                modifier = Modifier.size(dieSize),
+            )
+        }
+    }
 }
 
 @Composable
