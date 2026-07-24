@@ -13,7 +13,7 @@ object AppStorage {
         preferences(context)
             .edit()
             .putString(KEY_LANGUAGE, languageCode.ifBlank { DEFAULT_LANGUAGE_CODE })
-            .apply()
+            .commit()
     }
 
     fun isOnboardingDone(context: Context): Boolean =
