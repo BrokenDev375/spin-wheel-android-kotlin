@@ -73,7 +73,7 @@
     <string name="edit">تعديل</string>
     <string name="continue_val">متابعة</string>
     <string name="tapto">اضغط للتزويج</string>
-    <string name="desai">اختبر الإثارة مع عجلات الدوران المولدة بالذكاء الاصطناعي، والتي تقدم جوائز فريدة ومثيرة! 
+    <string name="desai">اختبر الإثارة مع عجلات الدوران المولدة بالذكاء الاصطناعي، والتي تقدم جوائز فريدة ومثيرة!
 \n مثال: \"إنشاء 8 عناصر\" \"أفكار للعشاء مع إيموجي\"</string>
     <string name="ai_prompt_base">بناءً على الموضوع \'{{topic}}\'، اقترح اسمًا مناسبًا وأنشئ بالضبط 8 عناصر ذات صلة.</string>
     <string name="itemsname">اسم العنصر</string>
@@ -161,7 +161,7 @@
     <string name="Areyousure">هل أنت متأكد أنك تريد الخروج من اللعبة؟</string>
     <string name="vibration">اهتزاز</string>
     <string name="numbercard">عدد البطاقات</string>
-    <string name="itemdes">عجلة دوران للجميع 
+    <string name="itemdes">عجلة دوران للجميع
 \n اختيار عشوائي.</string>
     <string name="subapp">يحتاج المستخدمون إلى منح الإذن لتلقي الإشعارات من الجهاز</string>
     <string name="removewin">إزالة الفائز</string>

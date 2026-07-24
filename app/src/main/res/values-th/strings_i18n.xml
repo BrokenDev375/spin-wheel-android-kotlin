@@ -221,13 +221,13 @@
     <string name="ranking">อันดับ</string>
     <string name="done">เสร็จสิ้น</string>
     <string name="cardwin">การ์ดผู้ชนะ</string>
-    <string name="desai">สัมผัสความตื่นเต้นกับวงล้อหมุนที่สร้างโดย AI ซึ่งนำรางวัลที่ไม่เหมือนใครและน่าตื่นเต้นมาให้! 
+    <string name="desai">สัมผัสความตื่นเต้นกับวงล้อหมุนที่สร้างโดย AI ซึ่งนำรางวัลที่ไม่เหมือนใครและน่าตื่นเต้นมาให้!
 \n ตัวอย่าง: \"สร้าง 8 รายการ\" \"ไอเดียมื้อค่ำพร้อมอิโมจิ\"</string>
     <string name="rateNotAvailable">ไม่สามารถให้คะแนนได้ในขณะนี้</string>
     <string name="titleuninstall">ทำไมคุณถึงลบแอปนี้</string>
     <string name="aw1">ใช้งานยาก</string>
     <string name="Areyousure">แน่ใจหรือว่าคุณต้องการออกจากเกม?</string>
-    <string name="itemdes">วงล้อหมุนสำหรับทุกคน 
+    <string name="itemdes">วงล้อหมุนสำหรับทุกคน
 \n การเลือกแบบสุ่ม</string>
     <string name="ai_prompt_ensure">ตรวจสอบให้แน่ใจว่ารายการมีชื่อ 1 ชื่อและ 8 รายการ โดยแต่ละบรรทัดมีชื่อหรือรายการพร้อมอิโมจิที่เหมาะสม</string>
     <string name="deschoose">เลือกผู้เล่นที่ชนะ</string>

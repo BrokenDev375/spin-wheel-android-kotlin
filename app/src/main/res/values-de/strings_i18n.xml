@@ -78,7 +78,7 @@
     <string name="desIntro3">Automatisches Pairing von Teilnehmern und Generierung zufälliger Zahlen, um alle einzubeziehen und unvorhersehbare Ergebnisse zu gewährleisten.</string>
     <string name="limit_short">Keine Züge mehr</string>
     <string name="rateNotAvailable">Bewertung nicht verfügbar.</string>
-    <string name="desai">Erlebe den Nervenkitzel mit KI-generierten Glücksrädern, die einzigartige und aufregende Preise bieten! 
+    <string name="desai">Erlebe den Nervenkitzel mit KI-generierten Glücksrädern, die einzigartige und aufregende Preise bieten!
 \n Beispiel: „Erstelle 8 Elemente“ „Essensideen mit Emojis“</string>
     <string name="ms">Spielsound</string>
     <string name="remove">Entfernen</string>
@@ -161,7 +161,7 @@
     <string name="color">Farbpalette</string>
     <string name="spin">Drehen</string>
     <string name="ai_prompt_base">Basierend auf dem Thema \'{{topic}}\', schlage einen passenden Namen vor und erstelle genau 8 verwandte Elemente.</string>
-    <string name="itemdes">Ein Glücksrad für alle 
+    <string name="itemdes">Ein Glücksrad für alle
 \n Zufallsauswahl.</string>
     <string name="pleaseItem">Bitte gib den Namen des Elements ein!</string>
     <string name="ai_prompt_ensure">Stelle sicher, dass die Liste genau 1 Namen und 8 Elemente enthält, wobei jede Zeile den Namen oder das Element mit einem passenden Emoji enthält.</string>

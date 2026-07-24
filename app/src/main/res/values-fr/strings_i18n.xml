@@ -51,20 +51,20 @@
     <string name="tapto">Touchez pour apparier</string>
     <string name="done">Terminé</string>
     <string name="desIntro4">Avec notre fonction de personnalisation, vous pouvez adapter chaque jeu à vos préférences</string>
-    <string name="ai_prompt_format">Format : 
+    <string name="ai_prompt_format">Format :
 \nNom
-\nemoji Élément 1 
-\nemoji Élément 2 
+\nemoji Élément 1
+\nemoji Élément 2
 \n...
 \nemoji Élément 8</string>
     <string name="duration">Durée de l’Animation</string>
     <string name="spinwheel">Roue Tournante</string>
     <string name="numberwin">Nombre de Gagnants</string>
-    <string name="ai_prompt_example">Exemple : 
+    <string name="ai_prompt_example">Exemple :
 \nVêtements
-\n👕 T-shirt 
-\n👖 Jeans 
-\n👗 Robe de Soirée 
+\n👕 T-shirt
+\n👖 Jeans
+\n👗 Robe de Soirée
 \n... (8 éléments au total)</string>
     <string name="egwthe">Après cela</string>
     <string name="desIntro1">Roue Tournante - où chaque tour apporte une nouvelle surprise. Prenez une décision ou profitez simplement d’un moment amusant, notre jeu de Roue Tournante offre des possibilités et du divertissement sans fin</string>
@@ -85,7 +85,7 @@
     <string name="radomplayer">Classement de Joueur Aléatoire</string>
     <string name="share">Partager</string>
     <string name="TaptoShuffle">Touchez pour Mélanger</string>
-    <string name="desai">Vivez l’excitation avec des Roues Tournantes générées par IA, apportant des prix uniques et excitants ! 
+    <string name="desai">Vivez l’excitation avec des Roues Tournantes générées par IA, apportant des prix uniques et excitants !
 \n Exemple : « Créer 8 éléments » « Idées de dîner avec emojis »</string>
     <string name="aw1">Difficile à utiliser</string>
     <string name="remove">Supprimer</string>
@@ -172,7 +172,7 @@
     <string name="newList">Nouvelle Liste</string>
     <string name="heads">Face</string>
     <string name="diceRoller">Lanceur de Dés</string>
-    <string name="itemdes">Une roue tournante pour tous 
+    <string name="itemdes">Une roue tournante pour tous
 \n sélection aléatoire.</string>
     <string name="cancelTitle">Annuler</string>
     <string name="card">Retourner la Carte</string>

@@ -45,7 +45,7 @@
     <string name="share">Compartilhar</string>
     <string name="loadingAds">Carregando anúncios</string>
     <string name="priority">Prioridade</string>
-    <string name="itemdes">Uma roda giratória para todos 
+    <string name="itemdes">Uma roda giratória para todos
 \n seleção aleatória.</string>
     <string name="Lose">Perdedor</string>
     <string name="itemwhell">Nome da Roda</string>
@@ -100,7 +100,7 @@
     <string name="spin">Girar</string>
     <string name="stay">Ficar</string>
     <string name="vibration">Vibração</string>
-    <string name="desai">Experimente a emoção com Rodas Giratórias geradas por IA, trazendo prêmios únicos e emocionantes! 
+    <string name="desai">Experimente a emoção com Rodas Giratórias geradas por IA, trazendo prêmios únicos e emocionantes!
 \n Exemplo: \"Criar 8 itens\" \"Ideias de jantar com emojis\"</string>
     <string name="Dark">Escuro</string>
     <string name="i874505">Mensal</string>
@@ -156,11 +156,11 @@
     <string name="share_success">Compartilhado com sucesso</string>
     <string name="update_header">Atualização disponível</string>
     <string name="alertai1">Erro de conexão com a rede ou servidor. Verifique e tente novamente! 🌐</string>
-    <string name="ai_prompt_example">Exemplo: 
+    <string name="ai_prompt_example">Exemplo:
 \nRoupas
-\n👕 Camiseta 
-\n👖 Calça Jeans 
-\n👗 Vestido de Noite 
+\n👕 Camiseta
+\n👖 Calça Jeans
+\n👗 Vestido de Noite
 \n... (8 itens no total)</string>
     <string name="randerNum">Número Aleatório</string>
     <string name="spinBottle">Girar Garrafa</string>
@@ -222,10 +222,10 @@
     <string name="fingerChooser">Escolhedor de Dedo</string>
     <string name="item">Item</string>
     <string name="roulette">Roda Giratória</string>
-    <string name="ai_prompt_format">Formato: 
+    <string name="ai_prompt_format">Formato:
 \nNome
-\nemoji Item 1 
-\nemoji Item 2 
+\nemoji Item 1
+\nemoji Item 2
 \n...
 \nemoji Item 8</string>
     <string name="success">Sucesso</string>

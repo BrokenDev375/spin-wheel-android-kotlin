@@ -141,7 +141,7 @@
     <string name="af84d5">연마다</string>
     <string name="limit_short">턴 부족</string>
     <string name="titleRate1">이 앱이 마음에 드시나요?</string>
-    <string name="desai">AI로 생성된 스핀 휠로 독특하고 흥미로운 보상을 경험하세요! 
+    <string name="desai">AI로 생성된 스핀 휠로 독특하고 흥미로운 보상을 경험하세요!
 \n 예: \"8개 항목 생성\" \"이모지와 함께하는 식사 아이디어\"</string>
     <string name="egwthe">그 후</string>
     <string name="titleRate2">오, 안돼요!</string>
@@ -202,7 +202,7 @@
     <string name="deshomograft">무작위 팀으로 나누기</string>
     <string name="Classic">클래식</string>
     <string name="Emojiwin">승자 이모지</string>
-    <string name="itemdes">모두를 위한 스핀 휠 
+    <string name="itemdes">모두를 위한 스핀 휠
 \n 무작위 선택.</string>
     <string name="bgms">배경 음악</string>
     <string name="itemsname">항목 이름</string>
@@ -210,11 +210,11 @@
     <string name="form">부터</string>
     <string name="titileIntro1">랜덤 - 스핀 휠 게임</string>
     <string name="fingerChooser">핑거 선택기</string>
-    <string name="ai_prompt_example">예시: 
+    <string name="ai_prompt_example">예시:
 \n의류
-\n👕 티셔츠 
-\n👖 청바지 
-\n👗 이브닝 드레스 
+\n👕 티셔츠
+\n👖 청바지
+\n👗 이브닝 드레스
 \n... (총 8개 항목)</string>
     <string name="limit_remaining">😊 남음: {{remaining}}/{{total}} 턴</string>
     <string name="duplicate_failed">휠 복제 실패</string>
@@ -230,10 +230,10 @@
     <string name="i874505">월간</string>
     <string name="tails">뒷면</string>
     <string name="remove">제거</string>
-    <string name="ai_prompt_format">형식: 
+    <string name="ai_prompt_format">형식:
 \n이름
-\n이모지 항목 1 
-\n이모지 항목 2 
+\n이모지 항목 1
+\n이모지 항목 2
 \n...
 \n이모지 항목 8</string>
     <string name="premium_feature_unlock_all">모든 게임 및 템플릿 잠금 해제</string>

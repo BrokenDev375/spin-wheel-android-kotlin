@@ -43,7 +43,7 @@
     <string name="hold_seconds_prompt">Mantén presionado durante 2 segundos para comenzar</string>
     <string name="share_message">¿Demasiado perezoso para dividir equipos? ¡Deja que la app lo haga por ti! Comparte ahora con tus amigos divertidos 😜</string>
     <string name="aw5">Otra razón</string>
-    <string name="desai">¡Vive la emoción con Ruedas Giratorias generadas por IA, que traen premios únicos y emocionantes! 
+    <string name="desai">¡Vive la emoción con Ruedas Giratorias generadas por IA, que traen premios únicos y emocionantes!
 \n Ejemplo: “Crear 8 elementos” “Ideas para cenas con emojis”</string>
     <string name="name">Nombre</string>
     <string name="itemsname">Nombre del Elemento</string>
@@ -86,7 +86,7 @@
     <string name="deschosse">Todos colocan un dedo en la pantalla</string>
     <string name="j9c4c14">Prueba gratuita por {{days}} días</string>
     <string name="clear">Restablecer</string>
-    <string name="itemdes">Una rueda giratoria para todos 
+    <string name="itemdes">Una rueda giratoria para todos
 \n selección aleatoria.</string>
     <string name="sharereust">Compartir Resultados</string>
     <string name="heads">Cara</string>
@@ -157,11 +157,11 @@
     <string name="titleRate2">¡Oh, no!</string>
     <string name="generatorai">Generador de IA</string>
     <string name="alertai3">¡Error desconocido por sobrecarga del servidor!</string>
-    <string name="ai_prompt_example">Ejemplo: 
+    <string name="ai_prompt_example">Ejemplo:
 \nRopa
-\n👕 Camiseta 
-\n👖 Vaqueros 
-\n👗 Vestido de Noche 
+\n👕 Camiseta
+\n👖 Vaqueros
+\n👗 Vestido de Noche
 \n... (8 elementos en total)</string>
     <string name="share">Compartir</string>
     <string name="pleaseItem">¡Por favor, ingresa el nombre del elemento!</string>
@@ -203,10 +203,10 @@
     <string name="cancelPermission">Cancelar Permiso</string>
     <string name="desRate3">¡Gracias por tu opinión!</string>
     <string name="alertai">¡Por favor, crea una idea antes de pasar al siguiente paso!</string>
-    <string name="ai_prompt_format">Formato: 
+    <string name="ai_prompt_format">Formato:
 \nNombre
-\nemoji Elemento 1 
-\nemoji Elemento 2 
+\nemoji Elemento 1
+\nemoji Elemento 2
 \n...
 \nemoji Elemento 8</string>
     <string name="history">Historial</string>

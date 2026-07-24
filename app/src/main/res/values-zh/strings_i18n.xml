@@ -87,7 +87,7 @@
     <string name="rateNotAvailable">无法使用评分功能。</string>
     <string name="notNow">退出</string>
     <string name="rateError">评分时发生错误。</string>
-    <string name="desai">体验AI生成的转轮带来的刺激，带来独特而激动人心的奖励！ 
+    <string name="desai">体验AI生成的转轮带来的刺激，带来独特而激动人心的奖励！
 \n 示例：“创建8个项目”“带表情的餐饮创意”</string>
     <string name="done">完成</string>
     <string name="deshomograft">分为随机团队</string>
@@ -132,7 +132,7 @@
 \n👖 牛仔裤
 \n👗 晚礼服
 \n... (共8个项目)</string>
-    <string name="itemdes">适合所有人的转轮 
+    <string name="itemdes">适合所有人的转轮
 \n 随机选择。</string>
     <string name="addOption">添加更多选项</string>
     <string name="spinBottle">转瓶子</string>
