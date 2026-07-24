@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,13 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.SpinScreen
 
 @Composable
 fun DiceSettingsScreen(
@@ -39,100 +36,120 @@ fun DiceSettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF201B2D))
-    ) {
-        SpinTopBar(
-            title = "Tùy chỉnh",
-            navigationIcon = SpinIconGlyph.Back,
-            onNavigationClick = onBack
-        )
-
+    SpinScreen(
+        title = "Tùy chỉnh",
+        navigationIcon = SpinIconGlyph.Back,
+        onNavigationClick = onBack,
+        centerTitle = false,
+        topBarTitleStartPadding = 39.dp,
+        navigationTint = Color.White,
+    ) { contentModifier ->
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF393347))
+            modifier = contentModifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
         ) {
-            // Duration row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Thời lượng hoạt hình",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-                
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF201B2D))
-                            .clickable { viewModel.setDuration(uiState.duration - 1) },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "-", color = Color.White, fontSize = 20.sp)
-                    }
-                    
-                    Text(
-                        text = "${uiState.duration}s",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF201B2D))
-                            .clickable { viewModel.setDuration(uiState.duration + 1) },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "+", color = Color.White, fontSize = 20.sp)
-                    }
-                }
-            }
-            
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.White.copy(alpha = 0.1f))
+            Spacer(modifier = Modifier.height(48.dp))
+
+            DurationSettingRow(
+                duration = uiState.duration,
+                onMinus = { viewModel.setDuration(uiState.duration - 1) },
+                onPlus = { viewModel.setDuration(uiState.duration + 1) },
             )
 
-            // Label/Skin row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onOpenLabel() }
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Xúc Xắc",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-                SpinIcon(
-                    glyph = SpinIconGlyph.ChevronRight,
-                    tint = Color.White.copy(alpha = 0.5f),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            Spacer(modifier = Modifier.height(14.dp))
+
+            DiceSkinSettingRow(onClick = onOpenLabel)
         }
     }
 }
+
+@Composable
+private fun DurationSettingRow(
+    duration: Int,
+    onMinus: () -> Unit,
+    onPlus: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(DiceSettingsPanel)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = "Thời lượng hoạt hình",
+            color = Color.White,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Black,
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            DiceStepperButton(text = "-", onClick = onMinus)
+            Text(
+                text = "${duration}s",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+            )
+            DiceStepperButton(text = "+", onClick = onPlus)
+        }
+    }
+}
+
+@Composable
+private fun DiceSkinSettingRow(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(DiceSettingsPanel)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = "Xúc Xắc",
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Black,
+        )
+        SpinIcon(
+            glyph = SpinIconGlyph.ChevronRight,
+            tint = Color.White.copy(alpha = 0.55f),
+            modifier = Modifier.size(30.dp),
+        )
+    }
+}
+
+@Composable
+private fun DiceStepperButton(
+    text: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(Color.White)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            color = Color.Black,
+            fontSize = 23.sp,
+            fontWeight = FontWeight.Black,
+        )
+    }
+}
+
+private val DiceSettingsPanel = Color(0xFF393347)

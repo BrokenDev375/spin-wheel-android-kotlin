@@ -295,6 +295,7 @@ fun SpinResultCard(
     modifier: Modifier = Modifier,
     cardHeight: Dp = 450.dp,
     contentPadding: Dp = 18.dp,
+    backgroundColor: Color = Color(0xFF3D3D3C),
     content: @Composable () -> Unit,
 ) {
     Box(
@@ -302,7 +303,7 @@ fun SpinResultCard(
             .fillMaxWidth()
             .height(cardHeight)
             .clip(RoundedCornerShape(18.dp))
-            .background(Color(0xFF3D3D3C))
+            .background(backgroundColor)
             .border(
                 width = 1.5.dp,
                 color = Color.White.copy(alpha = 0.62f),

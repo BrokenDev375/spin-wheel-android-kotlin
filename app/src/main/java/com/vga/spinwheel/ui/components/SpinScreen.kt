@@ -119,6 +119,7 @@ fun SpinScreen(
     onNavigationClick: (() -> Unit)? = null,
     centerTitle: Boolean = true,
     topBarTitleStartPadding: Dp = 48.dp,
+    navigationTint: Color = SpinColors.IconMuted,
     confirmExitOnBack: Boolean = false,
     onConfirmExit: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -154,6 +155,7 @@ fun SpinScreen(
                 onNavigationClick = { triggerBack() },
                 centerTitle = centerTitle,
                 titleStartPadding = topBarTitleStartPadding,
+                navigationTint = navigationTint,
                 actions = actions,
             )
         }
@@ -195,6 +197,7 @@ fun SpinResultScreen(
     retryBackgroundColor: Color = Color(0xFFDE3D2D),
     cardHeight: Dp = 450.dp,
     cardContentPadding: Dp = 18.dp,
+    cardBackgroundColor: Color = Color(0xFF3D3D3C),
     cardContent: @Composable () -> Unit,
 ) {
     var showExitDialog by remember { mutableStateOf(false) }
@@ -245,6 +248,7 @@ fun SpinResultScreen(
             SpinResultCard(
                 cardHeight = cardHeight,
                 contentPadding = cardContentPadding,
+                backgroundColor = cardBackgroundColor,
             ) {
                 cardContent()
             }
