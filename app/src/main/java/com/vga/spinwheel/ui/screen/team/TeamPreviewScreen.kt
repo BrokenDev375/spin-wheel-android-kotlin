@@ -3,6 +3,7 @@ package com.vga.spinwheel.ui.screen.team
 import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -48,6 +50,8 @@ fun TeamPreviewScreen(
         onShare = { shareResult() },
         onRetry = onRetry,
         modifier = modifier,
+        cardHeight = 453.dp,
+        cardContentPadding = 0.dp,
     ) {
         if (teams.isEmpty()) {
             Text(
@@ -58,10 +62,15 @@ fun TeamPreviewScreen(
         } else {
             TeamBoardStrip(
                 teams = teams,
-                modifier = Modifier.fillMaxSize(),
-                boardWidth = 234.dp,
-                contentPadding = PaddingValues(horizontal = 34.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 22.dp, bottom = 19.dp),
+                boardWidth = 186.dp,
+                contentPadding = PaddingValues(horizontal = 17.dp),
                 showEditIcon = true,
+                headerHeight = 30.dp,
+                titleFontSize = 18.sp,
+                memberFontSize = 18.sp,
             )
         }
     }

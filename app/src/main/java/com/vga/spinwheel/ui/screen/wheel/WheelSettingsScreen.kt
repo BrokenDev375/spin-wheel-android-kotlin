@@ -160,7 +160,7 @@ fun WheelSettingsScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(SpinRadius.Card))
                         .background(Color(0xFF3B3754))
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {

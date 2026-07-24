@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,8 +30,6 @@ import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
-import com.vga.spinwheel.ui.theme.SpinRadius
-import com.vga.spinwheel.ui.theme.SpinSpacing
 
 @Composable
 fun TeamSettingsScreen(
@@ -50,6 +47,8 @@ fun TeamSettingsScreen(
         topBar = {
             SpinTopBar(
                 title = "Tùy chỉnh",
+                centerTitle = false,
+                titleStartPadding = 39.dp,
                 navigationIcon = SpinIconGlyph.Back,
                 navigationDescription = "Quay lại",
                 onNavigationClick = onBack,
@@ -60,8 +59,8 @@ fun TeamSettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = SpinSpacing.ScreenHorizontal)
-                .padding(top = 72.dp),
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TeamSettingRow(
@@ -107,10 +106,10 @@ private fun TeamSettingRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .clip(RoundedCornerShape(SpinRadius.Control))
-            .background(Color(0xFF393347))
-            .padding(horizontal = 20.dp),
+            .height(64.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF373246))
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -118,7 +117,7 @@ private fun TeamSettingRow(
             text = title,
             modifier = Modifier.weight(1f),
             color = Color.White,
-            style = MaterialTheme.typography.titleMedium,
+            fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -134,15 +133,15 @@ private fun TeamStepper(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TeamStepperButton(text = "-", onClick = onMinus)
         Text(
             text = value,
             color = Color.White,
-            fontSize = 22.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.width(44.dp),
+            modifier = Modifier.width(32.dp),
         )
         TeamStepperButton(text = "+", onClick = onPlus)
     }
@@ -155,7 +154,7 @@ private fun TeamStepperButton(
 ) {
     Box(
         modifier = Modifier
-            .size(42.dp)
+            .size(28.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
             .clickable(onClick = onClick),
@@ -164,7 +163,7 @@ private fun TeamStepperButton(
         Text(
             text = text,
             color = Color.Black,
-            fontSize = 24.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold,
         )
     }

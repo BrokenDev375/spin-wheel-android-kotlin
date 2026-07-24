@@ -3,8 +3,8 @@ package com.vga.spinwheel.ui.screen.bottle
 import kotlin.random.Random
 
 object BottleRoundRules {
-    const val MIN_DURATION_SECONDS = 1
-    const val MAX_DURATION_SECONDS = 15
+    const val MIN_DURATION_SECONDS = 2
+    const val MAX_DURATION_SECONDS = 10
     const val ANGLE_RANGE_DEGREES = 360
 
     fun clampDurationSeconds(value: Int): Int =

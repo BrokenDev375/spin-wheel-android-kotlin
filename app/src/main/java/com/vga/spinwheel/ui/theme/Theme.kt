@@ -39,7 +39,7 @@ object SpinSpacing {
 object SpinRadius {
     val Card = 18.dp
     val Button = 16.dp
-    val Control = 14.dp
+    val Control = 6.dp
     val Sheet = 22.dp
 }
 
