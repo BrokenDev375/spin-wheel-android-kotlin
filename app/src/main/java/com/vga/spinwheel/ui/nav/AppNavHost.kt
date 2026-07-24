@@ -130,6 +130,7 @@ fun AppNavHost(
         diceGraph(
             navController = navController,
             onBack = onBackWithAd,
+            onHome = onHomeWithAd,
         )
 
         composable(Screen.Settings.route) {
