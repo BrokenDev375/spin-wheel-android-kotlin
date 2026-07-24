@@ -53,7 +53,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun NumberHomeScreen(
     navController: NavController,
-    viewModel: NumberViewModel = hiltViewModel()
+    viewModel: NumberViewModel = hiltViewModel(),
+    onBack: () -> Unit = { navController.popBackStack() }
 ) {
     val duration by viewModel.duration.collectAsState()
     val min by viewModel.min.collectAsState()
@@ -97,7 +98,7 @@ fun NumberHomeScreen(
         title = "Số Ngẫu Nhiên",
         navigationIcon = SpinIconGlyph.Back,
         navigationDescription = "Back",
-        onNavigationClick = { if (!isSpinning) navController.popBackStack() },
+        onNavigationClick = { if (!isSpinning) onBack() },
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         confirmExitOnBack = true,

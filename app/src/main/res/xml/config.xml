@@ -9,6 +9,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>inter_back_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>inter_home_ratio</key>
         <value>1</value>
     </entry>
@@ -17,7 +21,19 @@
         <value>20</value>
     </entry>
     <entry>
+        <key>inter_back_ratio</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>inter_back_max</key>
+        <value>20</value>
+    </entry>
+    <entry>
         <key>native_inter_home_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>native_inter_back_enable</key>
         <value>true</value>
     </entry>
     <entry>
@@ -26,6 +42,14 @@
     </entry>
     <entry>
         <key>native_inter_home_max</key>
+        <value>20</value>
+    </entry>
+    <entry>
+        <key>native_inter_back_ratio</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>native_inter_back_max</key>
         <value>20</value>
     </entry>
     <entry>
