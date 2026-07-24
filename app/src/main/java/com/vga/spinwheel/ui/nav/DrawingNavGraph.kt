@@ -9,7 +9,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.vga.spinwheel.ui.screen.drawing.DrawingAddEditScreen
 import com.vga.spinwheel.ui.screen.drawing.DrawingAiFormScreen
 import com.vga.spinwheel.ui.screen.drawing.DrawingHomeScreen
 import com.vga.spinwheel.ui.screen.drawing.DrawingPaletteScreen
@@ -17,6 +16,8 @@ import com.vga.spinwheel.ui.screen.drawing.DrawingResultScreen
 import com.vga.spinwheel.ui.screen.drawing.DrawingSettingsScreen
 import com.vga.spinwheel.ui.screen.drawing.DrawingSpinScreen
 import com.vga.spinwheel.ui.screen.drawing.DrawingViewModel
+import com.vga.spinwheel.ui.screen.wheel.WheelAddEditScreen
+import com.vga.spinwheel.ui.screen.wheel.WheelViewModel
 
 fun NavGraphBuilder.drawingNavGraph(
     navController: NavController,
@@ -31,16 +32,17 @@ fun NavGraphBuilder.drawingNavGraph(
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
             val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
+            val wheelFormViewModel: WheelViewModel = hiltViewModel(parentEntry)
             DrawingHomeScreen(
                 viewModel = viewModel,
                 onBack = onBack,
                 onAddWheel = { 
-                    viewModel.prepareNewForm()
+                    wheelFormViewModel.prepareNewForm()
                     navController.navigate(DrawingRoutes.ADD) 
                 },
                 onAiGenerate = { navController.navigate(DrawingRoutes.AI_FORM) },
                 onEditWheel = { wheelId ->
-                    viewModel.prepareEditForm(wheelId)
+                    wheelFormViewModel.prepareEditForm(wheelId)
                     navController.navigate(DrawingRoutes.edit(wheelId))
                 },
                 onSpinWheel = { wheelId ->
@@ -53,8 +55,8 @@ fun NavGraphBuilder.drawingNavGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
-            val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
-            DrawingAddEditScreen(
+            val viewModel: WheelViewModel = hiltViewModel(parentEntry)
+            WheelAddEditScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onSaveSuccess = { navController.popBackStack() }
@@ -68,8 +70,8 @@ fun NavGraphBuilder.drawingNavGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
-            val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
-            DrawingAddEditScreen(
+            val viewModel: WheelViewModel = hiltViewModel(parentEntry)
+            WheelAddEditScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onSaveSuccess = { navController.popBackStack() }
