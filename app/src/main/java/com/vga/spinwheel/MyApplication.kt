@@ -2,12 +2,15 @@ package com.vga.spinwheel
 
 import android.app.Activity
 import com.brian.base_application.BaseApplication
+import com.brian.base_iap.iap.IapFeatureConfig
+import com.brian.base_iap.iap.IapFeatureItem
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
 import com.nlbn.ads.util.AppOpenManager
 import com.vga.spinwheel.core.AppStorage
 import com.vga.spinwheel.core.InstallReferrerHelper
+import com.vga.spinwheel.core.LocaleHelper
 import com.vga.spinwheel.core.MainActivity
 import com.vga.spinwheel.firebase.Remote
 import dagger.hilt.android.HiltAndroidApp
@@ -19,7 +22,11 @@ class MyApplication : BaseApplication() {
         InstallReferrerHelper.resolve(this)
         AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
         com.brian.base_application.language.LanguageRouter.customActivityClass = com.vga.spinwheel.ui.screen.language.MyLanguageActivity::class.java
+        AppStorage.language(this)?.let { languageCode ->
+            LocaleHelper.updateLocale(this, languageCode)
+        }
         super.onCreate()
+        refreshIapFeatureConfig(AppStorage.languageCode(this))
         registerRemoteConfigDefaults()
     }
 
@@ -52,7 +59,47 @@ class MyApplication : BaseApplication() {
 
     override fun notifyLanguageSaved(languageCode: String) {
         AppStorage.setLanguageCode(this, languageCode)
-        com.vga.spinwheel.core.LocaleHelper.updateLocale(this, languageCode)
+        LocaleHelper.updateLocale(this, languageCode)
+        refreshIapFeatureConfig(languageCode)
+    }
+
+    private fun refreshIapFeatureConfig(languageCode: String) {
+        val localizedContext = LocaleHelper.wrap(this, languageCode)
+
+        // base-application caches these paywall labels as Strings, so refresh after locale changes.
+        IapFeatureConfig.items =
+            listOf(
+                IapFeatureItem(
+                    localizedContext.getString(getFeature1TextRes()),
+                    getFeature1IconRes(),
+                    true,
+                    true
+                ),
+                IapFeatureItem(
+                    localizedContext.getString(getFeature2TextRes()),
+                    getFeature2IconRes(),
+                    true,
+                    true
+                ),
+                IapFeatureItem(
+                    localizedContext.getString(getFeature3TextRes()),
+                    getFeature3IconRes(),
+                    true,
+                    true
+                ),
+                IapFeatureItem(
+                    localizedContext.getString(getFeature4TextRes()),
+                    getFeature4IconRes(),
+                    true,
+                    false
+                ),
+                IapFeatureItem(
+                    localizedContext.getString(getFeature5TextRes()),
+                    getFeature5IconRes(),
+                    true,
+                    false
+                )
+            )
     }
 
     override fun iapPremiumKey(): String = defaultIapPremiumKey()
