@@ -27,7 +27,6 @@ class IntroActivity : AppCompatActivity() {
             AppTheme {
                 IntroScreen(
                     onFinished = {
-                        AppStorage.setOnboardingDone(this, true)
                         startActivity(
                             Intent(this, MainActivity::class.java)
                                 .addFlags(

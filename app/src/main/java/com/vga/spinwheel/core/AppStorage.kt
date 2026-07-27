@@ -26,6 +26,16 @@ object AppStorage {
             .apply()
     }
 
+    fun goToHomeNumber(context: Context): Int =
+        preferences(context).getInt(KEY_GO_TO_HOME_NUMBER, 1)
+
+    fun setGoToHomeNumber(context: Context, number: Int) {
+        preferences(context)
+            .edit()
+            .putInt(KEY_GO_TO_HOME_NUMBER, number)
+            .apply()
+    }
+
     fun isAdsCampaign(context: Context): Boolean =
         preferences(context).getBoolean(KEY_IS_ADS_CAMPAIGN, true)
 
@@ -46,6 +56,7 @@ object AppStorage {
     private const val PREFERENCES_NAME = "AppStorage"
     private const val KEY_LANGUAGE = "language_pres"
     private const val KEY_ONBOARDING_DONE = "onboarding_done"
+    private const val KEY_GO_TO_HOME_NUMBER = "go_to_home_number"
     private const val KEY_IS_ADS_CAMPAIGN = "is_ads_campaign"
     private const val KEY_ADS_CAMPAIGN_RESOLVED = "ads_campaign_resolved"
     private const val DEFAULT_LANGUAGE_CODE = "vi"

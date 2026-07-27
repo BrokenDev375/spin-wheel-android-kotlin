@@ -8,26 +8,43 @@ import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
 import com.nlbn.ads.util.AppOpenManager
 import com.vga.spinwheel.core.AppStorage
+import com.vga.spinwheel.core.InstallReferrerHelper
 import com.vga.spinwheel.core.IntroActivity
 import com.vga.spinwheel.core.MainActivity
+import com.vga.spinwheel.firebase.Remote
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
+        InstallReferrerHelper.resolve(this)
         AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
         super.onCreate()
         registerRemoteConfigDefaults()
     }
 
-    override fun getHomeActivity(): Class<out Activity> =
-        if (AppStorage.isOnboardingDone(this)) {
+    override fun getHomeActivity(): Class<out Activity> {
+        val n = AppStorage.goToHomeNumber(this)
+        AppStorage.setGoToHomeNumber(this, n + 1)
+
+        val countAppOpen = Remote.instance.getInt("count_app_open", 3).let { if (it <= 0) 3 else it }
+        val organic = Remote.instance.getInt("organic_number_not_guide", 3).let { if (it < 0) 0 else it }
+        val isAds = InstallReferrerHelper.isAdsCampaign(this)
+
+        val goToHomeStatus = if (isAds) {
+            n >= countAppOpen
+        } else {
+            n < organic || n >= (countAppOpen + organic)
+        }
+
+        return if (goToHomeStatus) {
             MainActivity::class.java
         } else {
             IntroActivity::class.java
         }
+    }
 
     override fun getAppNameRes(): Int = R.string.app_name
 
