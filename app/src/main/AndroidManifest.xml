@@ -31,10 +31,5 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SpinWheel" />
-        <activity
-            android:name=".core.IntroActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.SpinWheel" />
     </application>
 </manifest>

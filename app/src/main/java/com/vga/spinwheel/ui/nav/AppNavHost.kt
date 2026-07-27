@@ -14,14 +14,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.vga.spinwheel.core.AppStorage
 import com.vga.spinwheel.ui.screen.home.HomeScreen
+import com.vga.spinwheel.ui.screen.intro.IntroScreen
 import com.vga.spinwheel.ui.screen.finger.FingerScreen
 import com.vga.spinwheel.ui.screen.finger.FingerViewModel
 import com.vga.spinwheel.ui.screen.settings.SettingsRoute
 import com.brian.base_application.language.LanguageActivity
 import com.vga.spinwheel.advertisement.AdManager
+import com.vga.spinwheel.core.IapOpener
 import com.vga.spinwheel.core.MainActivity
-import com.vga.spinwheel.platform.IapLauncher
 import com.vga.spinwheel.R
 import android.content.Context
 import android.content.ContextWrapper
@@ -34,18 +37,25 @@ tailrec fun Context.findActivity(): Activity? = when (this) {
 
 @Composable
 fun AppNavHost(
+    startRoute: String,
+    navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
-    startDestination: String = Screen.Home.route,
 ) {
-    val navController = rememberNavController()
     val context = LocalContext.current
     val shareText = stringResource(R.string.share_app_text)
     val shareChooserTitle = stringResource(R.string.share_chooser_title)
     val rateUnavailableText = stringResource(R.string.rate_unavailable)
 
+    fun toHome() {
+        AppStorage.setOnboardingDone(context)
+        navController.navigate(Screen.Home.route) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
+
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = startRoute,
         modifier = modifier,
     ) {
         val onBackWithAd: () -> Unit = {
@@ -70,6 +80,12 @@ fun AppNavHost(
             }
         }
 
+        composable(Screen.Intro.route) {
+            IntroScreen(
+                onFinished = { toHome() },
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 onFeatureClick = { screen ->
@@ -83,7 +99,7 @@ fun AppNavHost(
                     }
                 },
                 onSettingsClick = { navController.navigateSingleTop(Screen.Settings.route) },
-                onPaymentClick = { IapLauncher.open(context) },
+                onPaymentClick = { IapOpener.open(context, "home") },
             )
         }
 

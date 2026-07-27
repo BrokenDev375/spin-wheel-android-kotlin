@@ -46,7 +46,7 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
-import com.vga.spinwheel.ui.nav.CoinRoutes
+import com.vga.spinwheel.ui.nav.Screen
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -94,7 +94,7 @@ fun CoinHomeScreen(
                 tailScore++
             }
             
-            navController.navigate("${CoinRoutes.RESULT}/$isTargetHeads")
+            navController.navigate(Screen.coinResult(isTargetHeads))
             isFlipping = false
         }
     }
@@ -111,7 +111,7 @@ fun CoinHomeScreen(
             SpinIconButton(
                 glyph = SpinIconGlyph.Settings,
                 contentDescription = stringResource(R.string.settings),
-                onClick = { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) }
+                onClick = { if (!isFlipping) navController.navigate(Screen.CoinSettings.route) }
             )
         },
     ) {
@@ -219,7 +219,7 @@ fun CoinHomeScreen(
                         .size(35.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
-                        .clickable { if (!isFlipping) navController.navigate(CoinRoutes.SETTINGS) },
+                        .clickable { if (!isFlipping) navController.navigate(Screen.CoinSettings.route) },
                     contentAlignment = Alignment.Center
                 ) {
                     SpinIcon(

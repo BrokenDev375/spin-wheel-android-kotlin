@@ -8,26 +8,22 @@ import com.brian.base_iap.utils.IAPUtils
 import com.nlbn.ads.util.AppFlyer
 import com.nlbn.ads.util.AppOpenManager
 import com.vga.spinwheel.core.AppStorage
-import com.vga.spinwheel.core.IntroActivity
+import com.vga.spinwheel.core.InstallReferrerHelper
 import com.vga.spinwheel.core.MainActivity
+import com.vga.spinwheel.firebase.Remote
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class MyApplication : BaseApplication() {
 
     override fun onCreate() {
+        InstallReferrerHelper.resolve(this)
         AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
-        AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
         super.onCreate()
         registerRemoteConfigDefaults()
     }
 
-    override fun getHomeActivity(): Class<out Activity> =
-        if (AppStorage.isOnboardingDone(this)) {
-            MainActivity::class.java
-        } else {
-            IntroActivity::class.java
-        }
+    override fun getHomeActivity(): Class<out Activity> = MainActivity::class.java
 
     override fun getAppNameRes(): Int = R.string.app_name
 
@@ -56,6 +52,7 @@ class MyApplication : BaseApplication() {
 
     override fun notifyLanguageSaved(languageCode: String) {
         AppStorage.setLanguageCode(this, languageCode)
+        com.vga.spinwheel.core.LocaleHelper.updateLocale(this, languageCode)
     }
 
     override fun iapPremiumKey(): String = defaultIapPremiumKey()

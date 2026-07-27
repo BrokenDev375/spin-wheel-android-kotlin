@@ -21,28 +21,28 @@ fun NavGraphBuilder.wheelNavGraph(
     navController: NavController,
     onBack: () -> Unit,
 ) {
-    composable(WheelRoutes.HOME) { backStackEntry ->
+    composable(Screen.Wheel.route) { backStackEntry ->
         val viewModel: WheelViewModel = hiltViewModel(backStackEntry)
         WheelHomeScreen(
             viewModel = viewModel,
             onBack = onBack,
             onAddWheel = {
                 viewModel.prepareNewForm()
-                navController.navigate(WheelRoutes.ADD)
+                navController.navigate(Screen.WheelAdd.route)
             },
             onEditWheel = { wheelId ->
                 viewModel.prepareEditForm(wheelId)
-                navController.navigate(WheelRoutes.edit(wheelId))
+                navController.navigate(Screen.wheelEdit(wheelId))
             },
             onSpinWheel = { wheelId ->
-                navController.navigate(WheelRoutes.spin(wheelId))
+                navController.navigate(Screen.wheelSpin(wheelId))
             },
         )
     }
 
-    composable(WheelRoutes.ADD) { backStackEntry ->
+    composable(Screen.WheelAdd.route) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
         WheelAddEditScreen(
@@ -53,16 +53,16 @@ fun NavGraphBuilder.wheelNavGraph(
     }
 
     composable(
-        route = WheelRoutes.EDIT,
+        route = Screen.WheelEdit.route,
         arguments = listOf(
-            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType }
+            navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType }
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
-        val wheelId = backStackEntry.arguments?.getString(WheelRoutes.ARG_WHEEL_ID) ?: ""
+        val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
 
         WheelAddEditScreen(
             viewModel = viewModel,
@@ -72,58 +72,58 @@ fun NavGraphBuilder.wheelNavGraph(
     }
 
     composable(
-        route = WheelRoutes.SPIN,
+        route = Screen.WheelSpin.route,
         arguments = listOf(
-            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType }
+            navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType }
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
-        val wheelId = backStackEntry.arguments?.getString(WheelRoutes.ARG_WHEEL_ID) ?: ""
+        val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
 
         WheelSpinScreen(
             wheelId = wheelId,
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
-            onOpenSettings = { navController.navigate(WheelRoutes.settings(wheelId)) },
-            onOpenHistory = { navController.navigate(WheelRoutes.history(wheelId)) },
+            onOpenSettings = { navController.navigate(Screen.wheelSettings(wheelId)) },
+            onOpenHistory = { navController.navigate(Screen.wheelHistory(wheelId)) },
             onResult = { wId, rId ->
-                navController.navigate(WheelRoutes.result(wId, rId)) {
-                    popUpTo(WheelRoutes.spin(wId)) { inclusive = true }
+                navController.navigate(Screen.wheelResult(wId, rId)) {
+                    popUpTo(Screen.wheelSpin(wId)) { inclusive = true }
                 }
             },
         )
     }
 
     composable(
-        route = WheelRoutes.SETTINGS,
+        route = Screen.WheelSettings.route,
         arguments = listOf(
-            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType }
+            navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType }
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
-        val wheelId = backStackEntry.arguments?.getString(WheelRoutes.ARG_WHEEL_ID) ?: ""
+        val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
 
         WheelSettingsScreen(
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
-            onOpenPalette = { navController.navigate(WheelRoutes.palette(wheelId)) },
+            onOpenPalette = { navController.navigate(Screen.wheelPalette(wheelId)) },
         )
     }
 
     composable(
-        route = WheelRoutes.PALETTE,
+        route = Screen.WheelPalette.route,
         arguments = listOf(
-            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType }
+            navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType }
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
 
@@ -134,42 +134,42 @@ fun NavGraphBuilder.wheelNavGraph(
     }
 
     composable(
-        route = WheelRoutes.RESULT,
+        route = Screen.WheelResult.route,
         arguments = listOf(
-            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType },
-            navArgument(WheelRoutes.ARG_RESULT_ID) { type = NavType.StringType },
+            navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType },
+            navArgument(Screen.ARG_RESULT_ID) { type = NavType.StringType },
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
-        val wheelId = backStackEntry.arguments?.getString(WheelRoutes.ARG_WHEEL_ID) ?: ""
-        val resultId = backStackEntry.arguments?.getString(WheelRoutes.ARG_RESULT_ID) ?: ""
+        val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
+        val resultId = backStackEntry.arguments?.getString(Screen.ARG_RESULT_ID) ?: ""
 
         WheelResultScreen(
             wheelId = wheelId,
             resultId = resultId,
             viewModel = viewModel,
             onRetry = {
-                navController.navigate(WheelRoutes.spin(wheelId)) {
-                    popUpTo(WheelRoutes.HOME)
+                navController.navigate(Screen.wheelSpin(wheelId)) {
+                    popUpTo(Screen.Wheel.route)
                 }
             },
             onHome = {
-                navController.popBackStack(WheelRoutes.HOME, inclusive = false)
+                navController.popBackStack(Screen.Wheel.route, inclusive = false)
             },
         )
     }
 
     composable(
-        route = WheelRoutes.HISTORY,
+        route = Screen.WheelHistory.route,
         arguments = listOf(
-            navArgument(WheelRoutes.ARG_WHEEL_ID) { type = NavType.StringType }
+            navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType }
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(WheelRoutes.HOME)
+            navController.getBackStackEntry(Screen.Wheel.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
 

@@ -186,7 +186,7 @@ fun NumberSettingsScreen(
 
             SpinSettingRow(
                 title = stringResource(R.string.history),
-                onClick = { navController.navigate(com.vga.spinwheel.ui.nav.NumberRoutes.HISTORY) },
+                onClick = { navController.navigate(com.vga.spinwheel.ui.nav.Screen.NumberHistory.route) },
                 trailing = {
                     SpinIcon(
                         glyph = SpinIconGlyph.ChevronRight,

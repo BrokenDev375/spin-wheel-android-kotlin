@@ -16,23 +16,23 @@ fun NavGraphBuilder.coinGraph(
     onBack: () -> Unit,
 ) {
     navigation(
-        startDestination = CoinRoutes.HOME,
+        startDestination = Screen.Coin.route + "/home",
         route = Screen.Coin.route
     ) {
-        composable(CoinRoutes.HOME) {
+        composable(Screen.Coin.route + "/home") {
             CoinHomeScreen(navController)
         }
-        composable(CoinRoutes.SETTINGS) {
+        composable(Screen.CoinSettings.route) {
             CoinSettingsScreen(navController)
         }
-        composable(CoinRoutes.LABEL) {
+        composable(Screen.CoinLabel.route) {
             CoinLabelScreen(navController)
         }
         composable(
-            route = "${CoinRoutes.RESULT}/{isHeads}",
-            arguments = listOf(navArgument("isHeads") { type = NavType.BoolType })
+            route = Screen.CoinResult.route,
+            arguments = listOf(navArgument(Screen.ARG_IS_HEADS) { type = NavType.BoolType })
         ) { backStackEntry ->
-            val isHeads = backStackEntry.arguments?.getBoolean("isHeads") ?: true
+            val isHeads = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_HEADS) ?: true
             CoinResultScreen(navController, isHeads)
         }
     }

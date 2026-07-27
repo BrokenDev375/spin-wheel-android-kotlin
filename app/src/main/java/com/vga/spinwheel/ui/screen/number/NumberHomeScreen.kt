@@ -48,7 +48,7 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
-import com.vga.spinwheel.ui.nav.NumberRoutes
+import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
 import kotlinx.coroutines.delay
 
@@ -90,7 +90,7 @@ fun NumberHomeScreen(
             delay(1_000L)
             
             viewModel.saveResultToHistory(generatedNumbers.joinToString(", "))
-            navController.navigate(NumberRoutes.RESULT)
+            navController.navigate(Screen.NumberResult.route)
             isSpinning = false
             showBalls = false
         }
@@ -108,7 +108,7 @@ fun NumberHomeScreen(
             SpinIconButton(
                 glyph = SpinIconGlyph.History,
                 contentDescription = stringResource(R.string.history),
-                onClick = { if (!isSpinning) navController.navigate(NumberRoutes.HISTORY) }
+                onClick = { if (!isSpinning) navController.navigate(Screen.NumberHistory.route) }
             )
         }
     ) { contentModifier ->
@@ -201,7 +201,7 @@ fun NumberHomeScreen(
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
                         .clickable(enabled = !isSpinning) {
-                            navController.navigate(NumberRoutes.SETTINGS)
+                            navController.navigate(Screen.NumberSettings.route)
                         },
                     contentAlignment = Alignment.Center
                 ) {

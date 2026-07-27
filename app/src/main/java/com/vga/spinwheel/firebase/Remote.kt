@@ -38,8 +38,20 @@ class Remote private constructor() {
         return value
     }
 
-    fun getString(key: String): String =
-        runCatching { frc.getString(key) }.getOrDefault("")
+    fun fetchAndActivate(onComplete: (() -> Unit)? = null) {
+        runCatching {
+            frc.fetchRemoteConfig { _ ->
+                onComplete?.invoke()
+            }
+        }.onFailure {
+            onComplete?.invoke()
+        }
+    }
+
+    fun getString(key: String): String {
+        val adValue = runCatching { frc.getAdsConfigValue(key) }.getOrDefault("")
+        return if (adValue.isNotEmpty()) adValue else runCatching { frc.getString(key) }.getOrDefault("")
+    }
 
     fun getLong(key: String): Long =
         runCatching { frc.getLong(key) }.getOrDefault(0L)
