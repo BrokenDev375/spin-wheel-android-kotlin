@@ -34,7 +34,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
-import com.vga.spinwheel.ui.nav.CoinRoutes
+import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -112,7 +112,7 @@ fun CoinSettingsScreen(
                     .height(56.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFF393347))
-                    .clickable { navController.navigate(CoinRoutes.LABEL) }
+                    .clickable { navController.navigate(Screen.CoinLabel.route) }
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

@@ -24,10 +24,10 @@ fun NavGraphBuilder.drawingNavGraph(
     onBack: () -> Unit,
 ) {
     navigation(
-        startDestination = DrawingRoutes.HOME,
+        startDestination = Screen.DrawingHome.route,
         route = Screen.Drawing.route
     ) {
-        composable(DrawingRoutes.HOME) { backStackEntry ->
+        composable(Screen.DrawingHome.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
@@ -38,20 +38,20 @@ fun NavGraphBuilder.drawingNavGraph(
                 onBack = onBack,
                 onAddWheel = { 
                     wheelFormViewModel.prepareNewForm()
-                    navController.navigate(DrawingRoutes.ADD) 
+                    navController.navigate(Screen.DrawingAdd.route) 
                 },
-                onAiGenerate = { navController.navigate(DrawingRoutes.AI_FORM) },
+                onAiGenerate = { navController.navigate(Screen.DrawingAiForm.route) },
                 onEditWheel = { wheelId ->
                     wheelFormViewModel.prepareEditForm(wheelId)
-                    navController.navigate(DrawingRoutes.edit(wheelId))
+                    navController.navigate(Screen.drawingEdit(wheelId))
                 },
                 onSpinWheel = { wheelId ->
-                    navController.navigate(DrawingRoutes.spin(wheelId))
+                    navController.navigate(Screen.drawingSpin(wheelId))
                 }
             )
         }
 
-        composable(DrawingRoutes.ADD) { backStackEntry ->
+        composable(Screen.DrawingAdd.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
@@ -64,8 +64,8 @@ fun NavGraphBuilder.drawingNavGraph(
         }
 
         composable(
-            route = DrawingRoutes.EDIT,
-            arguments = listOf(navArgument(DrawingRoutes.ARG_WHEEL_ID) { type = NavType.StringType })
+            route = Screen.DrawingEdit.route,
+            arguments = listOf(navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType })
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
@@ -78,7 +78,7 @@ fun NavGraphBuilder.drawingNavGraph(
             )
         }
 
-        composable(DrawingRoutes.AI_FORM) { backStackEntry ->
+        composable(Screen.DrawingAiForm.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
@@ -91,48 +91,48 @@ fun NavGraphBuilder.drawingNavGraph(
         }
 
         composable(
-            route = DrawingRoutes.SPIN,
-            arguments = listOf(navArgument(DrawingRoutes.ARG_WHEEL_ID) { type = NavType.StringType })
+            route = Screen.DrawingSpin.route,
+            arguments = listOf(navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType })
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
             val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
-            val wheelId = backStackEntry.arguments?.getString(DrawingRoutes.ARG_WHEEL_ID) ?: ""
+            val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
             
             DrawingSpinScreen(
                 wheelId = wheelId,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onOpenSettings = { navController.navigate(DrawingRoutes.settings(wheelId)) },
+                onOpenSettings = { navController.navigate(Screen.drawingSettings(wheelId)) },
                 onResult = { wId ->
-                    navController.navigate(DrawingRoutes.result(wId)) {
-                        popUpTo(DrawingRoutes.spin(wId)) { inclusive = true }
+                    navController.navigate(Screen.drawingResult(wId)) {
+                        popUpTo(Screen.drawingSpin(wId)) { inclusive = true }
                     }
                 }
             )
         }
 
         composable(
-            route = DrawingRoutes.SETTINGS,
-            arguments = listOf(navArgument(DrawingRoutes.ARG_WHEEL_ID) { type = NavType.StringType })
+            route = Screen.DrawingSettings.route,
+            arguments = listOf(navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType })
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
             val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
-            val wheelId = backStackEntry.arguments?.getString(DrawingRoutes.ARG_WHEEL_ID) ?: ""
+            val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
 
             DrawingSettingsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onOpenPalette = { navController.navigate(DrawingRoutes.palette(wheelId)) }
+                onOpenPalette = { navController.navigate(Screen.drawingPalette(wheelId)) }
             )
         }
 
         composable(
-            route = DrawingRoutes.PALETTE,
-            arguments = listOf(navArgument(DrawingRoutes.ARG_WHEEL_ID) { type = NavType.StringType })
+            route = Screen.DrawingPalette.route,
+            arguments = listOf(navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType })
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
@@ -150,20 +150,20 @@ fun NavGraphBuilder.drawingNavGraph(
         }
 
         composable(
-            route = DrawingRoutes.RESULT,
-            arguments = listOf(navArgument(DrawingRoutes.ARG_WHEEL_ID) { type = NavType.StringType })
+            route = Screen.DrawingResult.route,
+            arguments = listOf(navArgument(Screen.ARG_WHEEL_ID) { type = NavType.StringType })
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Drawing.route)
             }
             val viewModel: DrawingViewModel = hiltViewModel(parentEntry)
-            val wheelId = backStackEntry.arguments?.getString(DrawingRoutes.ARG_WHEEL_ID) ?: ""
+            val wheelId = backStackEntry.arguments?.getString(Screen.ARG_WHEEL_ID) ?: ""
 
             DrawingResultScreen(
                 wheelId = wheelId,
                 viewModel = viewModel,
                 onRetry = {
-                    navController.popBackStack(DrawingRoutes.HOME, inclusive = false)
+                    navController.popBackStack(Screen.DrawingHome.route, inclusive = false)
                 },
                 onHome = {
                     navController.navigate(Screen.Home.route) {

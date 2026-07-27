@@ -25,7 +25,7 @@ object DataModule {
         context,
         SpinWheelDatabase::class.java,
         SpinWheelDatabase.DATABASE_NAME,
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
     @Provides
     fun provideWheelDao(database: SpinWheelDatabase): WheelDao = database.wheelDao()

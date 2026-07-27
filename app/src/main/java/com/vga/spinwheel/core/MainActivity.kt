@@ -9,6 +9,9 @@ import com.vga.spinwheel.ui.nav.AppNavHost
 import com.vga.spinwheel.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+import com.vga.spinwheel.firebase.Remote
+import com.vga.spinwheel.ui.nav.Screen
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -21,13 +24,34 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ShortcutHelper.addUninstallShortcut(this)
+        AppStorage.language(this)?.let { LocaleHelper.updateLocale(this, it) }
+
+        val startRoute = resolveStartRoute()
 
         setContent {
             AppTheme {
-                AppNavHost()
+                AppNavHost(startRoute = startRoute)
                 NativeInterHost()
             }
         }
+    }
+
+    private fun resolveStartRoute(): String {
+        val n = AppStorage.goToHomeNumber(this)
+        AppStorage.setGoToHomeNumber(this, n + 1)
+
+        val countAppOpen = Remote.instance.getInt("count_app_open", 3).let { if (it <= 0) 3 else it }
+        val organic = Remote.instance.getInt("organic_number_not_guide", 3).let { if (it < 0) 0 else it }
+        val isAds = InstallReferrerHelper.isAdsCampaign(this)
+
+        val goToHomeStatus = if (isAds) {
+            n >= countAppOpen
+        } else {
+            n < organic || n >= (countAppOpen + organic)
+        }
+
+        return if (goToHomeStatus) Screen.Home.route else Screen.Intro.route
     }
 
     override fun onResume() {

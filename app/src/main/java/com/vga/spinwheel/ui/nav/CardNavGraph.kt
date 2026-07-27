@@ -14,35 +14,35 @@ fun NavGraphBuilder.cardNavGraph(
     navController: NavController,
     onBack: () -> Unit,
 ) {
-    composable(CardRoutes.HOME) { backStackEntry ->
+    composable(Screen.Card.route) { backStackEntry ->
         val viewModel: CardViewModel = hiltViewModel(backStackEntry)
 
         CardScreen(
             viewModel = viewModel,
             onBack = onBack,
-            onOpenSettings = { navController.navigate(CardRoutes.SETTINGS) },
+            onOpenSettings = { navController.navigate(Screen.CardSettings.route) },
             onHome = {
                 navController.popBackStack(Screen.Home.route, inclusive = false)
             },
         )
     }
 
-    composable(CardRoutes.SETTINGS) { backStackEntry ->
+    composable(Screen.CardSettings.route) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(CardRoutes.HOME)
+            navController.getBackStackEntry(Screen.Card.route)
         }
         val viewModel: CardViewModel = hiltViewModel(parentEntry)
 
         CardSettingsScreen(
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
-            onOpenLabels = { navController.navigate(CardRoutes.LABEL) },
+            onOpenLabels = { navController.navigate(Screen.CardLabel.route) },
         )
     }
 
-    composable(CardRoutes.LABEL) { backStackEntry ->
+    composable(Screen.CardLabel.route) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(CardRoutes.HOME)
+            navController.getBackStackEntry(Screen.Card.route)
         }
         val viewModel: CardViewModel = hiltViewModel(parentEntry)
 

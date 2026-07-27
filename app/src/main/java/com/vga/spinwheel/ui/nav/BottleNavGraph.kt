@@ -14,35 +14,35 @@ fun NavGraphBuilder.bottleNavGraph(
     navController: NavController,
     onBack: () -> Unit,
 ) {
-    composable(BottleRoutes.HOME) { backStackEntry ->
+    composable(Screen.Bottle.route) { backStackEntry ->
         val viewModel: BottleViewModel = hiltViewModel(backStackEntry)
 
         BottleScreen(
             viewModel = viewModel,
             onBack = onBack,
-            onOpenSettings = { navController.navigate(BottleRoutes.SETTINGS) },
+            onOpenSettings = { navController.navigate(Screen.BottleSettings.route) },
             onHome = {
                 navController.popBackStack(Screen.Home.route, inclusive = false)
             },
         )
     }
 
-    composable(BottleRoutes.SETTINGS) { backStackEntry ->
+    composable(Screen.BottleSettings.route) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(BottleRoutes.HOME)
+            navController.getBackStackEntry(Screen.Bottle.route)
         }
         val viewModel: BottleViewModel = hiltViewModel(parentEntry)
 
         BottleSettingsScreen(
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
-            onOpenLabels = { navController.navigate(BottleRoutes.LABEL) },
+            onOpenLabels = { navController.navigate(Screen.BottleLabel.route) },
         )
     }
 
-    composable(BottleRoutes.LABEL) { backStackEntry ->
+    composable(Screen.BottleLabel.route) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(BottleRoutes.HOME)
+            navController.getBackStackEntry(Screen.Bottle.route)
         }
         val viewModel: BottleViewModel = hiltViewModel(parentEntry)
 

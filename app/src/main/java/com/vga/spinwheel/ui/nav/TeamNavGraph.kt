@@ -19,7 +19,7 @@ fun NavGraphBuilder.teamNavGraph(
     navController: NavController,
     onBack: () -> Unit,
 ) {
-    composable(TeamRoutes.HOME) { backStackEntry ->
+    composable(Screen.Team.route) { backStackEntry ->
         val teamViewModel: TeamViewModel = hiltViewModel(backStackEntry)
         val wheelFormViewModel: WheelViewModel = hiltViewModel(backStackEntry)
 
@@ -29,25 +29,25 @@ fun NavGraphBuilder.teamNavGraph(
             onBack = onBack,
             onAddList = {
                 wheelFormViewModel.prepareNewForm()
-                navController.navigate(TeamRoutes.ADD)
+                navController.navigate(Screen.TeamAdd.route)
             },
             onOpenPreparedForm = {
-                navController.navigate(TeamRoutes.ADD)
+                navController.navigate(Screen.TeamAdd.route)
             },
             onEditList = { listId ->
                 wheelFormViewModel.prepareEditForm(listId)
-                navController.navigate(TeamRoutes.edit(listId))
+                navController.navigate(Screen.teamEdit(listId))
             },
             onOpenList = { listId ->
                 teamViewModel.openList(listId)
-                navController.navigate(TeamRoutes.detail(listId))
+                navController.navigate(Screen.teamDetail(listId))
             },
         )
     }
 
-    composable(TeamRoutes.ADD) { backStackEntry ->
+    composable(Screen.TeamAdd.route) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(TeamRoutes.HOME)
+            navController.getBackStackEntry(Screen.Team.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
 
@@ -59,13 +59,13 @@ fun NavGraphBuilder.teamNavGraph(
     }
 
     composable(
-        route = TeamRoutes.EDIT,
+        route = Screen.TeamEdit.route,
         arguments = listOf(
-            navArgument(TeamRoutes.ARG_LIST_ID) { type = NavType.StringType },
+            navArgument(Screen.ARG_LIST_ID) { type = NavType.StringType },
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(TeamRoutes.HOME)
+            navController.getBackStackEntry(Screen.Team.route)
         }
         val viewModel: WheelViewModel = hiltViewModel(parentEntry)
 
@@ -77,34 +77,34 @@ fun NavGraphBuilder.teamNavGraph(
     }
 
     composable(
-        route = TeamRoutes.DETAIL,
+        route = Screen.TeamDetail.route,
         arguments = listOf(
-            navArgument(TeamRoutes.ARG_LIST_ID) { type = NavType.StringType },
+            navArgument(Screen.ARG_LIST_ID) { type = NavType.StringType },
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(TeamRoutes.HOME)
+            navController.getBackStackEntry(Screen.Team.route)
         }
         val viewModel: TeamViewModel = hiltViewModel(parentEntry)
-        val listId = backStackEntry.arguments?.getString(TeamRoutes.ARG_LIST_ID) ?: ""
+        val listId = backStackEntry.arguments?.getString(Screen.ARG_LIST_ID) ?: ""
 
         TeamDetailScreen(
             listId = listId,
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
-            onOpenSettings = { navController.navigate(TeamRoutes.settings(listId)) },
-            onPreview = { navController.navigate(TeamRoutes.preview(listId)) },
+            onOpenSettings = { navController.navigate(Screen.teamSettings(listId)) },
+            onPreview = { navController.navigate(Screen.teamPreview(listId)) },
         )
     }
 
     composable(
-        route = TeamRoutes.SETTINGS,
+        route = Screen.TeamSettings.route,
         arguments = listOf(
-            navArgument(TeamRoutes.ARG_LIST_ID) { type = NavType.StringType },
+            navArgument(Screen.ARG_LIST_ID) { type = NavType.StringType },
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(TeamRoutes.HOME)
+            navController.getBackStackEntry(Screen.Team.route)
         }
         val viewModel: TeamViewModel = hiltViewModel(parentEntry)
 
@@ -115,16 +115,16 @@ fun NavGraphBuilder.teamNavGraph(
     }
 
     composable(
-        route = TeamRoutes.PREVIEW,
+        route = Screen.TeamPreview.route,
         arguments = listOf(
-            navArgument(TeamRoutes.ARG_LIST_ID) { type = NavType.StringType },
+            navArgument(Screen.ARG_LIST_ID) { type = NavType.StringType },
         ),
     ) { backStackEntry ->
         val parentEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(TeamRoutes.HOME)
+            navController.getBackStackEntry(Screen.Team.route)
         }
         val viewModel: TeamViewModel = hiltViewModel(parentEntry)
-        val listId = backStackEntry.arguments?.getString(TeamRoutes.ARG_LIST_ID) ?: ""
+        val listId = backStackEntry.arguments?.getString(Screen.ARG_LIST_ID) ?: ""
 
         TeamPreviewScreen(
             viewModel = viewModel,
@@ -134,7 +134,7 @@ fun NavGraphBuilder.teamNavGraph(
             onRetry = {
                 viewModel.retryMatching()
                 if (!navController.popBackStack()) {
-                    navController.navigate(TeamRoutes.detail(listId))
+                    navController.navigate(Screen.teamDetail(listId))
                 }
             },
         )

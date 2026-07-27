@@ -24,7 +24,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.vga.spinwheel.R
 import com.vga.spinwheel.advertisement.NativeAdSlot
 import com.vga.spinwheel.firebase.Remote
-import com.vga.spinwheel.platform.IapLauncher
+import com.vga.spinwheel.core.IapOpener
 import com.vga.spinwheel.ui.components.SpinFeatureCard
 import com.vga.spinwheel.ui.components.SpinFeatureCardStyle
 import com.vga.spinwheel.ui.components.SpinIconButton
@@ -43,14 +43,14 @@ fun HomeScreen(
 ) {
     var navigationPending by remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
-    var isPremium by remember { mutableStateOf(IapLauncher.isPremium()) }
+    var isPremium by remember { mutableStateOf(IapOpener.isPremium()) }
     val nativeHomeConfigured = remember { Remote.instance.isAdEnabled("native_home") }
     val showNativeHome = nativeHomeConfigured && !isPremium
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                isPremium = IapLauncher.isPremium()
+                isPremium = IapOpener.isPremium()
                 navigationPending = false
             }
         }

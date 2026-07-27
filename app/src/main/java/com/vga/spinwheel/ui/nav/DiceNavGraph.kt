@@ -12,23 +12,16 @@ import com.vga.spinwheel.ui.screen.dice.DicePreviewScreen
 import com.vga.spinwheel.ui.screen.dice.DiceSettingsScreen
 import com.vga.spinwheel.ui.screen.dice.DiceViewModel
 
-object DiceRoutes {
-    const val HOME = "dice_home"
-    const val SETTINGS = "dice_settings"
-    const val LABEL = "dice_label"
-    const val PREVIEW = "dice_preview"
-}
-
 fun NavGraphBuilder.diceGraph(
     navController: NavController,
     onBack: () -> Unit,
     onHome: () -> Unit,
 ) {
     navigation(
-        startDestination = DiceRoutes.HOME,
+        startDestination = Screen.DiceHome.route,
         route = Screen.Dice.route
     ) {
-        composable(DiceRoutes.HOME) { backStackEntry ->
+        composable(Screen.DiceHome.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Dice.route)
             }
@@ -36,12 +29,12 @@ fun NavGraphBuilder.diceGraph(
             DiceHomeScreen(
                 viewModel = viewModel,
                 onBack = onBack,
-                onOpenSettings = { navController.navigate(DiceRoutes.SETTINGS) },
-                onPreview = { navController.navigate(DiceRoutes.PREVIEW) }
+                onOpenSettings = { navController.navigate(Screen.DiceSettings.route) },
+                onPreview = { navController.navigate(Screen.DicePreview.route) }
             )
         }
 
-        composable(DiceRoutes.SETTINGS) { backStackEntry ->
+        composable(Screen.DiceSettings.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Dice.route)
             }
@@ -49,11 +42,11 @@ fun NavGraphBuilder.diceGraph(
             DiceSettingsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onOpenLabel = { navController.navigate(DiceRoutes.LABEL) }
+                onOpenLabel = { navController.navigate(Screen.DiceLabel.route) }
             )
         }
 
-        composable(DiceRoutes.LABEL) { backStackEntry ->
+        composable(Screen.DiceLabel.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Dice.route)
             }
@@ -64,7 +57,7 @@ fun NavGraphBuilder.diceGraph(
             )
         }
 
-        composable(DiceRoutes.PREVIEW) { backStackEntry ->
+        composable(Screen.DicePreview.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Screen.Dice.route)
             }
@@ -73,7 +66,7 @@ fun NavGraphBuilder.diceGraph(
                 viewModel = viewModel,
                 onHome = onHome,
                 onRetry = {
-                    navController.popBackStack(DiceRoutes.HOME, inclusive = false)
+                    navController.popBackStack(Screen.DiceHome.route, inclusive = false)
                 }
             )
         }
