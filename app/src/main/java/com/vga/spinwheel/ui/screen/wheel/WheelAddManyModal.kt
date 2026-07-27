@@ -32,6 +32,10 @@ import androidx.compose.ui.window.Dialog
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.theme.SpinColors
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+
 @Composable
 fun WheelAddManyModal(
     onAdd: (String) -> Unit,
@@ -55,17 +59,28 @@ fun WheelAddManyModal(
                 // Header Row (Hủy, Title, Xong)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(onClick = onDismiss) {
-                        Text(stringResource(R.string.cancel), color = Color.White, fontSize = 16.sp)
+                    TextButton(
+                        onClick = onDismiss,
+                        contentPadding = PaddingValues(horizontal = 8.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.cancel),
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            maxLines = 1,
+                        )
                     }
                     Text(
                         text = stringResource(R.string.addOption),
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
                     TextButton(
                         onClick = {
@@ -73,9 +88,16 @@ fun WheelAddManyModal(
                                 onAdd(textInput)
                                 onDismiss()
                             }
-                        }
+                        },
+                        contentPadding = PaddingValues(horizontal = 8.dp),
                     ) {
-                        Text(stringResource(R.string.done), color = Color(0xFFFFA726), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = stringResource(R.string.done),
+                            color = Color(0xFFFFA726),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                        )
                     }
                 }
 
