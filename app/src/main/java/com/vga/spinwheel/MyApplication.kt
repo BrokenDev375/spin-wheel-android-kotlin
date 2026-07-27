@@ -18,6 +18,7 @@ class MyApplication : BaseApplication() {
     override fun onCreate() {
         InstallReferrerHelper.resolve(this)
         AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
+        com.brian.base_application.language.LanguageRouter.customActivityClass = com.vga.spinwheel.ui.screen.language.MyLanguageActivity::class.java
         super.onCreate()
         registerRemoteConfigDefaults()
     }

@@ -71,19 +71,14 @@ fun CoinHomeScreen(
         label = "coinFlip"
     )
 
-    // Calculate which side of the coin to show based on the rotation.
-    // Every 180 degrees the side changes.
-    val isHeadVisible = (animatedRotation / 90f).toInt() % 2 == 0
+    // Calculate which side of the coin to show based on the rotation angle (180deg step)
+    val isHeadVisible = (kotlin.math.round(animatedRotation / 180f).toInt() % 2 == 0)
 
     LaunchedEffect(isFlipping) {
         if (isFlipping) {
             val isTargetHeads = Random.nextBoolean()
-            // Ensure multiple flips to make it look like it's spinning fast.
-            // Say we want it to flip about 5 times per second. 
-            val flips = duration * 5
-            val totalDegrees = (flips * 180f) + if (isTargetHeads != currentSideIsHeads) 180f else 0f
-            
-            rotationY += totalDegrees
+            val extraHalfFlips = if (currentSideIsHeads == isTargetHeads) 12 else 11
+            rotationY += extraHalfFlips * 180f
             
             delay(duration * 1000L)
             
@@ -93,6 +88,8 @@ fun CoinHomeScreen(
             } else {
                 tailScore++
             }
+            
+            delay(600L)
             
             navController.navigate(Screen.coinResult(isTargetHeads))
             isFlipping = false

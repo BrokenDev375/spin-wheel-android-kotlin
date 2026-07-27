@@ -70,9 +70,7 @@ fun CoinResultScreen(
                         id = if (isHeads) skin.headDrawable else skin.tailDrawable
                     ),
                     contentDescription = sideText,
-                    modifier = Modifier
-                        .size(320.dp)
-                        .graphicsLayer { rotationY = 180f }
+                    modifier = Modifier.size(320.dp)
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

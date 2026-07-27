@@ -160,8 +160,12 @@ fun AppNavHost(
                     context.startActivity(Intent.createChooser(shareIntent, shareChooserTitle))
                 },
                 onLanguageClick = {
-                    (context as? FragmentActivity)?.let { activity ->
-                        LanguageActivity.start(activity, MainActivity::class.java)
+                    val activity = context.findActivity()
+                    if (activity != null) {
+                        val intent = Intent(activity, com.vga.spinwheel.ui.screen.language.MyLanguageActivity::class.java).apply {
+                            putExtra(com.vga.spinwheel.ui.screen.language.MyLanguageActivity.EXTRA_FROM_SETTINGS, true)
+                        }
+                        activity.startActivity(intent)
                     }
                 },
                 onRateClick = {

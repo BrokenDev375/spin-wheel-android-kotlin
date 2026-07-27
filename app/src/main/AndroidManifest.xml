@@ -31,5 +31,11 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SpinWheel" />
+
+        <activity
+            android:name=".ui.screen.language.MyLanguageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.SpinWheel" />
     </application>
 </manifest>
