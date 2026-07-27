@@ -6,7 +6,7 @@ import org.json.JSONArray
 
 object AdPositions {
 
-    private const val DEFAULT = "[[1,2,3,4]]"
+    private const val DEFAULT = "[[1],[2],[3],[4]]"
 
     fun selected(): List<Int> {
         if (IAPUtils.isPremium()) return emptyList()

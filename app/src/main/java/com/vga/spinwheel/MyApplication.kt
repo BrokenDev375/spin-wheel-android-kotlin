@@ -1,7 +1,6 @@
 package com.vga.spinwheel
 
 import android.app.Activity
-import android.util.Log
 import com.brian.base_application.BaseApplication
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
@@ -136,22 +135,21 @@ class MyApplication : BaseApplication() {
 
     override fun isPurchased(): Boolean {
         val premium = IAPUtils.isPremium()
-        Log.d(ADS_LOG_TAG, "isPurchased=$premium")
+        println("ADS_CHECK: isPurchased=$premium")
         return premium
     }
 
     override fun enableAdsResume(): Boolean {
         val premium = IAPUtils.isPremium()
         val enabled = !BuildConfig.DEBUG && !premium
-        Log.d(
-            ADS_LOG_TAG,
-            "enableAdsResume=$enabled debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} premium=$premium"
+        println(
+            "ADS_CHECK: enableAdsResume=$enabled debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} premium=$premium"
         )
         return enabled
     }
 
     override fun buildDebug(): Boolean {
-        Log.d(ADS_LOG_TAG, "buildDebug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE}")
+        println("ADS_CHECK: buildDebug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE}")
         return BuildConfig.DEBUG
     }
 
@@ -160,11 +158,7 @@ class MyApplication : BaseApplication() {
     override fun getListTestDeviceId(): List<String> = emptyList()
 
     override fun getResumeAdId(): String {
-        Log.d(
-            ADS_LOG_TAG,
-            "getResumeAdId source=hardcoded_test debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} id=${maskAdId(GOOGLE_TEST_APP_OPEN_ID)}"
-        )
-        return GOOGLE_TEST_APP_OPEN_ID
+        return Remote.instance.adUnit("open_app")
     }
 
     private fun registerRemoteConfigDefaults() {

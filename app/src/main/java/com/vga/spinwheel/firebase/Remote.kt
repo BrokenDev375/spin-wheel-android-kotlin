@@ -1,6 +1,5 @@
 package com.vga.spinwheel.firebase
 
-import android.util.Log
 import com.brian.base_iap.utils.FirebaseRemoteConfigUtil
 import com.brian.base_iap.utils.IAPUtils
 import com.vga.spinwheel.BuildConfig
@@ -17,9 +16,8 @@ class Remote private constructor() {
         } else {
             runCatching { frc.getAdsConfigValue(placement) }.getOrDefault("")
         }
-        Log.d(
-            ADS_LOG_TAG,
-            "adUnit placement=$placement source=$source debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} hasUnit=${unit.isNotBlank()} id=${maskAdId(unit)}"
+        println(
+            "ADS_CHECK: adUnit placement=$placement source=$source debug=${BuildConfig.DEBUG} buildType=${BuildConfig.BUILD_TYPE} hasUnit=${unit.isNotBlank()} id=${maskAdId(unit)}"
         )
         return unit
     }
@@ -27,13 +25,13 @@ class Remote private constructor() {
     fun getBoolean(key: String): Boolean {
         val premium = IAPUtils.isPremium()
         if (premium && key.endsWith("_enable")) {
-            Log.d(ADS_LOG_TAG, "getBoolean key=$key value=false reason=premium")
+            println("ADS_CHECK: getBoolean key=$key value=false reason=premium")
             return false
         }
 
         val value = runCatching { frc.getBoolean(key) }.getOrDefault(false)
         if (key.endsWith("_enable")) {
-            Log.d(ADS_LOG_TAG, "getBoolean key=$key value=$value premium=$premium")
+            println("ADS_CHECK: getBoolean key=$key value=$value premium=$premium")
         }
         return value
     }
