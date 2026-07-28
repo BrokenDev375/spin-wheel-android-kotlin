@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -56,11 +58,26 @@ fun WheelSpinScreen(
     val spinStatus by viewModel.spinStatus.collectAsState()
     val duration by viewModel.duration.collectAsState()
     val paletteIdx by viewModel.paletteIndex.collectAsState()
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     val palette = WheelPalettes.getPalette(paletteIdx)
 
     LaunchedEffect(wheelId) {
         viewModel.loadWheelForSpin(wheelId)
+    }
+
+    LaunchedEffect(spinStatus) {
+        if (spinStatus is SpinStatus.Spinning) {
+            gameSoundPlayer.startWheelSpin()
+        } else {
+            gameSoundPlayer.stopWheelSpin()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose {
+            gameSoundPlayer.stopWheelSpin()
+        }
     }
 
     SpinScreen(
@@ -134,6 +151,7 @@ fun WheelSpinScreen(
                 spinStatus = spinStatus,
                 durationSeconds = duration,
                 onSpinFinished = { winner ->
+                    gameSoundPlayer.stopWheelSpin()
                     viewModel.onSpinCompleted(winner)
                 },
                 onClickSpin = {
@@ -162,7 +180,10 @@ fun WheelSpinScreen(
             ) {
                 // Settings / Sliders Icon Button
                 Button(
-                    onClick = onOpenSettings,
+                    onClick = {
+                        gameSoundPlayer.playButtonClick()
+                        onOpenSettings()
+                    },
                     modifier = Modifier
                         .width(48.dp)
                         .height(36.dp),
@@ -200,7 +221,10 @@ fun WheelSpinScreen(
 
                 // Shuffle Button
                 Button(
-                    onClick = viewModel::shuffleActiveItems,
+                    onClick = {
+                        gameSoundPlayer.playButtonClick()
+                        viewModel.shuffleActiveItems()
+                    },
                     modifier = Modifier
                         .width(48.dp)
                         .height(36.dp),
@@ -213,7 +237,10 @@ fun WheelSpinScreen(
 
                 // Reset Button
                 Button(
-                    onClick = viewModel::resetSpin,
+                    onClick = {
+                        gameSoundPlayer.playButtonClick()
+                        viewModel.resetSpin()
+                    },
                     modifier = Modifier
                         .width(48.dp)
                         .height(36.dp),
