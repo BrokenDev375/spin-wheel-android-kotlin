@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -62,9 +64,22 @@ fun DrawingSpinScreen(
     var isSpinning by remember { mutableStateOf(false) }
     var showTempResult by remember { mutableStateOf(false) }
     val shakeOffset = remember { Animatable(0f) }
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     LaunchedEffect(wheelId) {
         viewModel.loadWheelForDrawing(wheelId)
+    }
+
+    LaunchedEffect(isSpinning) {
+        if (isSpinning) {
+            gameSoundPlayer.startCardShuffle()
+        } else {
+            gameSoundPlayer.stopCardShuffle()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopCardShuffle() }
     }
 
     val winnerIndex = wheel?.items

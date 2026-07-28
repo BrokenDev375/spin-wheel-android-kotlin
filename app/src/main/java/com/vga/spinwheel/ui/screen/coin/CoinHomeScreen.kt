@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,6 +47,7 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.nav.Screen
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -57,6 +59,7 @@ fun CoinHomeScreen(
 ) {
     val duration by viewModel.duration.collectAsState()
     val skin by viewModel.currentSkin.collectAsState()
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     var isFlipping by remember { mutableStateOf(false) }
     var rotationY by remember { mutableFloatStateOf(0f) }
@@ -76,11 +79,13 @@ fun CoinHomeScreen(
 
     LaunchedEffect(isFlipping) {
         if (isFlipping) {
+            gameSoundPlayer.startCoinFlip()
             val isTargetHeads = Random.nextBoolean()
             val extraHalfFlips = if (currentSideIsHeads == isTargetHeads) 12 else 11
             rotationY += extraHalfFlips * 180f
             
             delay(duration * 1000L)
+            gameSoundPlayer.stopCoinFlip()
             
             currentSideIsHeads = isTargetHeads
             if (isTargetHeads) {
@@ -93,7 +98,13 @@ fun CoinHomeScreen(
             
             navController.navigate(Screen.coinResult(isTargetHeads))
             isFlipping = false
+        } else {
+            gameSoundPlayer.stopCoinFlip()
         }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopCoinFlip() }
     }
 
     SpinScreen(

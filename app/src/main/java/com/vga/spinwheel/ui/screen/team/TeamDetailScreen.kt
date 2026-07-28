@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinConfirmExitDialog
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -59,9 +61,22 @@ fun TeamDetailScreen(
     val state by viewModel.uiState.collectAsState()
     val list = state.currentList
     var showExitDialog by remember { mutableStateOf(false) }
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     LaunchedEffect(listId) {
         viewModel.loadList(listId)
+    }
+
+    LaunchedEffect(state.status, state.runId) {
+        if (state.status == TeamMatchStatus.Matching) {
+            gameSoundPlayer.startCardShuffle()
+        } else {
+            gameSoundPlayer.stopCardShuffle()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopCardShuffle() }
     }
 
     val members = remember(list?.items) {

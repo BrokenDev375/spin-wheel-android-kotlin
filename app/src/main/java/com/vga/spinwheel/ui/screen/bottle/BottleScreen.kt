@@ -38,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -60,6 +61,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinResultScreen
@@ -76,11 +78,24 @@ fun BottleScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
+    val gameSoundPlayer = rememberGameSoundPlayer()
     val context = LocalContext.current
     val resultTitle = stringResource(R.string.results)
     val bottleTitle = stringResource(R.string.spinBottle)
     val shareTitle = stringResource(R.string.sharereust)
     val shareSuccess = stringResource(R.string.share_success)
+
+    LaunchedEffect(state.isRunning, state.runId) {
+        if (state.isRunning) {
+            gameSoundPlayer.startBottleSpin()
+        } else {
+            gameSoundPlayer.stopBottleSpin()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopBottleSpin() }
+    }
 
     if (state.stage == BottleStage.Result) {
         BottleResultScreen(

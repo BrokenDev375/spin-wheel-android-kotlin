@@ -37,6 +37,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -59,6 +61,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -78,12 +81,23 @@ fun CardScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
+    val gameSoundPlayer = rememberGameSoundPlayer()
     val context = LocalContext.current
     val resultTitle = stringResource(R.string.results)
     val cardTitle = stringResource(R.string.card)
     val winningCardTitle = stringResource(R.string.cardwin)
     val shareTitle = stringResource(R.string.sharereust)
     val shareSuccess = stringResource(R.string.share_success)
+
+    LaunchedEffect(state.stage) {
+        if (state.stage == CardStage.Result) {
+            gameSoundPlayer.stopCardShuffle()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopCardShuffle() }
+    }
 
     if (state.stage == CardStage.Result) {
         CardResultScreen(
@@ -110,9 +124,19 @@ fun CardScreen(
             state = state,
             onBack = onBack,
             onOpenSettings = onOpenSettings,
-            onShuffle = viewModel::shuffleCards,
-            onReset = viewModel::resetCards,
-            onFlipCard = viewModel::flipCard,
+            onShuffle = {
+                gameSoundPlayer.startCardShuffle()
+                viewModel.shuffleCards()
+            },
+            onReset = {
+                gameSoundPlayer.stopCardShuffle()
+                viewModel.resetCards()
+            },
+            onFlipCard = { cardId ->
+                gameSoundPlayer.stopCardShuffle()
+                gameSoundPlayer.playCardFlip()
+                viewModel.flipCard(cardId)
+            },
             modifier = modifier,
         )
     }

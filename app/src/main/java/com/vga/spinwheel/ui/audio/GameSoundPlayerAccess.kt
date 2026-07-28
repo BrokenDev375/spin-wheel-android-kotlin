@@ -21,6 +21,28 @@ private object SilentGameSoundPlayer : GameSoundPlayer {
 
     override fun playResult() = Unit
 
+    override fun startDiceRoll() = Unit
+
+    override fun stopDiceRoll() = Unit
+
+    override fun startNumberRoll() = Unit
+
+    override fun stopNumberRoll() = Unit
+
+    override fun startBottleSpin() = Unit
+
+    override fun stopBottleSpin() = Unit
+
+    override fun startCoinFlip() = Unit
+
+    override fun stopCoinFlip() = Unit
+
+    override fun startCardShuffle() = Unit
+
+    override fun stopCardShuffle() = Unit
+
+    override fun playCardFlip() = Unit
+
     override fun startWheelSpin() = Unit
 
     override fun stopWheelSpin() = Unit
