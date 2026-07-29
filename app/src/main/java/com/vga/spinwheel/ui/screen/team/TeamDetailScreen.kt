@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -98,9 +98,9 @@ fun TeamDetailScreen(
         TeamRoundRules.memberNames(list?.items.orEmpty())
     }
     val showBoards = state.status != TeamMatchStatus.Idle || state.teams.isNotEmpty()
-    val visibleTeams = remember(state.teams, members, state.groupSize) {
+    val visibleTeams = remember(state.teams, members, state.teamCount) {
         state.teams.ifEmpty {
-            TeamRoundRules.createTeams(members, state.groupSize)
+            TeamRoundRules.createTeams(members, state.teamCount)
         }
     }
     val requestBack = {
@@ -409,3 +409,4 @@ private fun TeamPrimaryActionButton(
         )
     }
 }
+

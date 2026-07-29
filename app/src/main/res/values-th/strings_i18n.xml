@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="restart">เริ่มใหม่</string>
     <string name="lucky_rank">อันดับ</string>
@@ -87,7 +87,7 @@
     <string name="numberwin">จำนวนผู้ชนะ</string>
     <string name="cancelPermission">ยกเลิกการอนุญาต</string>
     <string name="templateball">เทมเพลตบอล</string>
-    <string name="itemsgroup">รายการกลุ่ม</string>
+    <string name="itemsgroup">จำนวนทีม</string>
     <string name="caner">ยกเลิก</string>
     <string name="deschosse1">รอ 2 วินาทีหรือแตะปุ่มเริ่มด้านล่าง</string>
     <string name="stop">หยุด</string>
@@ -305,3 +305,4 @@
         <string name="edit_items">แก้ไขรายการ</string>
         <string name="need_two_items">ต้องมีรายการที่ถูกต้องอย่างน้อย 2 รายการ</string>
 </resources>
+

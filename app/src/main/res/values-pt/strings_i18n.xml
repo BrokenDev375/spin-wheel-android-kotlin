@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="choose_the_winner_desc">O vencedor será escolhido aleatoriamente entre os participantes quando o jogo começar.</string>
     <string name="exciting_spin_wheel_desc">A roda apresenta cores vibrantes, efeitos dinâmicos e sons envolventes.</string>
@@ -112,7 +112,7 @@
     <string name="tapto">Toque para parear</string>
     <string name="duration">Duração da Animação</string>
     <string name="newList">Nova Lista</string>
-    <string name="itemsgroup">Itens de Grupo</string>
+    <string name="itemsgroup">Número de equipes</string>
     <string name="card">Virar Carta</string>
     <string name="deschosse">Todos colocam um dedo na tela</string>
     <string name="caner">Cancelar</string>
@@ -305,3 +305,4 @@
         <string name="edit_items">Editar itens</string>
         <string name="need_two_items">São necessários pelo menos 2 itens válidos.</string>
 </resources>
+

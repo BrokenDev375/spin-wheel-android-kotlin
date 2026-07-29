@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -69,9 +69,9 @@ fun TeamSettingsScreen(
                 title = stringResource(R.string.itemsgroup),
                 trailing = {
                     TeamStepper(
-                        value = state.groupSize.toString(),
-                        onMinus = { viewModel.updateGroupSize(state.groupSize - 1) },
-                        onPlus = { viewModel.updateGroupSize(state.groupSize + 1) },
+                        value = state.teamCount.toString(),
+                        onMinus = { viewModel.updateteamCount(state.teamCount - 1) },
+                        onPlus = { viewModel.updateteamCount(state.teamCount + 1) },
                     )
                 },
             )
@@ -170,3 +170,4 @@ private fun TeamStepperButton(
         )
     }
 }
+
