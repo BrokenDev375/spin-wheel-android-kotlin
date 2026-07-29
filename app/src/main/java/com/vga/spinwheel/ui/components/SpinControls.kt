@@ -365,7 +365,7 @@ fun SpinRetryButton(
 
 private val SpinSettingRadius = 16.dp
 private val SpinSettingContainerColor = Color.White.copy(alpha = 0.065f)
-private val SpinSettingBorderColor = Color.White.copy(alpha = 0.055f)
+private val SpinSettingBorderColor = Color(0xFF33E3FF).copy(alpha = 0.22f)
 
 @Composable
 fun SpinResultCard(
