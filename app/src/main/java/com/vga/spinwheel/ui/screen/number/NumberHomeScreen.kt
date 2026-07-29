@@ -25,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -62,6 +64,7 @@ fun NumberHomeScreen(
     val min by viewModel.min.collectAsState()
     val max by viewModel.max.collectAsState()
     val history by viewModel.history.collectAsState()
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     var isSpinning by remember { mutableStateOf(false) }
     var generatedNumbers by remember { mutableStateOf<List<Int>>(emptyList()) }
@@ -80,11 +83,13 @@ fun NumberHomeScreen(
 
     LaunchedEffect(isSpinning) {
         if (isSpinning) {
+            gameSoundPlayer.startNumberRoll()
             generatedNumbers = viewModel.generateNumbers()
             
             // Shake machine for duration
             val durationMs = duration * 1000L
             delay(durationMs)
+            gameSoundPlayer.stopNumberRoll()
             
             showBalls = true
             delay(1_000L)
@@ -93,7 +98,13 @@ fun NumberHomeScreen(
             navController.navigate(Screen.NumberResult.route)
             isSpinning = false
             showBalls = false
+        } else {
+            gameSoundPlayer.stopNumberRoll()
         }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopNumberRoll() }
     }
 
     SpinScreen(

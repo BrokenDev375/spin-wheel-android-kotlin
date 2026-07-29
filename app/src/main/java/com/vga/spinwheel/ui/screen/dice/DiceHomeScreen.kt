@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
@@ -41,11 +43,24 @@ fun DiceHomeScreen(
     onPreview: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     LaunchedEffect(uiState.isRolling, uiState.currentResults) {
         if (!uiState.isRolling && uiState.currentResults.isNotEmpty()) {
             onPreview()
         }
+    }
+
+    LaunchedEffect(uiState.isRolling) {
+        if (uiState.isRolling) {
+            gameSoundPlayer.startDiceRoll()
+        } else {
+            gameSoundPlayer.stopDiceRoll()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopDiceRoll() }
     }
 
     SpinScreen(

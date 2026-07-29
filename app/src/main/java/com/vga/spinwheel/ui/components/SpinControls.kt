@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -50,8 +51,13 @@ fun SpinIconButton(
     tint: Color = SpinColors.IconMuted,
     enabled: Boolean = true,
 ) {
+    val gameSoundPlayer = rememberGameSoundPlayer()
+
     IconButton(
-        onClick = onClick,
+        onClick = {
+            gameSoundPlayer.playButtonClick()
+            onClick()
+        },
         modifier = modifier.size(SpinSpacing.HeaderButton),
         enabled = enabled,
     ) {
@@ -70,8 +76,13 @@ fun SpinPrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
+    val gameSoundPlayer = rememberGameSoundPlayer()
+
     Button(
-        onClick = onClick,
+        onClick = {
+            gameSoundPlayer.playButtonClick()
+            onClick()
+        },
         modifier = modifier
             .height(SpinSpacing.ControlHeight)
             .defaultMinSize(minHeight = SpinSpacing.ControlHeight),
@@ -94,8 +105,13 @@ fun SpinSecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val gameSoundPlayer = rememberGameSoundPlayer()
+
     OutlinedButton(
-        onClick = onClick,
+        onClick = {
+            gameSoundPlayer.playButtonClick()
+            onClick()
+        },
         modifier = modifier
             .height(SpinSpacing.ControlHeight)
             .defaultMinSize(minHeight = SpinSpacing.ControlHeight),
@@ -131,6 +147,14 @@ fun SpinSettingRow(
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
+    val gameSoundPlayer = rememberGameSoundPlayer()
+    val soundOnClick: (() -> Unit)? = onClick?.let { action ->
+        {
+            gameSoundPlayer.playButtonClick()
+            action()
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -144,7 +168,7 @@ fun SpinSettingRow(
                     shape = RoundedCornerShape(SpinRadius.Control),
                 )
             )
-            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
+            .then(if (soundOnClick == null) Modifier else Modifier.clickable(onClick = soundOnClick))
             .padding(horizontal = 14.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -237,13 +261,17 @@ fun SpinShareButton(
     backgroundColor: Color = Color(0xFF39A9F2),
 ) {
     val resolvedText = text ?: stringResource(R.string.sharereust)
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     Box(
         modifier = modifier
             .height(36.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(backgroundColor)
-            .clickable(onClick = onClick)
+            .clickable {
+                gameSoundPlayer.playButtonClick()
+                onClick()
+            }
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -278,6 +306,7 @@ fun SpinRetryButton(
     backgroundColor: Color = Color(0xFFDE3D2D),
 ) {
     val resolvedText = text ?: stringResource(R.string.try_again)
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     Box(
         modifier = modifier
@@ -285,7 +314,10 @@ fun SpinRetryButton(
             .height(44.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
-            .clickable(onClick = onClick),
+            .clickable {
+                gameSoundPlayer.playButtonClick()
+                onClick()
+            },
         contentAlignment = Alignment.Center,
     ) {
         Text(

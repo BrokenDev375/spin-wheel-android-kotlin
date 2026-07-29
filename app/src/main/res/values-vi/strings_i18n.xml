@@ -330,6 +330,11 @@
     <string name="share_success">Chia sẻ thành công</string>
     <string name="warning">Cảnh báo</string>
     <string name="history_spin">Lịch sử quay</string>
+    <string name="select_wheel">Chọn bánh xe</string>
+    <string name="change_wheel">Đổi bánh xe</string>
+    <string name="edit_wheel">Sửa bánh xe</string>
+    <string name="edit_items">Sửa mục</string>
+    <string name="need_two_items">Cần ít nhất 2 mục hợp lệ.</string>
     <string name="premium_feature_unlock_all">Mở khóa tất cả trò chơi</string>
     <string name="premium_feature_unlimited">Tạo vòng quay tùy chỉnh</string>
     <string name="premium_feature_premium_skins">Mở khóa giao diện</string>

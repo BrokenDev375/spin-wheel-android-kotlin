@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,10 +42,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinConfirmExitDialog
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.WheelItemsEditDialog
+import com.vga.spinwheel.ui.components.WheelPickerDialog
+import com.vga.spinwheel.ui.components.WheelSelectorChip
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -53,15 +58,40 @@ fun TeamDetailScreen(
     viewModel: TeamViewModel,
     onBack: () -> Unit,
     onOpenSettings: () -> Unit,
+    onSelectList: (String) -> Unit,
     onPreview: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val wheels by viewModel.wheels.collectAsState()
     val state by viewModel.uiState.collectAsState()
     val list = state.currentList
     var showExitDialog by remember { mutableStateOf(false) }
+    var showListPicker by remember { mutableStateOf(false) }
+    var showEditItems by remember { mutableStateOf(false) }
+    val gameSoundPlayer = rememberGameSoundPlayer()
+    val controlsEnabled = state.status != TeamMatchStatus.Matching
+    val availableLists = remember(wheels, list) {
+        if (list != null && wheels.none { it.id == list.id }) {
+            listOf(list) + wheels
+        } else {
+            wheels
+        }
+    }
 
     LaunchedEffect(listId) {
         viewModel.loadList(listId)
+    }
+
+    LaunchedEffect(state.status, state.runId) {
+        if (state.status == TeamMatchStatus.Matching) {
+            gameSoundPlayer.startCardShuffle()
+        } else {
+            gameSoundPlayer.stopCardShuffle()
+        }
+    }
+
+    DisposableEffect(gameSoundPlayer) {
+        onDispose { gameSoundPlayer.stopCardShuffle() }
     }
 
     val members = remember(list?.items) {
@@ -129,7 +159,15 @@ fun TeamDetailScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            TeamNameChip(name = list?.name ?: stringResource(R.string.homograft))
+            WheelSelectorChip(
+                name = list?.name ?: stringResource(R.string.homograft),
+                enabled = controlsEnabled && list != null,
+                onClick = { showListPicker = true },
+                modifier = Modifier.widthIn(min = 92.dp, max = 310.dp),
+                backgroundColor = SpinColors.Action,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.ExtraBold,
+            )
 
             Spacer(
                 modifier = Modifier.height(
@@ -183,6 +221,39 @@ fun TeamDetailScreen(
                 }
             }
         }
+    }
+
+    if (showListPicker) {
+        WheelPickerDialog(
+            title = stringResource(R.string.select_wheel),
+            wheels = availableLists,
+            selectedWheelId = list?.id ?: listId,
+            canEditSelected = controlsEnabled && list != null,
+            onSelectWheel = { selectedListId ->
+                showListPicker = false
+                onSelectList(selectedListId)
+            },
+            onEditSelectedItems = {
+                showListPicker = false
+                showEditItems = true
+            },
+            onDismiss = { showListPicker = false },
+        )
+    }
+
+    val editingList = list
+    if (showEditItems && editingList != null) {
+        WheelItemsEditDialog(
+            title = stringResource(R.string.edit_wheel),
+            wheelName = editingList.name,
+            items = editingList.items,
+            showPriorityControls = false,
+            onSave = { updatedName, updatedItems ->
+                viewModel.saveCurrentListItems(updatedName, updatedItems)
+                showEditItems = false
+            },
+            onDismiss = { showEditItems = false },
+        )
     }
 
     if (showExitDialog) {
