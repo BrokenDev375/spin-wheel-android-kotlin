@@ -19,12 +19,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         appliedLanguageCode = AppStorage.languageCode(newBase)
-        super.attachBaseContext(newBase)
+        super.attachBaseContext(LocaleHelper.wrap(newBase, appliedLanguageCode))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ShortcutHelper.addUninstallShortcut(this)
+        AppStorage.language(this)?.let { LocaleHelper.updateLocale(this, it) }
 
         val startRoute = resolveStartRoute()
 
