@@ -34,8 +34,8 @@
     <string name="the_winner_is">勝者は</string>
     <string name="spin_wheel_title">スピンホイール</string>
     <string name="permission">許可</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">すべての広告を非表示</string>
+    <string name="premium_feature_support">優先カスタマーサポート</string>
     <string name="winner_mode_min_fingers">%1$s 人の勝者を選ぶには少なくとも %2$s 本の指が必要です！</string>
     <string name="team_mode_min_fingers">%1$s チームに分けるには少なくとも %2$s 本の指が必要です！</string>
     <string name="rank_mode_min_fingers">ランキングには少なくとも 2 本の指が必要です！</string>

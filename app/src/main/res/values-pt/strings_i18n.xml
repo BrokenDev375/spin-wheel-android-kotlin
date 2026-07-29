@@ -34,8 +34,8 @@
     <string name="lucky_team">Formar equipas</string>
     <string name="permission_desc">Os utilizadores precisam de conceder permissão para receber notificações do dispositivo.</string>
     <string name="notification">Notificação</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">Remover todos os anúncios</string>
+    <string name="premium_feature_support">Suporte ao cliente prioritário</string>
     <string name="winner_mode_min_fingers">São necessários pelo menos %1$s dedos para selecionar %2$s vencedores!</string>
     <string name="team_mode_min_fingers">São necessários pelo menos %1$s dedos para dividir em %2$s equipas!</string>
     <string name="rank_mode_min_fingers">São necessários pelo menos 2 dedos para classificar!</string>

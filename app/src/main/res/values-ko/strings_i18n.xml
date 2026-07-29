@@ -34,8 +34,8 @@
     <string name="spin_wheel">룰렛</string>
     <string name="choose_the_winner_desc">게임 시작 시 참가자 중에서 무작위로 승자가 선택됩니다.</string>
     <string name="team_collaboration_desc">친구들은 팀워크를 강화하기 위해 더 작은 그룹으로 나뉩니다.</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">모든 광고 제거</string>
+    <string name="premium_feature_support">우선 고객 지원</string>
     <string name="winner_mode_min_fingers">%1$s 명의 승자를 선택하기 위해 최소 %2$s개의 손가락이 필요합니다!</string>
     <string name="team_mode_min_fingers">%1$s 팀으로 나누기 위해 최소 %2$s개의 손가락이 필요합니다!</string>
     <string name="rank_mode_min_fingers">랭킹을 위해 최소 2개의 손가락이 필요합니다!</string>
