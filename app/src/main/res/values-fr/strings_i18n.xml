@@ -34,8 +34,8 @@
     <string name="rate_us">Évaluez-nous</string>
     <string name="permission">Permission</string>
     <string name="exciting_spin_wheel_desc">La roue présente des couleurs vives, des effets dynamiques et des sons captivants.</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">Supprimer toutes les publicités</string>
+    <string name="premium_feature_support">Support client prioritaire</string>
     <string name="winner_mode_min_fingers">Il faut au moins %1$s doigts pour sélectionner %2$s vainqueurs !</string>
     <string name="team_mode_min_fingers">Il faut au moins %1$s doigts pour diviser en %2$s équipes !</string>
     <string name="rank_mode_min_fingers">Il faut au moins 2 doigts pour établir un classement !</string>

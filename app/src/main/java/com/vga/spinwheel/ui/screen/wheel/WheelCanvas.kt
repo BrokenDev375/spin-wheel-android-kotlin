@@ -24,8 +24,30 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.data.model.WheelItem
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+
+/**
+ * Cắt [label] sao cho chiều rộng pixel (đo bằng [paint]) không vượt quá [maxWidthPx].
+ *
+ * Dùng Paint.measureText() thay vì đếm ký tự vì mỗi ký tự có độ rộng khác nhau
+ * (ví dụ 'W' rộng hơn 'i', ký tự tiếng Việt có dấu rộng hơn chữ Latin thường).
+ *
+ * Thuật toán binary search để tránh vòng lặp O(n) với chuỗi dài.
+ */
+private fun fitLabelToWidth(label: String, paint: Paint, maxWidthPx: Float): String {
+    if (paint.measureText(label) <= maxWidthPx) return label
+
+    // Binary search tìm số ký tự tối đa vừa với maxWidthPx
+    var lo = 1
+    var hi = label.length - 1
+    while (lo < hi) {
+        val mid = (lo + hi + 1) / 2
+        if (paint.measureText(label.take(mid) + "…") <= maxWidthPx) lo = mid else hi = mid - 1
+    }
+    return label.take(lo) + "…"
+}
 
 @Composable
 fun WheelCanvas(
@@ -104,29 +126,48 @@ fun WheelCanvas(
                 )
             }
 
-            // Draw labels near the fixed center pointer, matching the original wheel.
+            // Draw labels — chữ radial (dọc theo tia từ tâm ra rim).
+            // Hướng radial phù hợp hơn tangential khi nhiều item vì:
+            //   • Chiều dài tia = radius (cố định, không đổi theo số item)
+            //   • Chiều rộng arc = 2r·sin(θ/2) → hẹp dần khi nhiều item
+            val baseTextSize = (radius * 0.085f).coerceIn(16f, 32f)
+            val scaledTextSize = when {
+                items.size > 10 -> baseTextSize * 0.70f
+                items.size > 6  -> baseTextSize * 0.82f
+                else            -> baseTextSize
+            }
+
             val textPaint = Paint().apply {
                 color = android.graphics.Color.WHITE
-                textSize = (radius * 0.085f).coerceIn(20f, 34f)
+                textSize = scaledTextSize
                 isAntiAlias = true
                 textAlign = Paint.Align.CENTER
                 typeface = Typeface.DEFAULT_BOLD
             }
 
+            // Vị trí giữa tia: từ mép cục tâm (cap = 0.17r) đến gần rim.
+            // midTextRadius = giữa đoạn [capEdge, rim] = (0.17 + 1.0) / 2 = 0.585r
+            val capEdge = 0.17f       // bán kính cục trắng ở tâm
+            val rimEdge = 0.92f       // dừng trước rim để có lề
+            val textRadius = radius * (capEdge + rimEdge) / 2f   // ~0.545r
+
+            // Chiều dài tại tâm tia khả dụng cho text = (rimEdge - capEdge) * radius
+            // Nhân 0.85 để có padding 2 đầu, text không chạm cỡp tâm hay rim.
+            val availableRadialPx = (rimEdge - capEdge) * radius * 0.85f
+
             for (i in items.indices) {
                 val midAngle = currentRotation + (i * sectorAngle) + (sectorAngle / 2f)
                 val midRad = Math.toRadians(midAngle.toDouble())
-                val textRadius = radius * 0.27f
 
                 val textX = center.x + (textRadius * cos(midRad)).toFloat()
                 val textY = center.y + (textRadius * sin(midRad)).toFloat()
 
                 drawIntoCanvas { canvas ->
                     canvas.nativeCanvas.save()
-                    canvas.nativeCanvas.rotate(midAngle + 90f, textX, textY)
-                    val label = items[i].name.let {
-                        if (it.length > 12) it.take(10) + "…" else it
-                    }
+                    // midAngle (không + 90) → text dọc theo tia, đọc từ tâm ra ngoài.
+                    canvas.nativeCanvas.rotate(midAngle, textX, textY)
+                    // fitLabelToWidth dùng chiều dài tia — chứa được nhiều text hơn arc
+                    val label = fitLabelToWidth(items[i].name, textPaint, availableRadialPx)
                     canvas.nativeCanvas.drawText(label, textX, textY, textPaint)
                     canvas.nativeCanvas.restore()
                 }

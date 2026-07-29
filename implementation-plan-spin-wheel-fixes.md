@@ -83,7 +83,7 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 - Settings nhìn mềm mại hơn.
 - Restore không crash và không làm sai state.
 
-## 4. Phase 2: Bánh xe
+## [x] 4. Phase 2: Bánh xe
 
 Đầu việc từ txt:
 
@@ -117,6 +117,12 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 
 - Text trong ô bánh xe không bị tràn quá mức.
 - Spin/result vẫn hoạt động đúng.
+- ✅ Thay đởi thực tế (branch `phase-2-banh-xe`):
+  - `fitLabelToWidth()` — cắt label dựa trên pixel thực tế (`Paint.measureText()`) thay vì đếm ký tự.
+  - `availableRadialPx` — chiều dài tia khả dụng = `(rimEdge - capEdge) * radius * 0.85`.
+  - Text xoay **radial** (`rotate(midAngle)`) — đọc dọc theo tia từ tâm ra rim, chứa được nhiều text hơn tangential khi nhiều item.
+  - `textRadius` cố định tại giữa tia (~0.545r), độc lập với số item.
+  - Build debug: ✅ SUCCESSFUL.
 
 ## 5. Phase 3: Chọn ngón tay
 

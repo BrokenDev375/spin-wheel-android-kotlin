@@ -34,8 +34,8 @@
     <string name="choose_the_winner_desc">ผู้ชนะจะถูกเลือกแบบสุ่มจากผู้เข้าร่วมเมื่อเกมเริ่ม</string>
     <string name="spinning">กำลังหมุน</string>
     <string name="notification">การแจ้งเตือน</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">ลบโฆษณาทั้งหมด</string>
+    <string name="premium_feature_support">การสนับสนุนลูกค้าตามลำดับความสำคัญ</string>
     <string name="winner_mode_min_fingers">ต้องใช้อย่างน้อย %1$s นิ้วเพื่อเลือก %2$s ผู้ชนะ!</string>
     <string name="team_mode_min_fingers">ต้องใช้อย่างน้อย %1$s นิ้วเพื่อแบ่งเป็น %2$s ทีม!</string>
     <string name="rank_mode_min_fingers">ต้องใช้อย่างน้อย 2 นิ้วเพื่อจัดอันดับ!</string>

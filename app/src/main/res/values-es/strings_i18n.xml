@@ -34,8 +34,8 @@
     <string name="results">Resultados</string>
     <string name="lucky_rank">Clasificación</string>
     <string name="rate_us">Califícanos</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">Eliminar todos los anuncios</string>
+    <string name="premium_feature_support">Soporte al cliente prioritario</string>
     <string name="winner_mode_min_fingers">¡Se necesitan al menos %1$s dedos para seleccionar %2$s ganadores!</string>
     <string name="team_mode_min_fingers">¡Se necesitan al menos %1$s dedos para dividir en %2$s equipos!</string>
     <string name="rank_mode_min_fingers">¡Se necesitan al menos 2 dedos para clasificar!</string>

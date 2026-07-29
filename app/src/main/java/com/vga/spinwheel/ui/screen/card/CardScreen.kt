@@ -32,7 +32,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -204,6 +208,7 @@ fun CardSettingsScreen(
                 },
             )
 
+            val currentTheme = CardThemes.get(state.settings.themeIndex)
             CardSettingRow(
                 title = stringResource(R.string.Temlatecard),
                 onClick = {
@@ -211,11 +216,20 @@ fun CardSettingsScreen(
                     onOpenLabels()
                 },
                 trailing = {
-                    SpinIcon(
-                        glyph = SpinIconGlyph.ChevronRight,
-                        tint = SpinColors.IconMuted,
-                        modifier = Modifier.size(30.dp),
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = currentTheme.name,
+                            color = Color(0xFFFFA726),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        SpinIcon(
+                            glyph = SpinIconGlyph.ChevronRight,
+                            tint = SpinColors.IconMuted,
+                            modifier = Modifier.size(30.dp),
+                        )
+                    }
                 },
             )
         }
@@ -616,16 +630,19 @@ private fun CardThemeLabelCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
+    val borderColor = if (selected) Color(0xFFFFA726) else Color(0xFF4C5263)
+    val borderWidth = if (selected) 3.5.dp else 1.5.dp
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(126.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .height(132.dp)
+            .clip(RoundedCornerShape(14.dp))
             .background(theme.labelBackground)
             .border(
-                width = 2.dp,
-                color = Color(0xFF4C5263),
-                shape = RoundedCornerShape(12.dp),
+                width = borderWidth,
+                color = borderColor,
+                shape = RoundedCornerShape(14.dp),
             )
             .clickable(onClick = onClick)
             .padding(horizontal = 10.dp, vertical = 9.dp),
@@ -645,6 +662,25 @@ private fun CardThemeLabelCard(
                 label = stringResource(R.string.Lose),
                 labelColor = theme.labelContent,
             )
+        }
+
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp)
+                    .size(24.dp)
+                    .background(Color(0xFFFFA726), CircleShape)
+                    .border(1.5.dp, Color.White, CircleShape),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
         }
     }
 }
