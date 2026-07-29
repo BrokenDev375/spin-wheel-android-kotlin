@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.finger
+﻿package com.vga.spinwheel.ui.screen.finger
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 sealed interface FingerStage {
@@ -22,7 +24,6 @@ sealed interface FingerStage {
 }
 
 data class FingerUiState(
-    val fingerCount: Int = FingerViewModel.DEFAULT_FINGER_COUNT,
     val winnerCount: Int = FingerViewModel.DEFAULT_WINNER_COUNT,
     val points: List<FingerPoint> = emptyList(),
     val stage: FingerStage = FingerStage.Waiting,
@@ -40,13 +41,6 @@ class FingerViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         FingerUiState(
-            fingerCount = FingerRoundRules.clampFingerCount(
-                settingsRepository.getInt(
-                    RandomFeature.FINGER,
-                    SETTING_FINGER_COUNT,
-                    DEFAULT_FINGER_COUNT,
-                )
-            ),
             winnerCount = settingsRepository.getInt(
                 RandomFeature.FINGER,
                 SETTING_WINNER_COUNT,
@@ -56,43 +50,25 @@ class FingerViewModel @Inject constructor(
     )
     val uiState: StateFlow<FingerUiState> = _uiState.asStateFlow()
 
-    private var roundJob: Job? = null
+    private val _warningEvent = Channel<Unit>()
+    val warningEvent = _warningEvent.receiveAsFlow()
 
-    fun selectFingerCount(count: Int) {
-        val clampedFinger = FingerRoundRules.clampFingerCount(count)
-        val clampedWinner = minOf(_uiState.value.winnerCount, clampedFinger)
-        roundJob?.cancel()
-        _uiState.update { state ->
-            state.copy(
-                fingerCount = clampedFinger,
-                winnerCount = clampedWinner,
-                runId = state.runId + 1,
-            )
-        }
-        viewModelScope.launch {
-            settingsRepository.putInt(RandomFeature.FINGER, SETTING_FINGER_COUNT, clampedFinger)
-            if (clampedWinner != _uiState.value.winnerCount) {
-                settingsRepository.putInt(RandomFeature.FINGER, SETTING_WINNER_COUNT, clampedWinner)
-            }
-        }
-    }
+    private var roundJob: Job? = null
+    private var warningJob: Job? = null
 
     fun selectWinnerCount(count: Int) {
         val clampedWinner = FingerRoundRules.clampWinnerCount(count)
-        val clampedFinger = maxOf(_uiState.value.fingerCount, clampedWinner)
         roundJob?.cancel()
+        warningJob?.cancel()
+        warningJob?.cancel()
         _uiState.update { state ->
             state.copy(
-                fingerCount = clampedFinger,
                 winnerCount = clampedWinner,
                 runId = state.runId + 1,
             )
         }
         viewModelScope.launch {
             settingsRepository.putInt(RandomFeature.FINGER, SETTING_WINNER_COUNT, clampedWinner)
-            if (clampedFinger != _uiState.value.fingerCount) {
-                settingsRepository.putInt(RandomFeature.FINGER, SETTING_FINGER_COUNT, clampedFinger)
-            }
         }
     }
 
@@ -110,11 +86,11 @@ class FingerViewModel @Inject constructor(
             touches = touches,
             width = width,
             height = height,
-            fingerCount = state.fingerCount,
+            
         )
 
         if (state.stage is FingerStage.CountingDown) {
-            if (FingerRoundRules.hasRequiredTouches(points, state.fingerCount)) {
+            if (FingerRoundRules.hasRequiredTouches(points, state.winnerCount)) {
                 _uiState.update { it.copy(points = points) }
             } else {
                 cancelRound(points)
@@ -129,8 +105,21 @@ class FingerViewModel @Inject constructor(
             )
         }
 
-        if (FingerRoundRules.hasRequiredTouches(points, state.fingerCount)) {
+        if (points.isEmpty()) {
+            warningJob?.cancel()
+            return
+        }
+
+        if (FingerRoundRules.hasRequiredTouches(points, state.winnerCount)) {
+            warningJob?.cancel()
             beginCountdown()
+        } else {
+            if (warningJob?.isActive != true) {
+                warningJob = viewModelScope.launch {
+                    delay(2000L)
+                    _warningEvent.send(Unit)
+                }
+            }
         }
     }
 
@@ -144,6 +133,7 @@ class FingerViewModel @Inject constructor(
 
     private fun cancelRound(points: List<FingerPoint>) {
         roundJob?.cancel()
+        warningJob?.cancel()
         _uiState.update { state ->
             state.copy(
                 points = points,
@@ -156,6 +146,7 @@ class FingerViewModel @Inject constructor(
 
     private fun beginCountdown() {
         roundJob?.cancel()
+        warningJob?.cancel()
         val runId = _uiState.value.runId + 1
         _uiState.update {
             it.copy(
@@ -194,11 +185,11 @@ class FingerViewModel @Inject constructor(
         _uiState.value.runId == runId
 
     companion object {
-        const val DEFAULT_FINGER_COUNT = 2
         const val DEFAULT_WINNER_COUNT = 1
-        private const val SETTING_FINGER_COUNT = "finger_count"
         private const val SETTING_WINNER_COUNT = "winner_count"
         private const val ONE_SECOND_MS = 1_000L
         private const val QUICK_RESULT_MS = 1_800L
     }
 }
+
+

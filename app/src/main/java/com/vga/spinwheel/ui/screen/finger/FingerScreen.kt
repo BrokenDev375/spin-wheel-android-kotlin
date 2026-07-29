@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.finger
+﻿package com.vga.spinwheel.ui.screen.finger
 
 import android.content.Intent
 import androidx.compose.foundation.Canvas
@@ -23,6 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +64,13 @@ fun FingerScreen(
     val shareTitle = stringResource(R.string.sharereust)
     val shareText = stringResource(R.string.finger_share_text, state.points.size)
 
+    val warningText = stringResource(R.string.finger_warning_not_enough, state.winnerCount)
+    LaunchedEffect(viewModel) {
+        viewModel.warningEvent.collect {
+            Toast.makeText(context, warningText, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     DisposableEffect(viewModel) {
         onDispose { viewModel.cancelRound() }
     }
@@ -91,7 +100,6 @@ fun FingerScreen(
                 viewModel.cancelRound()
                 onBack()
             },
-            onFingerCountSelected = viewModel::selectFingerCount,
             onWinnerCountSelected = viewModel::selectWinnerCount,
             onTouchesChanged = viewModel::onTouchesChanged,
             modifier = modifier,
@@ -103,7 +111,6 @@ fun FingerScreen(
 private fun FingerPlayScreen(
     state: FingerUiState,
     onBack: () -> Unit,
-    onFingerCountSelected: (Int) -> Unit,
     onWinnerCountSelected: (Int) -> Unit,
     onTouchesChanged: (List<FingerTouchInput>, Float, Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -116,10 +123,8 @@ private fun FingerPlayScreen(
         topBar = {
             FingerHeader(
                 title = stringResource(R.string.lucky_finger),
-                fingerCount = state.fingerCount,
                 winnerCount = state.winnerCount,
                 onBack = onBack,
-                onFingerCountSelected = onFingerCountSelected,
                 onWinnerCountSelected = onWinnerCountSelected,
             )
         },
@@ -137,14 +142,11 @@ private fun FingerPlayScreen(
 @Composable
 private fun FingerHeader(
     title: String,
-    fingerCount: Int,
     winnerCount: Int,
     onBack: () -> Unit,
-    onFingerCountSelected: (Int) -> Unit,
     onWinnerCountSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var expandedFinger by remember { mutableStateOf(false) }
     var expandedWinner by remember { mutableStateOf(false) }
 
     SpinTopBar(
@@ -156,59 +158,6 @@ private fun FingerHeader(
         titleStartPadding = 39.dp,
         modifier = modifier,
         actions = {
-            // Dropdown chọn số ngón tay (số người chơi)
-            Box {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(FingerMenuGreen)
-                        .clickable { expandedFinger = true },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = fingerCount.toString(),
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Black,
-                    )
-                }
-                DropdownMenu(
-                    expanded = expandedFinger,
-                    onDismissRequest = { expandedFinger = false },
-                    modifier = Modifier
-                        .background(FingerMenuBackground)
-                        .defaultMinSize(minWidth = 120.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.finger_player_count_label),
-                        color = SpinColors.TextMuted,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    )
-                    (FingerRoundRules.MIN_FINGER_COUNT..FingerRoundRules.MAX_FINGER_COUNT).forEach { count ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = count.toString(),
-                                    color = if (count == fingerCount) FingerMenuGreen else Color.White,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium,
-                                )
-                            },
-                            onClick = {
-                                expandedFinger = false
-                                onFingerCountSelected(count)
-                            },
-                            modifier = Modifier.height(52.dp),
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
             // Dropdown chọn số người thắng (winnerCount)
             Box {
                 Box(
@@ -272,7 +221,7 @@ private fun FingerPlayArea(
     BoxWithConstraints(
         modifier = modifier
             .background(FingerPlayBackground)
-            .pointerInput(state.fingerCount) {
+            .pointerInput(Unit) {
                 awaitPointerEventScope {
                     while (true) {
                         val event = awaitPointerEvent()
@@ -295,9 +244,13 @@ private fun FingerPlayArea(
             },
     ) {
         if (state.stage == FingerStage.Waiting && state.points.isEmpty()) {
+            val fakePoint1 = FingerPoint(id = -1, xRatio = 0.25f, yRatio = 0.4f, colorIndex = 0)
+            val fakePoint2 = FingerPoint(id = -2, xRatio = 0.75f, yRatio = 0.6f, colorIndex = 2)
+            FingerTouchPulse(fakePoint1, maxWidth, maxHeight)
+            FingerTouchPulse(fakePoint2, maxWidth, maxHeight)
+
             FingerHint(
                 winnerCount = state.winnerCount,
-                fingerCount = state.fingerCount,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(horizontal = 24.dp),
@@ -346,7 +299,6 @@ private fun FingerPlayArea(
 @Composable
 private fun FingerHint(
     winnerCount: Int,
-    fingerCount: Int,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -375,7 +327,6 @@ private fun FingerHint(
         Text(
             text = stringResource(
                 R.string.finger_rule_hint,
-                fingerCount,
                 winnerCount,
             ),
             color = FingerMenuGreen,
@@ -558,3 +509,5 @@ private val FingerMenuGreen = Color(0xFF21822F)
 private val FingerMenuBackground = Color(0xFF393347)
 private val FingerPointDark = Color(0xFF100D1F)
 private val FingerWinRed = Color(0xFFF04B55)
+
+

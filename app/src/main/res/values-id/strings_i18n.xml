@@ -265,10 +265,11 @@
         <string name="edit_wheel">Edit roda</string>
         <string name="edit_items">Edit item</string>
         <string name="need_two_items">Perlu setidaknya 2 item valid.</string>
-    <string name="finger_player_count_label">Pemain</string>
     <string name="finger_winner_count_label">Pemenang</string>
     <string name="finger_rule_hint">%1$d pemain meletakkan jari • %2$d pemenang dipilih</string>
+    <string name="finger_warning_not_enough">Harap letakkan setidaknya %1$d jari.</string>
 </resources>
+
 
 
 

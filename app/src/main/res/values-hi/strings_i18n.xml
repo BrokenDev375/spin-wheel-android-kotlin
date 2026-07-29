@@ -265,10 +265,11 @@
         <string name="edit_wheel">व्हील संपादित करें</string>
         <string name="edit_items">आइटम संपादित करें</string>
         <string name="need_two_items">कम से कम 2 मान्य आइटम आवश्यक हैं।</string>
-    <string name="finger_player_count_label">खिलाड़ी</string>
     <string name="finger_winner_count_label">विजेता</string>
     <string name="finger_rule_hint">%1$d खिलाड़ी उंगली रखते हैं • %2$d विजेता चुने गए</string>
+    <string name="finger_warning_not_enough">कृपया कम से कम %1$d उंगलियां रखें।</string>
 </resources>
+
 
 
 
