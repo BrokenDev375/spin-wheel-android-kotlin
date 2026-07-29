@@ -24,12 +24,29 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.data.model.WheelItem
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-private fun formatWheelLabel(name: String, itemsCount: Int): String {
-    val maxLength = if (itemsCount > 8) 6 else if (itemsCount > 4) 10 else 14
-    return if (name.length > maxLength) name.take(maxLength - 1) + "…" else name
+/**
+ * Cắt [label] sao cho chiều rộng pixel (đo bằng [paint]) không vượt quá [maxWidthPx].
+ *
+ * Dùng Paint.measureText() thay vì đếm ký tự vì mỗi ký tự có độ rộng khác nhau
+ * (ví dụ 'W' rộng hơn 'i', ký tự tiếng Việt có dấu rộng hơn chữ Latin thường).
+ *
+ * Thuật toán binary search để tránh vòng lặp O(n) với chuỗi dài.
+ */
+private fun fitLabelToWidth(label: String, paint: Paint, maxWidthPx: Float): String {
+    if (paint.measureText(label) <= maxWidthPx) return label
+
+    // Binary search tìm số ký tự tối đa vừa với maxWidthPx
+    var lo = 1
+    var hi = label.length - 1
+    while (lo < hi) {
+        val mid = (lo + hi + 1) / 2
+        if (paint.measureText(label.take(mid) + "…") <= maxWidthPx) lo = mid else hi = mid - 1
+    }
+    return label.take(lo) + "…"
 }
 
 @Composable
@@ -109,9 +126,15 @@ fun WheelCanvas(
                 )
             }
 
-            // Draw labels near the fixed center pointer, matching the original wheel.
+            // Draw labels — đo pixel thực tế bằng Paint.measureText() để cắt chính xác.
+            // Chiều rộng khả dụng = chord (dây cung) tại textRadius cho góc sectorAngle.
+            // chord = 2 * textRadius * sin(sectorAngle / 2)
             val baseTextSize = (radius * 0.085f).coerceIn(16f, 32f)
-            val scaledTextSize = if (items.size > 8) baseTextSize * 0.8f else baseTextSize
+            val scaledTextSize = when {
+                items.size > 10 -> baseTextSize * 0.70f
+                items.size > 6  -> baseTextSize * 0.82f
+                else            -> baseTextSize
+            }
 
             val textPaint = Paint().apply {
                 color = android.graphics.Color.WHITE
@@ -121,10 +144,21 @@ fun WheelCanvas(
                 typeface = Typeface.DEFAULT_BOLD
             }
 
+            // textRadius: đặt text ra giữa thân ô (tránh vùng tâm quá hẹp).
+            val textRadius = when {
+                items.size > 10 -> radius * 0.64f
+                items.size > 6  -> radius * 0.58f
+                else            -> radius * 0.50f
+            }
+
+            // Chiều rộng ô (pixel) tại điểm vẽ text = chord của cung sectorAngle tại textRadius.
+            // Nhân 0.85 để có padding 2 bên, text không chạm mép ô.
+            val sectorAngleRad = (sectorAngle * PI / 180.0).toFloat()
+            val availableWidthPx = 2f * textRadius * sin(sectorAngleRad / 2f) * 0.85f
+
             for (i in items.indices) {
                 val midAngle = currentRotation + (i * sectorAngle) + (sectorAngle / 2f)
                 val midRad = Math.toRadians(midAngle.toDouble())
-                val textRadius = radius * 0.5f
 
                 val textX = center.x + (textRadius * cos(midRad)).toFloat()
                 val textY = center.y + (textRadius * sin(midRad)).toFloat()
@@ -132,7 +166,8 @@ fun WheelCanvas(
                 drawIntoCanvas { canvas ->
                     canvas.nativeCanvas.save()
                     canvas.nativeCanvas.rotate(midAngle + 90f, textX, textY)
-                    val label = formatWheelLabel(items[i].name, items.size)
+                    // fitLabelToWidth dùng Paint.measureText() — chính xác theo pixel thực tế
+                    val label = fitLabelToWidth(items[i].name, textPaint, availableWidthPx)
                     canvas.nativeCanvas.drawText(label, textX, textY, textPaint)
                     canvas.nativeCanvas.restore()
                 }
