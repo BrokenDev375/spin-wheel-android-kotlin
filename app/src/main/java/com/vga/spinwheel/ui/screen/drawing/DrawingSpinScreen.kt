@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +65,7 @@ fun DrawingSpinScreen(
     val duration by viewModel.duration.collectAsState()
     val themeIndex by viewModel.themeIndex.collectAsState()
     val winner by viewModel.lastResult.collectAsState()
+    val showLastResultOnSpin by viewModel.showLastResultOnSpin.collectAsState()
 
     val scope = rememberCoroutineScope()
     var isSpinning by remember { mutableStateOf(false) }
@@ -86,6 +88,13 @@ fun DrawingSpinScreen(
         viewModel.loadWheelForDrawing(wheelId)
     }
 
+    LaunchedEffect(showLastResultOnSpin, winner?.id, wheel?.id, wheelId) {
+        if (showLastResultOnSpin && winner != null && wheel?.id == wheelId) {
+            showTempResult = true
+            viewModel.consumeShowLastResultOnSpinRequest()
+        }
+    }
+
     LaunchedEffect(isSpinning) {
         if (isSpinning) {
             gameSoundPlayer.startCardShuffle()
@@ -102,6 +111,7 @@ fun DrawingSpinScreen(
         ?.indexOfFirst { it.id == winner?.id }
         ?.coerceAtLeast(0)
         ?: 0
+    val winnerName = winner?.name?.takeIf { it.isNotBlank() } ?: "-"
 
     SpinScreen(
         title = stringResource(R.string.drawn),
@@ -158,7 +168,10 @@ fun DrawingSpinScreen(
 
                     if (showTempResult && currentItems.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(26.dp))
-                        DrawingResultNumber(value = winnerIndex + 1)
+                        DrawingResultSummary(
+                            name = winnerName,
+                            position = winnerIndex + 1,
+                        )
                     }
                 }
             }
@@ -189,7 +202,10 @@ fun DrawingSpinScreen(
                         onResult(wheelId)
                     }
                 },
-                onReset = { showTempResult = false },
+                onReset = {
+                    showTempResult = false
+                    viewModel.clearLastResult()
+                },
                 modifier = Modifier.padding(bottom = 70.dp),
             )
         }
@@ -236,22 +252,44 @@ fun DrawingSpinScreen(
 }
 
 @Composable
-internal fun DrawingResultNumber(
-    value: Int,
+internal fun DrawingResultSummary(
+    name: String,
+    position: Int,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-            .size(72.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.White),
-        contentAlignment = Alignment.Center,
+    val safePosition = position.coerceAtLeast(1)
+    Column(
+        modifier = modifier.widthIn(min = 180.dp, max = 300.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
+                .padding(horizontal = 18.dp, vertical = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = name.ifBlank { "-" },
+                color = Color(0xFF111111),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
         Text(
-            text = value.toString(),
-            color = Color(0xFF111111),
-            fontSize = 34.sp,
-            fontWeight = FontWeight.Black,
+            text = "#$safePosition",
+            color = Color.White.copy(alpha = 0.78f),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
         )
     }
 }

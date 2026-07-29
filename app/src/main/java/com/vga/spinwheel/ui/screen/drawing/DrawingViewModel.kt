@@ -65,6 +65,9 @@ class DrawingViewModel @Inject constructor(
 
     private val _lastResult = MutableStateFlow<WheelItem?>(null)
     val lastResult = _lastResult.asStateFlow()
+
+    private val _showLastResultOnSpin = MutableStateFlow(false)
+    val showLastResultOnSpin = _showLastResultOnSpin.asStateFlow()
     
     // For temp settings
     private val _tempDuration = MutableStateFlow(2)
@@ -118,6 +121,19 @@ class DrawingViewModel @Inject constructor(
                 value = winner.name
             )
         }
+    }
+
+    fun requestShowLastResultOnSpin() {
+        _showLastResultOnSpin.value = true
+    }
+
+    fun consumeShowLastResultOnSpinRequest() {
+        _showLastResultOnSpin.value = false
+    }
+
+    fun clearLastResult() {
+        _lastResult.value = null
+        _showLastResultOnSpin.value = false
     }
 
     fun saveCurrentWheelItems(

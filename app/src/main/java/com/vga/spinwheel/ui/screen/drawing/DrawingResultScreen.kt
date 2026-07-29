@@ -49,11 +49,12 @@ fun DrawingResultScreen(
         ?.indexOfFirst { it.id == winner?.id }
         ?.coerceAtLeast(0)
         ?: 0
+    val winnerName = winner?.name?.takeIf { it.isNotBlank() } ?: "-"
 
     SpinResultScreen(
         onHome = onHome,
         onShare = {
-            val shareText = "$resultTitle $drawingTitle: ${winner?.name.orEmpty()} (${winnerIndex + 1})"
+            val shareText = "$resultTitle $drawingTitle: $winnerName"
             context.startActivity(
                 Intent.createChooser(
                     Intent(Intent.ACTION_SEND).apply {
@@ -97,7 +98,10 @@ fun DrawingResultScreen(
                     },
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                DrawingResultNumber(value = winnerIndex + 1)
+                DrawingResultSummary(
+                    name = winnerName,
+                    position = winnerIndex + 1,
+                )
             }
         }
     }
