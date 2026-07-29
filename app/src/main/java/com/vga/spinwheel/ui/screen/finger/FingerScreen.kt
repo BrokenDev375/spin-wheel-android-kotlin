@@ -157,7 +157,7 @@ private fun FingerHeader(
         modifier = modifier,
         actions = {
             // Dropdown chọn số ngón tay (số người chơi)
-            Box(modifier = Modifier.offset(x = 4.dp)) {
+            Box {
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -207,8 +207,10 @@ private fun FingerHeader(
                 }
             }
 
+            Spacer(modifier = Modifier.width(12.dp))
+
             // Dropdown chọn số người thắng (winnerCount)
-            Box(modifier = Modifier.offset(x = 6.dp)) {
+            Box {
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -217,10 +219,11 @@ private fun FingerHeader(
                         .clickable { expandedWinner = true },
                     contentAlignment = Alignment.Center,
                 ) {
-                    SpinIcon(
-                        glyph = SpinIconGlyph.ChevronDown,
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp),
+                    Text(
+                        text = winnerCount.toString(),
+                        color = Color.White,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Black,
                     )
                 }
                 DropdownMenu(
