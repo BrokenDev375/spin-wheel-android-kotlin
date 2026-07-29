@@ -2,17 +2,17 @@ package com.vga.spinwheel.ui.screen.number
 
 import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,10 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vga.spinwheel.R
@@ -31,6 +28,7 @@ import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NumberResultScreen(
     navController: NavController,
@@ -59,13 +57,13 @@ fun NumberResultScreen(
             viewModel.clearLastResult()
             navController.popBackStack()
         },
-        cardHeight = 450.dp,
+        cardHeight = 520.dp,
         cardContentPadding = 0.dp,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+            verticalArrangement = Arrangement.Center,
         ) {
             Box(
                 modifier = Modifier
@@ -80,24 +78,20 @@ fun NumberResultScreen(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .border(
-                        width = 1.5.dp,
-                        color = SpinColors.Action,
-                        shape = RoundedCornerShape(10.dp),
-                    )
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = lastResult ?: "—",
-                    color = SpinColors.Action,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Black,
-                    textAlign = TextAlign.Center,
-                )
+            if (lastResult != null) {
+                val numbers = lastResult!!.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                FlowRow(
+                    modifier = Modifier.padding(top = 12.dp, start = 16.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    numbers.forEach { num ->
+                        NumberBall(
+                            number = num,
+                            size = 56.dp
+                        )
+                    }
+                }
             }
         }
     }
