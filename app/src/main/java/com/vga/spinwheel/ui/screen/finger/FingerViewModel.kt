@@ -23,13 +23,14 @@ sealed interface FingerStage {
 
 data class FingerUiState(
     val fingerCount: Int = FingerViewModel.DEFAULT_FINGER_COUNT,
+    val winnerCount: Int = FingerViewModel.DEFAULT_WINNER_COUNT,
     val points: List<FingerPoint> = emptyList(),
     val stage: FingerStage = FingerStage.Waiting,
-    val winnerId: Long? = null,
+    val winnerIds: Set<Long> = emptySet(),
     val runId: Long = 0L,
 ) {
-    val winner: FingerPoint?
-        get() = points.firstOrNull { it.id == winnerId }
+    val winners: List<FingerPoint>
+        get() = points.filter { it.id in winnerIds }
 }
 
 @HiltViewModel
@@ -45,6 +46,11 @@ class FingerViewModel @Inject constructor(
                     SETTING_FINGER_COUNT,
                     DEFAULT_FINGER_COUNT,
                 )
+            ),
+            winnerCount = settingsRepository.getInt(
+                RandomFeature.FINGER,
+                SETTING_WINNER_COUNT,
+                DEFAULT_WINNER_COUNT,
             )
         )
     )
@@ -58,11 +64,26 @@ class FingerViewModel @Inject constructor(
         _uiState.update { state ->
             FingerUiState(
                 fingerCount = clamped,
+                winnerCount = state.winnerCount,
                 runId = state.runId + 1,
             )
         }
         viewModelScope.launch {
             settingsRepository.putInt(RandomFeature.FINGER, SETTING_FINGER_COUNT, clamped)
+        }
+    }
+
+    fun selectWinnerCount(count: Int) {
+        val clamped = count.coerceIn(1, _uiState.value.fingerCount)
+        roundJob?.cancel()
+        _uiState.update { state ->
+            state.copy(
+                winnerCount = clamped,
+                runId = state.runId + 1,
+            )
+        }
+        viewModelScope.launch {
+            settingsRepository.putInt(RandomFeature.FINGER, SETTING_WINNER_COUNT, clamped)
         }
     }
 
@@ -95,7 +116,7 @@ class FingerViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 points = points,
-                winnerId = null,
+                winnerIds = emptySet(),
             )
         }
 
@@ -118,7 +139,7 @@ class FingerViewModel @Inject constructor(
             state.copy(
                 points = points,
                 stage = FingerStage.Waiting,
-                winnerId = null,
+                winnerIds = emptySet(),
                 runId = state.runId + 1,
             )
         }
@@ -144,11 +165,11 @@ class FingerViewModel @Inject constructor(
             delay(ONE_SECOND_MS)
             if (!isActiveRun(runId)) return@launch
             val resultState = _uiState.value
-            val winner = FingerRoundRules.chooseWinner(resultState.points)
+            val winners = FingerRoundRules.chooseWinners(resultState.points, resultState.winnerCount)
             _uiState.update {
                 it.copy(
                     stage = FingerStage.QuickResult,
-                    winnerId = winner.id,
+                    winnerIds = winners.map { w -> w.id }.toSet(),
                 )
             }
 
@@ -165,7 +186,9 @@ class FingerViewModel @Inject constructor(
 
     companion object {
         const val DEFAULT_FINGER_COUNT = 2
+        const val DEFAULT_WINNER_COUNT = 1
         private const val SETTING_FINGER_COUNT = "finger_count"
+        private const val SETTING_WINNER_COUNT = "winner_count"
         private const val ONE_SECOND_MS = 1_000L
         private const val QUICK_RESULT_MS = 1_800L
     }

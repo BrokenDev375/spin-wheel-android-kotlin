@@ -113,6 +113,9 @@
     <string name="rank_mode_min_fingers">Cần ít nhất 2 ngón tay để xếp hạng!</string>
     <string name="place_finger_prompt">Đặt ngón tay lên màn hình</string>
     <string name="hold_seconds_prompt">Giữ nguyên trong 2 giây để bắt đầu</string>
+    <string name="finger_player_count_label">Người chơi</string>
+    <string name="finger_winner_count_label">Người thắng</string>
+    <string name="finger_rule_hint">%1$d người chơi đặt tay • Chọn ra %2$d người thắng</string>
     <string name="share_message">Lười nghĩ chia team? Quăng cho app lo giùm! Chia sẻ ngay với hội
         bạn lầy 😜</string>
     <string name="cancelPermissionSub">Để hủy quyền, bạn cần vào Cài đặt và tắt quyền thủ công.</string>

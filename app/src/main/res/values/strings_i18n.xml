@@ -108,6 +108,9 @@
         <string name="rank_mode_min_fingers">Need at least 2 fingers to rank!</string>
         <string name="place_finger_prompt">Place your finger on the screen</string>
         <string name="hold_seconds_prompt">Hold for 2 seconds to start</string>
+        <string name="finger_player_count_label">Players</string>
+        <string name="finger_winner_count_label">Winners</string>
+        <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
         <string name="share_message">Too lazy to think about team division? Let the app handle it! Share now with your fun crew 😜</string>
         <string name="hi">History</string>
         <string name="save_failed">Save failed</string>
