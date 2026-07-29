@@ -266,9 +266,10 @@
         <string name="edit_items">Editar itens</string>
         <string name="need_two_items">São necessários pelo menos 2 itens válidos.</string>
     <string name="finger_winner_count_label">Vencedores</string>
-    <string name="finger_rule_hint">%1$d jogadores colocam os dedos • %2$d vencedor(es) escolhido(s)</string>
+    <string name="finger_rule_hint">Coloque os dedos na tela • %1$d vencedor(es) escolhido(s)</string>
     <string name="finger_warning_not_enough">Por favor coloque pelo menos %1$d dedo(s).</string>
 </resources>
+
 
 
 

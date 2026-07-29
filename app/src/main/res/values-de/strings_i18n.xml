@@ -266,9 +266,10 @@
         <string name="edit_items">Elemente bearbeiten</string>
         <string name="need_two_items">Mindestens 2 gültige Elemente erforderlich.</string>
     <string name="finger_winner_count_label">Gewinner</string>
-    <string name="finger_rule_hint">%1$d Spieler legen Finger auf • %2$d Gewinner ausgewählt</string>
+    <string name="finger_rule_hint">Finger auf den Bildschirm legen • %1$d Gewinner ausgewählt</string>
     <string name="finger_warning_not_enough">Bitte platzieren Sie mindestens %1$d Finger.</string>
 </resources>
+
 
 
 

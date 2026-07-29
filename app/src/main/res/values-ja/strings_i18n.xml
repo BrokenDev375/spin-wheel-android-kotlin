@@ -266,9 +266,10 @@
         <string name="edit_items">項目を編集</string>
         <string name="need_two_items">有効な項目が2つ以上必要です。</string>
     <string name="finger_winner_count_label">勝者</string>
-    <string name="finger_rule_hint">%1$d人のプレイヤーが指を置く • %2$d人の勝者が選ばれます</string>
+    <string name="finger_rule_hint">画面上に指を置きます • %1$d 人の勝者が選ばれました</string>
     <string name="finger_warning_not_enough">少なくとも %1$d 本の指を配置してください。</string>
 </resources>
+
 
 
 

@@ -266,9 +266,10 @@
         <string name="edit_items">แก้ไขรายการ</string>
         <string name="need_two_items">ต้องมีรายการที่ถูกต้องอย่างน้อย 2 รายการ</string>
     <string name="finger_winner_count_label">ผู้ชนะ</string>
-    <string name="finger_rule_hint">ผู้เล่น %1$d คนวางนิ้ว • เลือกผู้ชนะ %2$d คน</string>
+    <string name="finger_rule_hint">วางนิ้วบนหน้าจอ • เลือกผู้ชนะแล้ว %1$d ราย</string>
     <string name="finger_warning_not_enough">กรุณาวางอย่างน้อย %1$d นิ้ว</string>
 </resources>
+
 
 
 
