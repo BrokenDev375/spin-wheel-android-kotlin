@@ -163,10 +163,10 @@ fun TeamDetailScreen(
                 name = list?.name ?: stringResource(R.string.homograft),
                 enabled = controlsEnabled && list != null,
                 onClick = { showListPicker = true },
-                modifier = Modifier.widthIn(min = 92.dp, max = 310.dp),
-                backgroundColor = SpinColors.Action,
+                modifier = Modifier.widthIn(min = 120.dp, max = 300.dp),
+                backgroundColor = Color(0xFF3B3754),
                 fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Bold,
             )
 
             Spacer(

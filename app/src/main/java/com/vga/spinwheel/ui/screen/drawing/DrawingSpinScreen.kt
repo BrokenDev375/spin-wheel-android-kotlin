@@ -124,20 +124,17 @@ fun DrawingSpinScreen(
             modifier = contentModifier.padding(horizontal = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(34.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             WheelSelectorChip(
                 name = wheel?.name.orEmpty(),
                 enabled = !isSpinning && wheel != null,
                 onClick = { showWheelPicker = true },
                 modifier = Modifier
-                    .height(48.dp)
-                    .widthIn(min = 210.dp, max = 330.dp),
-                backgroundColor = Color(0xFF393347),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Black,
-                horizontalPadding = 28.dp,
-                verticalPadding = 0.dp,
+                    .widthIn(min = 120.dp, max = 300.dp),
+                backgroundColor = Color(0xFF3B3754),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
             )
 
             Box(
