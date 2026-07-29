@@ -126,9 +126,10 @@ fun WheelCanvas(
                 )
             }
 
-            // Draw labels — đo pixel thực tế bằng Paint.measureText() để cắt chính xác.
-            // Chiều rộng khả dụng = chord (dây cung) tại textRadius cho góc sectorAngle.
-            // chord = 2 * textRadius * sin(sectorAngle / 2)
+            // Draw labels — chữ radial (dọc theo tia từ tâm ra rim).
+            // Hướng radial phù hợp hơn tangential khi nhiều item vì:
+            //   • Chiều dài tia = radius (cố định, không đổi theo số item)
+            //   • Chiều rộng arc = 2r·sin(θ/2) → hẹp dần khi nhiều item
             val baseTextSize = (radius * 0.085f).coerceIn(16f, 32f)
             val scaledTextSize = when {
                 items.size > 10 -> baseTextSize * 0.70f
@@ -144,17 +145,15 @@ fun WheelCanvas(
                 typeface = Typeface.DEFAULT_BOLD
             }
 
-            // textRadius: đặt text ra giữa thân ô (tránh vùng tâm quá hẹp).
-            val textRadius = when {
-                items.size > 10 -> radius * 0.64f
-                items.size > 6  -> radius * 0.58f
-                else            -> radius * 0.50f
-            }
+            // Vị trí giữa tia: từ mép cục tâm (cap = 0.17r) đến gần rim.
+            // midTextRadius = giữa đoạn [capEdge, rim] = (0.17 + 1.0) / 2 = 0.585r
+            val capEdge = 0.17f       // bán kính cục trắng ở tâm
+            val rimEdge = 0.92f       // dừng trước rim để có lề
+            val textRadius = radius * (capEdge + rimEdge) / 2f   // ~0.545r
 
-            // Chiều rộng ô (pixel) tại điểm vẽ text = chord của cung sectorAngle tại textRadius.
-            // Nhân 0.85 để có padding 2 bên, text không chạm mép ô.
-            val sectorAngleRad = (sectorAngle * PI / 180.0).toFloat()
-            val availableWidthPx = 2f * textRadius * sin(sectorAngleRad / 2f) * 0.85f
+            // Chiều dài tại tâm tia khả dụng cho text = (rimEdge - capEdge) * radius
+            // Nhân 0.85 để có padding 2 đầu, text không chạm cỡp tâm hay rim.
+            val availableRadialPx = (rimEdge - capEdge) * radius * 0.85f
 
             for (i in items.indices) {
                 val midAngle = currentRotation + (i * sectorAngle) + (sectorAngle / 2f)
@@ -165,9 +164,10 @@ fun WheelCanvas(
 
                 drawIntoCanvas { canvas ->
                     canvas.nativeCanvas.save()
-                    canvas.nativeCanvas.rotate(midAngle + 90f, textX, textY)
-                    // fitLabelToWidth dùng Paint.measureText() — chính xác theo pixel thực tế
-                    val label = fitLabelToWidth(items[i].name, textPaint, availableWidthPx)
+                    // midAngle (không + 90) → text dọc theo tia, đọc từ tâm ra ngoài.
+                    canvas.nativeCanvas.rotate(midAngle, textX, textY)
+                    // fitLabelToWidth dùng chiều dài tia — chứa được nhiều text hơn arc
+                    val label = fitLabelToWidth(items[i].name, textPaint, availableRadialPx)
                     canvas.nativeCanvas.drawText(label, textX, textY, textPaint)
                     canvas.nativeCanvas.restore()
                 }
