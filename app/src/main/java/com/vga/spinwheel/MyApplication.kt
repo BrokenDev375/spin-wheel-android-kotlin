@@ -22,11 +22,8 @@ class MyApplication : BaseApplication() {
         InstallReferrerHelper.resolve(this)
         AppOpenManager.getInstance().disableAppResumeWithActivity(com.brian.base_application.start.SplashActivity::class.java)
         com.brian.base_application.language.LanguageRouter.customActivityClass = com.vga.spinwheel.ui.screen.language.MyLanguageActivity::class.java
-        AppStorage.language(this)?.let { languageCode ->
-            LocaleHelper.updateLocale(this, languageCode)
-        }
         super.onCreate()
-        refreshIapFeatureConfig(AppStorage.languageCode(this))
+        refreshIapFeatureConfig()
         registerRemoteConfigDefaults()
     }
 
@@ -59,42 +56,39 @@ class MyApplication : BaseApplication() {
 
     override fun notifyLanguageSaved(languageCode: String) {
         AppStorage.setLanguageCode(this, languageCode)
-        LocaleHelper.updateLocale(this, languageCode)
-        refreshIapFeatureConfig(languageCode)
+        refreshIapFeatureConfig()
     }
 
-    private fun refreshIapFeatureConfig(languageCode: String) {
-        val localizedContext = LocaleHelper.wrap(this, languageCode)
-
+    private fun refreshIapFeatureConfig() {
         // base-application caches these paywall labels as Strings, so refresh after locale changes.
         IapFeatureConfig.items =
             listOf(
                 IapFeatureItem(
-                    localizedContext.getString(getFeature1TextRes()),
+                    getString(getFeature1TextRes()),
                     getFeature1IconRes(),
                     true,
                     true
                 ),
                 IapFeatureItem(
-                    localizedContext.getString(getFeature2TextRes()),
+                    getString(getFeature2TextRes()),
                     getFeature2IconRes(),
                     true,
                     true
                 ),
                 IapFeatureItem(
-                    localizedContext.getString(getFeature3TextRes()),
+                    getString(getFeature3TextRes()),
                     getFeature3IconRes(),
                     true,
                     true
                 ),
                 IapFeatureItem(
-                    localizedContext.getString(getFeature4TextRes()),
+                    getString(getFeature4TextRes()),
                     getFeature4IconRes(),
                     true,
                     false
                 ),
                 IapFeatureItem(
-                    localizedContext.getString(getFeature5TextRes()),
+                    getString(getFeature5TextRes()),
                     getFeature5IconRes(),
                     true,
                     false
