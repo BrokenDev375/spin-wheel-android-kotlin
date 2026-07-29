@@ -95,7 +95,13 @@ fun SpinPrimaryButton(
             disabledContentColor = SpinColors.TextMuted,
         ),
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -118,7 +124,13 @@ fun SpinSecondaryButton(
         shape = RoundedCornerShape(SpinRadius.Button),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = SpinColors.TextPrimary),
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -146,6 +158,8 @@ fun SpinSettingRow(
     onClick: (() -> Unit)? = null,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
+    containerColor: Color = Color.White.copy(alpha = 0.08f),
+    borderColor: Color = Color.White.copy(alpha = 0.08f),
 ) {
     val gameSoundPlayer = rememberGameSoundPlayer()
     val soundOnClick: (() -> Unit)? = onClick?.let { action ->
@@ -158,18 +172,16 @@ fun SpinSettingRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(52.dp)
+            .heightIn(min = 54.dp)
             .clip(RoundedCornerShape(SpinRadius.Control))
-            .background(Color.White.copy(alpha = 0.08f))
-            .then(
-                if (onClick == null) Modifier else Modifier.border(
-                    width = 1.dp,
-                    color = Color.White.copy(alpha = 0.08f),
-                    shape = RoundedCornerShape(SpinRadius.Control),
-                )
+            .background(containerColor)
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(SpinRadius.Control),
             )
             .then(if (soundOnClick == null) Modifier else Modifier.clickable(onClick = soundOnClick))
-            .padding(horizontal = 14.dp, vertical = 8.dp),
+            .padding(horizontal = 14.dp, vertical = 9.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -180,6 +192,8 @@ fun SpinSettingRow(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium,
                     color = SpinColors.TextPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 if (subtitle != null) {
                     Spacer(modifier = Modifier.height(3.dp))
@@ -187,6 +201,8 @@ fun SpinSettingRow(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
                         color = SpinColors.TextMuted,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -317,7 +333,8 @@ fun SpinRetryButton(
             .clickable {
                 gameSoundPlayer.playButtonClick()
                 onClick()
-            },
+            }
+            .padding(horizontal = 18.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -325,6 +342,9 @@ fun SpinRetryButton(
             color = Color.White,
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

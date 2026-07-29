@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -37,13 +40,21 @@ fun SpinResultLayout(
         ) {
             Text(
                 text = title,
+                modifier = Modifier.fillMaxWidth(),
                 color = SpinColors.TextMuted,
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = result,
+                modifier = Modifier.fillMaxWidth(),
                 color = SpinColors.TextPrimary,
                 style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         }
 

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -90,13 +91,15 @@ fun SpinFeatureCard(
                 .fillMaxWidth()
                 .padding(SpinSpacing.CardPadding),
             color = style.titleColor,
-            style = MaterialTheme.typography.titleLarge.copy(
+            style = MaterialTheme.typography.titleMedium.copy(
                 shadow = Shadow(
                     color = Color.Black.copy(alpha = 0.55f),
                     offset = Offset(0f, 3f),
                     blurRadius = 6f,
                 )
             ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
