@@ -338,6 +338,33 @@ class WheelViewModel @Inject constructor(
         _spinStatus.value = SpinStatus.Idle
     }
 
+    fun saveCurrentWheelItems(name: String, items: List<WheelItem>) {
+        val wheel = _currentWheel.value ?: return
+        val cleanedName = name.trim()
+        val cleanedItems = items
+            .map {
+                it.copy(
+                    name = it.name.trim(),
+                    priority = it.priority.coerceAtLeast(1),
+                )
+            }
+            .filter { it.name.isNotBlank() }
+
+        if (cleanedName.isBlank() || cleanedItems.size < 2) return
+
+        viewModelScope.launch {
+            val updated = wheelRepository.upsertWheel(
+                wheel.copy(
+                    name = cleanedName,
+                    items = cleanedItems,
+                )
+            )
+            _currentWheel.value = updated
+            _activeItems.value = updated.items
+            _spinStatus.value = SpinStatus.Idle
+        }
+    }
+
     fun shuffleActiveItems() {
         _activeItems.value = _activeItems.value.shuffled()
     }

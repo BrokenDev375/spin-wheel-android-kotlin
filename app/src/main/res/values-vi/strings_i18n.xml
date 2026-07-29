@@ -106,8 +106,8 @@
     <string name="spin_wheel">Vòng quay</string>
     <string name="notification">Thông báo</string>
     <string name="continue_btn">Tiếp tục</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">Xóa tất cả quảng cáo</string>
+    <string name="premium_feature_support">Hỗ trợ khách hàng ưu tiên</string>
     <string name="winner_mode_min_fingers">Cần ít nhất %1$s ngón tay để chọn %2$s người thắng!</string>
     <string name="team_mode_min_fingers">Cần ít nhất %1$s ngón tay để chia thành %2$s đội!</string>
     <string name="rank_mode_min_fingers">Cần ít nhất 2 ngón tay để xếp hạng!</string>
@@ -330,6 +330,11 @@
     <string name="share_success">Chia sẻ thành công</string>
     <string name="warning">Cảnh báo</string>
     <string name="history_spin">Lịch sử quay</string>
+    <string name="select_wheel">Chọn bánh xe</string>
+    <string name="change_wheel">Đổi bánh xe</string>
+    <string name="edit_wheel">Sửa bánh xe</string>
+    <string name="edit_items">Sửa mục</string>
+    <string name="need_two_items">Cần ít nhất 2 mục hợp lệ.</string>
     <string name="premium_feature_unlock_all">Mở khóa tất cả trò chơi</string>
     <string name="premium_feature_unlimited">Tạo vòng quay tùy chỉnh</string>
     <string name="premium_feature_premium_skins">Mở khóa giao diện</string>

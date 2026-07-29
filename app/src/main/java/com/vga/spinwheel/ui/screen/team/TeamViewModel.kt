@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vga.spinwheel.data.model.RandomFeature
 import com.vga.spinwheel.data.model.Wheel
+import com.vga.spinwheel.data.model.WheelItem
 import com.vga.spinwheel.data.repo.SettingsRepository
 import com.vga.spinwheel.data.repo.WheelRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -189,6 +190,39 @@ class TeamViewModel @Inject constructor(
                 status = TeamMatchStatus.Idle,
                 runId = it.runId + 1,
             )
+        }
+    }
+
+    fun saveCurrentListItems(name: String, items: List<WheelItem>) {
+        val list = _uiState.value.currentList ?: return
+        val cleanedName = name.trim()
+        val cleanedItems = items
+            .map {
+                it.copy(
+                    name = it.name.trim(),
+                    priority = it.priority.coerceAtLeast(1),
+                )
+            }
+            .filter { it.name.isNotBlank() }
+
+        if (cleanedName.isBlank() || cleanedItems.size < 2) return
+
+        matchingJob?.cancel()
+        viewModelScope.launch {
+            val updated = wheelRepository.upsertWheel(
+                list.copy(
+                    name = cleanedName,
+                    items = cleanedItems,
+                )
+            )
+            _uiState.update {
+                it.copy(
+                    currentList = updated,
+                    teams = emptyList(),
+                    status = TeamMatchStatus.Idle,
+                    runId = it.runId + 1,
+                )
+            }
         }
     }
 

@@ -105,6 +105,11 @@ fun NavGraphBuilder.drawingNavGraph(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onOpenSettings = { navController.navigate(Screen.drawingSettings(wheelId)) },
+                onSelectWheel = { selectedWheelId ->
+                    navController.navigate(Screen.drawingSpin(selectedWheelId)) {
+                        popUpTo(Screen.drawingSpin(wheelId)) { inclusive = true }
+                    }
+                },
                 onResult = { wId ->
                     navController.navigate(Screen.drawingResult(wId)) {
                         popUpTo(Screen.drawingSpin(wId)) { inclusive = true }

@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
@@ -208,8 +210,13 @@ fun SpinResultScreen(
     cardContent: @Composable () -> Unit,
 ) {
     val resolvedTitle = title ?: stringResource(R.string.results)
+    val gameSoundPlayer = rememberGameSoundPlayer()
 
     var showExitDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(gameSoundPlayer) {
+        gameSoundPlayer.playResult()
+    }
 
     val handleHome = {
         if (confirmExitOnBack) {
