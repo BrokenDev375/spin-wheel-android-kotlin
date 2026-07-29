@@ -3,7 +3,6 @@ package com.vga.spinwheel.ui.screen.language
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 
 @Composable
 fun LanguageScreen(
@@ -94,7 +95,7 @@ fun LanguageScreen(
             Spacer(modifier = Modifier.width(12.dp))
 
             Button(
-                onClick = { onDone(selectedCode) },
+                onClick = rememberClickWithSound { onDone(selectedCode) },
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6)),
                 modifier = Modifier.height(42.dp),
@@ -157,7 +158,7 @@ fun LanguageScreen(
                             shape = RoundedCornerShape(16.dp)
                         )
                         .background(if (isSelected) Color(0xFFF5F3FF) else Color(0xFFFAFAFA))
-                        .clickable { selectedCode = item.code }
+                        .clickableWithSound { selectedCode = item.code }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -188,7 +189,7 @@ fun LanguageScreen(
 
                     RadioButton(
                         selected = isSelected,
-                        onClick = { selectedCode = item.code },
+                        onClick = rememberClickWithSound { selectedCode = item.code },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = Color(0xFF6366F1),
                             unselectedColor = Color(0xFFD1D5DB),

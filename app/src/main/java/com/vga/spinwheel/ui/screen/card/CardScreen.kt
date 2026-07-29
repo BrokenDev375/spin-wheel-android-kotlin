@@ -73,6 +73,8 @@ import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.components.SpinRetryButton
 import com.vga.spinwheel.ui.components.SpinShareButton
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
@@ -255,7 +257,7 @@ fun CardLabelScreen(
                 onBack = onBack,
                 actions = {
                     TextButton(
-                        onClick = {
+                        onClick = rememberClickWithSound {
                             viewModel.saveSelectedTheme()
                             onBack()
                         },
@@ -507,7 +509,7 @@ private fun CardToolButton(
             .size(width = 52.dp, height = 36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(
@@ -529,7 +531,7 @@ private fun CardPrimaryActionButton(
             .height(36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .clickable(onClick = onClick)
+            .clickableWithSound(onClick = onClick)
             .padding(horizontal = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -558,7 +560,7 @@ private fun CardSettingRow(
             .height(36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
+            .then(if (onClick == null) Modifier else Modifier.clickableWithSound(onClick = onClick))
             .padding(horizontal = 18.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -611,7 +613,7 @@ private fun CardStepperButton(
             .size(30.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -644,7 +646,7 @@ private fun CardThemeLabelCard(
                 color = borderColor,
                 shape = RoundedCornerShape(14.dp),
             )
-            .clickable(onClick = onClick)
+            .clickableWithSound(onClick = onClick)
             .padding(horizontal = 10.dp, vertical = 9.dp),
     ) {
         Row(

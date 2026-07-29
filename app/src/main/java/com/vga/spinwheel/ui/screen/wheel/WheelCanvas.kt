@@ -6,7 +6,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +22,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
+import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.data.model.WheelItem
 import kotlin.math.PI
 import kotlin.math.cos
@@ -80,7 +80,7 @@ fun WheelCanvas(
         modifier = modifier
             .aspectRatio(1f)
             .padding(2.dp)
-            .clickable(enabled = spinStatus !is SpinStatus.Spinning, onClick = onClickSpin),
+            .clickableWithSound(enabled = spinStatus !is SpinStatus.Spinning, onClick = onClickSpin),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {

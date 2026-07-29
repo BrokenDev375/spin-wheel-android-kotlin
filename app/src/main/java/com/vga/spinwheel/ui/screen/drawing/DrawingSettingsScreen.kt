@@ -1,7 +1,6 @@
 package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +30,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -114,7 +114,7 @@ private fun DrawingSettingRow(
             .height(56.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
+            .then(if (onClick == null) Modifier else Modifier.clickableWithSound(onClick = onClick))
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -162,7 +162,7 @@ private fun DrawingStepperButton(
             .size(36.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

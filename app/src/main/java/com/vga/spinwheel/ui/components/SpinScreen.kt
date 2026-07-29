@@ -94,7 +94,7 @@ fun SpinConfirmExitDialog(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = onDismiss) {
+                    TextButton(onClick = rememberClickWithSound(onDismiss)) {
                         Text(
                             text = resolvedCancelText,
                             color = Color(0xFFF12966),
@@ -107,7 +107,7 @@ fun SpinConfirmExitDialog(
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    TextButton(onClick = onConfirm) {
+                    TextButton(onClick = rememberClickWithSound(onConfirm)) {
                         Text(
                             text = resolvedConfirmText,
                             color = Color(0xFFF5A623),

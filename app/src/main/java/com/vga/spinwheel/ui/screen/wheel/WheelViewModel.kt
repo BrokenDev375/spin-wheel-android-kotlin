@@ -109,8 +109,8 @@ class WheelViewModel @Inject constructor(
             id = null,
             name = "",
             items = listOf(
-                WheelItem(id = "item-1", name = "Tùy chọn 1", priority = 1),
-                WheelItem(id = "item-2", name = "Tùy chọn 2", priority = 1),
+                WheelItem(id = "item-1", name = "", priority = 1),
+                WheelItem(id = "item-2", name = "", priority = 1),
             ),
         )
     }
@@ -152,7 +152,7 @@ class WheelViewModel @Inject constructor(
         val nextIndex = _formState.value.items.size + 1
         val newItem = WheelItem(
             id = "item-${System.currentTimeMillis()}-$nextIndex",
-            name = "Tùy chọn $nextIndex",
+            name = "",
             priority = 1,
         )
         _formState.value = _formState.value.copy(

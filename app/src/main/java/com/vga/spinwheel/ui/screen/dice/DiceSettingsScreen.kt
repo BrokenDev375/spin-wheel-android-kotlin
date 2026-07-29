@@ -1,7 +1,6 @@
 package com.vga.spinwheel.ui.screen.dice
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +28,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
 
 @Composable
 fun DiceSettingsScreen(
@@ -113,7 +113,7 @@ private fun DiceSkinSettingRow(onClick: () -> Unit) {
             .height(58.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(DiceSettingsPanel)
-            .clickable(onClick = onClick)
+            .clickableWithSound(onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,7 +142,7 @@ private fun DiceStepperButton(
             .size(32.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(Color.White)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
