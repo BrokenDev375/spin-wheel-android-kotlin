@@ -120,6 +120,46 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    fun saveCurrentWheelItems(
+        name: String,
+        items: List<WheelItem>,
+        onSaved: (String) -> Unit = {},
+    ) {
+        val current = _currentWheel.value ?: return
+        val cleanedName = name.trim()
+        val cleanedItems = items
+            .map {
+                it.copy(
+                    name = it.name.trim(),
+                    priority = it.priority.coerceAtLeast(1),
+                )
+            }
+            .filter { it.name.isNotBlank() }
+
+        if (cleanedName.isBlank() || cleanedItems.size < 2) return
+
+        viewModelScope.launch {
+            val existing = wheelRepository.getWheel(current.id)
+            val now = System.currentTimeMillis()
+            val savedId = if (current.id == DRAWING_FALLBACK_WHEEL.id && existing == null) {
+                UUID.randomUUID().toString()
+            } else {
+                current.id
+            }
+            val saved = wheelRepository.upsertWheel(
+                current.copy(
+                    id = savedId,
+                    name = cleanedName,
+                    items = cleanedItems,
+                    createdAt = existing?.createdAt ?: current.createdAt.takeIf { it > 0L } ?: now,
+                ),
+            )
+            _currentWheel.value = saved
+            _lastResult.value = null
+            onSaved(saved.id)
+        }
+    }
+
     fun prepareNewForm() {
         _formState.value = DrawingFormState(
             id = UUID.randomUUID().toString(),

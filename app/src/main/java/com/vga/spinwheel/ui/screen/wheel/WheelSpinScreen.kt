@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +25,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +43,9 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.WheelItemsEditDialog
+import com.vga.spinwheel.ui.components.WheelPickerDialog
+import com.vga.spinwheel.ui.components.WheelSelectorChip
 import com.vga.spinwheel.ui.theme.SpinColors
 
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -50,17 +57,22 @@ fun WheelSpinScreen(
     onBack: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenHistory: () -> Unit,
+    onSelectWheel: (String) -> Unit,
     onResult: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val wheels by viewModel.wheels.collectAsState()
     val currentWheel by viewModel.currentWheel.collectAsState()
     val activeItems by viewModel.activeItems.collectAsState()
     val spinStatus by viewModel.spinStatus.collectAsState()
     val duration by viewModel.duration.collectAsState()
     val paletteIdx by viewModel.paletteIndex.collectAsState()
     val gameSoundPlayer = rememberGameSoundPlayer()
+    var showWheelPicker by remember { mutableStateOf(false) }
+    var showEditItems by remember { mutableStateOf(false) }
 
     val palette = WheelPalettes.getPalette(paletteIdx)
+    val controlsEnabled = spinStatus !is SpinStatus.Spinning
 
     LaunchedEffect(wheelId) {
         viewModel.loadWheelForSpin(wheelId)
@@ -109,20 +121,16 @@ fun WheelSpinScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Wheel Name Pill Tag
-                Box(
+                WheelSelectorChip(
+                    name = currentWheel?.name ?: stringResource(R.string.spinwheel),
+                    enabled = controlsEnabled && currentWheel != null,
+                    onClick = { showWheelPicker = true },
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF3B3754))
-                        .padding(horizontal = 24.dp, vertical = 6.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = currentWheel?.name ?: stringResource(R.string.spinwheel),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                    )
-                }
+                        .widthIn(min = 120.dp, max = 300.dp),
+                    backgroundColor = Color(0xFF3B3754),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -253,5 +261,38 @@ fun WheelSpinScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
         }
+    }
+
+    if (showWheelPicker) {
+        WheelPickerDialog(
+            title = stringResource(R.string.select_wheel),
+            wheels = wheels,
+            selectedWheelId = currentWheel?.id ?: wheelId,
+            canEditSelected = controlsEnabled && currentWheel != null,
+            onSelectWheel = { selectedWheelId ->
+                showWheelPicker = false
+                onSelectWheel(selectedWheelId)
+            },
+            onEditSelectedItems = {
+                showWheelPicker = false
+                showEditItems = true
+            },
+            onDismiss = { showWheelPicker = false },
+        )
+    }
+
+    val editingWheel = currentWheel
+    if (showEditItems && editingWheel != null) {
+        WheelItemsEditDialog(
+            title = stringResource(R.string.edit_wheel),
+            wheelName = editingWheel.name,
+            items = editingWheel.items,
+            showPriorityControls = true,
+            onSave = { updatedName, updatedItems ->
+                viewModel.saveCurrentWheelItems(updatedName, updatedItems)
+                showEditItems = false
+            },
+            onDismiss = { showEditItems = false },
+        )
     }
 }

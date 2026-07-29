@@ -43,6 +43,9 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.WheelItemsEditDialog
+import com.vga.spinwheel.ui.components.WheelPickerDialog
+import com.vga.spinwheel.ui.components.WheelSelectorChip
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -52,9 +55,11 @@ fun DrawingSpinScreen(
     viewModel: DrawingViewModel,
     onBack: () -> Unit,
     onOpenSettings: () -> Unit,
+    onSelectWheel: (String) -> Unit,
     onResult: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val wheels by viewModel.wheels.collectAsState()
     val wheel by viewModel.currentWheel.collectAsState()
     val duration by viewModel.duration.collectAsState()
     val themeIndex by viewModel.themeIndex.collectAsState()
@@ -63,8 +68,19 @@ fun DrawingSpinScreen(
     val scope = rememberCoroutineScope()
     var isSpinning by remember { mutableStateOf(false) }
     var showTempResult by remember { mutableStateOf(false) }
+    var showWheelPicker by remember { mutableStateOf(false) }
+    var showEditItems by remember { mutableStateOf(false) }
     val shakeOffset = remember { Animatable(0f) }
     val gameSoundPlayer = rememberGameSoundPlayer()
+    val availableWheels = remember(wheels, wheel) {
+        val baseWheels = wheels.ifEmpty { listOf(DrawingViewModel.DRAWING_FALLBACK_WHEEL) }
+        val current = wheel
+        if (current != null && baseWheels.none { it.id == current.id }) {
+            listOf(current) + baseWheels
+        } else {
+            baseWheels
+        }
+    }
 
     LaunchedEffect(wheelId) {
         viewModel.loadWheelForDrawing(wheelId)
@@ -110,24 +126,19 @@ fun DrawingSpinScreen(
         ) {
             Spacer(modifier = Modifier.height(34.dp))
 
-            Box(
+            WheelSelectorChip(
+                name = wheel?.name.orEmpty(),
+                enabled = !isSpinning && wheel != null,
+                onClick = { showWheelPicker = true },
                 modifier = Modifier
                     .height(48.dp)
-                    .widthIn(min = 210.dp, max = 330.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFF393347))
-                    .padding(horizontal = 28.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = wheel?.name.orEmpty(),
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+                    .widthIn(min = 210.dp, max = 330.dp),
+                backgroundColor = Color(0xFF393347),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+                horizontalPadding = 28.dp,
+                verticalPadding = 0.dp,
+            )
 
             Box(
                 modifier = Modifier
@@ -185,6 +196,45 @@ fun DrawingSpinScreen(
                 modifier = Modifier.padding(bottom = 70.dp),
             )
         }
+    }
+
+    if (showWheelPicker) {
+        WheelPickerDialog(
+            title = stringResource(R.string.select_wheel),
+            wheels = availableWheels,
+            selectedWheelId = wheel?.id ?: wheelId,
+            canEditSelected = !isSpinning && wheel != null,
+            onSelectWheel = { selectedWheelId ->
+                showWheelPicker = false
+                showTempResult = false
+                onSelectWheel(selectedWheelId)
+            },
+            onEditSelectedItems = {
+                showWheelPicker = false
+                showEditItems = true
+            },
+            onDismiss = { showWheelPicker = false },
+        )
+    }
+
+    val editingWheel = wheel
+    if (showEditItems && editingWheel != null) {
+        WheelItemsEditDialog(
+            title = stringResource(R.string.edit_wheel),
+            wheelName = editingWheel.name,
+            items = editingWheel.items,
+            showPriorityControls = false,
+            onSave = { updatedName, updatedItems ->
+                showTempResult = false
+                viewModel.saveCurrentWheelItems(updatedName, updatedItems) { savedWheelId ->
+                    if (savedWheelId != wheelId) {
+                        onSelectWheel(savedWheelId)
+                    }
+                }
+                showEditItems = false
+            },
+            onDismiss = { showEditItems = false },
+        )
     }
 }
 

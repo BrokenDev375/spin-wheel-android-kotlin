@@ -78,6 +78,7 @@
         <string name="settings">Settings</string>
         <string name="spin_wheel_title">Spin wheel</string>
         <string name="permission_desc">Users need to grant permission to receive notifications from the device.</string>
+        <string name="descriptNotification">The app needs notification permission so you do not miss important events. Please enable notifications for the best experience.</string>
         <string name="enjoy_games_with_friends_desc">Join fun games with friends and see who comes out on top.</string>
         <string name="permission_guide">To cancel permission, you need to go to Settings and manually turn off the permission.</string>
         <string name="the_winner_is">The winner is</string>
@@ -305,4 +306,9 @@
         <string name="deschosse1">Wait 2 seconds or tap the start button below</string>
         <string name="warning">Warning</string>
         <string name="history_spin">Spin History</string>
+        <string name="select_wheel">Select wheel</string>
+        <string name="change_wheel">Change wheel</string>
+        <string name="edit_wheel">Edit wheel</string>
+        <string name="edit_items">Edit items</string>
+        <string name="need_two_items">Need at least 2 valid items.</string>
 </resources>

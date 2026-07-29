@@ -89,3 +89,57 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
 }
+
+def readStringResourceNames = { File resourceFile ->
+    if (!resourceFile.exists()) {
+        throw new GradleException("Missing resource file: ${resourceFile}")
+    }
+    new groovy.xml.XmlSlurper(false, false)
+        .parse(resourceFile)
+        .'string'
+        .collect { it.@name.text() }
+        .findAll { it }
+        .toSet()
+}
+
+tasks.register('checkRequiredI18nKeys') {
+    group = 'verification'
+    description = 'Checks that locale strings_i18n.xml files expose the same string keys as default English.'
+
+    def defaultStrings = file('src/main/res/values/strings_i18n.xml')
+    def requiredLocales = file('src/main/res')
+        .listFiles()
+        .findAll { it.directory && it.name.startsWith('values-') && new File(it, 'strings_i18n.xml').exists() }
+        .collect { it.name }
+        .sort()
+    inputs.file(defaultStrings)
+    requiredLocales.each { localeDir ->
+        inputs.file(file("src/main/res/${localeDir}/strings_i18n.xml"))
+    }
+
+    doLast {
+        def defaultKeys = readStringResourceNames(defaultStrings)
+        def failures = []
+
+        requiredLocales.each { localeDir ->
+            def localeFile = file("src/main/res/${localeDir}/strings_i18n.xml")
+            def localeKeys = readStringResourceNames(localeFile)
+            def missing = (defaultKeys - localeKeys).sort()
+            def extra = (localeKeys - defaultKeys).sort()
+
+            if (!missing.isEmpty() || !extra.isEmpty()) {
+                failures << "${localeDir}: missing=${missing}, extra=${extra}"
+            }
+        }
+
+        if (!failures.isEmpty()) {
+            throw new GradleException(
+                "Required i18n keys are out of sync with default English:\n" + failures.join('\n')
+            )
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(tasks.named('checkRequiredI18nKeys'))
+}

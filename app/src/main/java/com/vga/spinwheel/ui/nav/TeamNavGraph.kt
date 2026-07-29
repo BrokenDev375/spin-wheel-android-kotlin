@@ -93,6 +93,12 @@ fun NavGraphBuilder.teamNavGraph(
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
             onOpenSettings = { navController.navigate(Screen.teamSettings(listId)) },
+            onSelectList = { selectedListId ->
+                viewModel.openList(selectedListId)
+                navController.navigate(Screen.teamDetail(selectedListId)) {
+                    popUpTo(Screen.teamDetail(listId)) { inclusive = true }
+                }
+            },
             onPreview = { navController.navigate(Screen.teamPreview(listId)) },
         )
     }
