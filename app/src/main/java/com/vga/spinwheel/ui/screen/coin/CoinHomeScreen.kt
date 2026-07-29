@@ -59,13 +59,13 @@ fun CoinHomeScreen(
 ) {
     val duration by viewModel.duration.collectAsState()
     val skin by viewModel.currentSkin.collectAsState()
+    val headScore by viewModel.headScore.collectAsState()
+    val tailScore by viewModel.tailScore.collectAsState()
     val gameSoundPlayer = rememberGameSoundPlayer()
 
     var isFlipping by remember { mutableStateOf(false) }
     var rotationY by remember { mutableFloatStateOf(0f) }
     var currentSideIsHeads by remember { mutableStateOf(true) }
-    var headScore by remember { mutableIntStateOf(0) }
-    var tailScore by remember { mutableIntStateOf(0) }
 
     // This handles the smooth flipping animation
     val animatedRotation by animateFloatAsState(
@@ -88,11 +88,7 @@ fun CoinHomeScreen(
             gameSoundPlayer.stopCoinFlip()
             
             currentSideIsHeads = isTargetHeads
-            if (isTargetHeads) {
-                headScore++
-            } else {
-                tailScore++
-            }
+            viewModel.recordResult(isTargetHeads)
             
             delay(600L)
             
@@ -262,8 +258,7 @@ fun CoinHomeScreen(
                         .background(Color(0xFF393347))
                         .clickable {
                             if (!isFlipping) {
-                                headScore = 0
-                                tailScore = 0
+                                viewModel.resetScore()
                             }
                         },
                     contentAlignment = Alignment.Center

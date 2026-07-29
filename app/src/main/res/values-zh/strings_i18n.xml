@@ -33,8 +33,8 @@
     <string name="language">语言</string>
     <string name="game_sound">游戏音效</string>
     <string name="spinning">正在旋转</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">移除所有广告</string>
+    <string name="premium_feature_support">优先客户支持</string>
     <string name="winner_mode_min_fingers">至少需要 %1$s 个手指才能选择 %2$s 个赢家！</string>
     <string name="team_mode_min_fingers">至少需要 %1$s 个手指才能分成 %2$s 个团队！</string>
     <string name="rank_mode_min_fingers">需要至少 2 个手指才能排名！</string>

@@ -31,6 +31,25 @@ class CoinViewModel @Inject constructor(
     private val _tempSkinIndex = MutableStateFlow(0)
     val tempSkinIndex = _tempSkinIndex.asStateFlow()
 
+    private val _headScore = MutableStateFlow(0)
+    val headScore: StateFlow<Int> = _headScore.asStateFlow()
+
+    private val _tailScore = MutableStateFlow(0)
+    val tailScore: StateFlow<Int> = _tailScore.asStateFlow()
+
+    fun recordResult(isHeads: Boolean) {
+        if (isHeads) {
+            _headScore.value += 1
+        } else {
+            _tailScore.value += 1
+        }
+    }
+
+    fun resetScore() {
+        _headScore.value = 0
+        _tailScore.value = 0
+    }
+
     fun setDuration(value: Int) {
         viewModelScope.launch {
             repository.setDuration(value.coerceIn(1, 10))

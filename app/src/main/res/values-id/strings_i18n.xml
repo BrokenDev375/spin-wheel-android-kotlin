@@ -34,8 +34,8 @@
     <string name="notification">Notifikasi</string>
     <string name="add">Tambah</string>
     <string name="restart">Mulai ulang</string>
-    <string name="premium_feature_remove_ads">Remove all ads</string>
-    <string name="premium_feature_support">Priority customer support</string>
+    <string name="premium_feature_remove_ads">Hapus semua iklan</string>
+    <string name="premium_feature_support">Dukungan pelanggan prioritas</string>
     <string name="winner_mode_min_fingers">Butuh setidaknya %1$s jari untuk memilih %2$s pemenang!</string>
     <string name="team_mode_min_fingers">Butuh setidaknya %1$s jari untuk membagi menjadi %2$s tim!</string>
     <string name="rank_mode_min_fingers">Butuh minimal 2 jari untuk memberi peringkat!</string>
