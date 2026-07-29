@@ -69,6 +69,8 @@ import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinSettingRow
+import com.vga.spinwheel.ui.components.SpinSettingStepper
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.components.SpinRetryButton
 import com.vga.spinwheel.ui.components.SpinShareButton
@@ -177,10 +179,10 @@ fun CardSettingsScreen(
                 .padding(top = 22.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.duration),
                 trailing = {
-                    CardStepper(
+                    SpinSettingStepper(
                         value = "${state.settings.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.settings.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.settings.durationSeconds + 1) },
@@ -188,10 +190,10 @@ fun CardSettingsScreen(
                 },
             )
 
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.numbercard),
                 trailing = {
-                    CardStepper(
+                    SpinSettingStepper(
                         value = state.settings.totalCards.toString(),
                         onMinus = { viewModel.updateTotalCards(state.settings.totalCards - 1) },
                         onPlus = { viewModel.updateTotalCards(state.settings.totalCards + 1) },
@@ -199,10 +201,10 @@ fun CardSettingsScreen(
                 },
             )
 
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.numberwin),
                 trailing = {
-                    CardStepper(
+                    SpinSettingStepper(
                         value = state.settings.winners.toString(),
                         onMinus = { viewModel.updateWinners(state.settings.winners - 1) },
                         onPlus = { viewModel.updateWinners(state.settings.winners + 1) },
@@ -211,7 +213,7 @@ fun CardSettingsScreen(
             )
 
             val currentTheme = CardThemes.get(state.settings.themeIndex)
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.Temlatecard),
                 onClick = {
                     viewModel.beginThemeSelection()
@@ -543,85 +545,6 @@ private fun CardPrimaryActionButton(
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-
-@Composable
-private fun CardSettingRow(
-    title: String,
-    trailing: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(36.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFF393347))
-            .then(if (onClick == null) Modifier else Modifier.clickableWithSound(onClick = onClick))
-            .padding(horizontal = 18.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.weight(1f),
-            color = Color.White,
-            fontSize = 16.sp,
-            lineHeight = 20.sp,
-            fontWeight = FontWeight.ExtraBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        trailing()
-    }
-}
-
-@Composable
-private fun CardStepper(
-    value: String,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(9.dp),
-    ) {
-        CardStepperButton(text = "-", onClick = onMinus)
-        Text(
-            text = value,
-            modifier = Modifier.width(34.dp),
-            color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center,
-        )
-        CardStepperButton(text = "+", onClick = onPlus)
-    }
-}
-
-@Composable
-private fun CardStepperButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(30.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(Color.White)
-            .clickableWithSound(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            color = Color.Black,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Black,
-            lineHeight = 22.sp,
         )
     }
 }

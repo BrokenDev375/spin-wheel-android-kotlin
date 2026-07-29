@@ -105,9 +105,9 @@ private fun SettingsContent(
                     .fillMaxSize()
                     .padding(
                         horizontal = SpinSpacing.ScreenHorizontal,
-                        vertical = 18.dp,
+                        vertical = 20.dp,
                     ),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 Text(
                     text = stringResource(R.string.General),
@@ -196,11 +196,11 @@ private fun SettingsGlyph(
     glyph: SpinIconGlyph,
     style: SettingsRowStyle,
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val shape = RoundedCornerShape(12.dp)
 
     Box(
         modifier = Modifier
-            .size(42.dp)
+            .size(40.dp)
             .clip(shape)
             .background(style.iconBackground)
             .border(1.dp, style.borderColor, shape),
@@ -209,7 +209,7 @@ private fun SettingsGlyph(
         SpinIcon(
             glyph = glyph,
             tint = style.iconTint,
-            modifier = Modifier.size(26.dp),
+            modifier = Modifier.size(24.dp),
         )
     }
 }
@@ -232,38 +232,38 @@ private val SettingsBackground = Brush.verticalGradient(
 private val SettingsRowStyles = listOf(
     SettingsRowStyle(
         iconTint = Color(0xFF33E3FF),
-        iconBackground = Color(0xFF33E3FF).copy(alpha = 0.16f),
-        containerColor = Color.White.copy(alpha = 0.085f),
-        borderColor = Color(0xFF33E3FF).copy(alpha = 0.18f),
+        iconBackground = Color(0xFF33E3FF).copy(alpha = 0.11f),
+        containerColor = Color.White.copy(alpha = 0.066f),
+        borderColor = Color(0xFF33E3FF).copy(alpha = 0.11f),
     ),
     SettingsRowStyle(
         iconTint = Color(0xFFFFD84A),
-        iconBackground = Color(0xFFFFD84A).copy(alpha = 0.16f),
-        containerColor = Color.White.copy(alpha = 0.078f),
-        borderColor = Color(0xFFFFD84A).copy(alpha = 0.18f),
+        iconBackground = Color(0xFFFFD84A).copy(alpha = 0.11f),
+        containerColor = Color.White.copy(alpha = 0.062f),
+        borderColor = Color(0xFFFFD84A).copy(alpha = 0.11f),
     ),
     SettingsRowStyle(
         iconTint = Color(0xFFFF7CB5),
-        iconBackground = Color(0xFFFF7CB5).copy(alpha = 0.16f),
-        containerColor = Color.White.copy(alpha = 0.085f),
-        borderColor = Color(0xFFFF7CB5).copy(alpha = 0.18f),
+        iconBackground = Color(0xFFFF7CB5).copy(alpha = 0.11f),
+        containerColor = Color.White.copy(alpha = 0.066f),
+        borderColor = Color(0xFFFF7CB5).copy(alpha = 0.11f),
     ),
     SettingsRowStyle(
         iconTint = Color(0xFF73F28E),
-        iconBackground = Color(0xFF73F28E).copy(alpha = 0.14f),
-        containerColor = Color.White.copy(alpha = 0.072f),
-        borderColor = Color(0xFF73F28E).copy(alpha = 0.16f),
+        iconBackground = Color(0xFF73F28E).copy(alpha = 0.1f),
+        containerColor = Color.White.copy(alpha = 0.058f),
+        borderColor = Color(0xFF73F28E).copy(alpha = 0.1f),
     ),
     SettingsRowStyle(
         iconTint = Color(0xFFFF9F43),
-        iconBackground = Color(0xFFFF9F43).copy(alpha = 0.14f),
-        containerColor = Color.White.copy(alpha = 0.078f),
-        borderColor = Color(0xFFFF9F43).copy(alpha = 0.16f),
+        iconBackground = Color(0xFFFF9F43).copy(alpha = 0.1f),
+        containerColor = Color.White.copy(alpha = 0.062f),
+        borderColor = Color(0xFFFF9F43).copy(alpha = 0.1f),
     ),
     SettingsRowStyle(
         iconTint = Color(0xFFA98BFF),
-        iconBackground = Color(0xFFA98BFF).copy(alpha = 0.16f),
-        containerColor = Color.White.copy(alpha = 0.072f),
-        borderColor = Color(0xFFA98BFF).copy(alpha = 0.18f),
+        iconBackground = Color(0xFFA98BFF).copy(alpha = 0.11f),
+        containerColor = Color.White.copy(alpha = 0.058f),
+        borderColor = Color(0xFFA98BFF).copy(alpha = 0.11f),
     ),
 )

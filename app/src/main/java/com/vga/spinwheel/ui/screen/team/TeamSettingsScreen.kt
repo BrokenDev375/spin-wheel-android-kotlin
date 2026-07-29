@@ -2,35 +2,22 @@ package com.vga.spinwheel.ui.screen.team
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinSettingRow
+import com.vga.spinwheel.ui.components.SpinSettingStepper
 import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
-import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -65,10 +52,10 @@ fun TeamSettingsScreen(
                 .padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            TeamSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.itemsgroup),
                 trailing = {
-                    TeamStepper(
+                    SpinSettingStepper(
                         value = state.groupSize.toString(),
                         onMinus = { viewModel.updateGroupSize(state.groupSize - 1) },
                         onPlus = { viewModel.updateGroupSize(state.groupSize + 1) },
@@ -76,10 +63,10 @@ fun TeamSettingsScreen(
                 },
             )
 
-            TeamSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.duration),
                 trailing = {
-                    TeamStepper(
+                    SpinSettingStepper(
                         value = "${state.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.durationSeconds + 1) },
@@ -87,7 +74,7 @@ fun TeamSettingsScreen(
                 },
             )
 
-            TeamSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.Seeding),
                 trailing = {
                     SpinToggle(
@@ -97,76 +84,5 @@ fun TeamSettingsScreen(
                 },
             )
         }
-    }
-}
-
-@Composable
-private fun TeamSettingRow(
-    title: String,
-    trailing: @Composable () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFF373246))
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.weight(1f),
-            color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.ExtraBold,
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        trailing()
-    }
-}
-
-@Composable
-private fun TeamStepper(
-    value: String,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        TeamStepperButton(text = "-", onClick = onMinus)
-        Text(
-            text = value,
-            color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.width(32.dp),
-        )
-        TeamStepperButton(text = "+", onClick = onPlus)
-    }
-}
-
-@Composable
-private fun TeamStepperButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(28.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(Color.White)
-            .clickableWithSound(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            color = Color.Black,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.ExtraBold,
-        )
     }
 }

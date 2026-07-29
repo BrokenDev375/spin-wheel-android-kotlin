@@ -1,16 +1,12 @@
 package com.vga.spinwheel.ui.screen.number
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
@@ -25,7 +21,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
@@ -40,9 +35,9 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.SpinSettingStepper
 import com.vga.spinwheel.ui.components.SpinSettingRow
 import com.vga.spinwheel.ui.components.SpinToggle
-import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -156,7 +151,7 @@ fun NumberSettingsScreen(
             SpinSettingRow(
                 title = stringResource(R.string.number_generate_count),
                 trailing = {
-                    NumberStepper(
+                    SpinSettingStepper(
                         value = tempCount.toString(),
                         onMinus = { if (tempCount > 1) viewModel.updateTempSettings(count = tempCount - 1) },
                         onPlus = { if (tempCount < 99) viewModel.updateTempSettings(count = tempCount + 1) },
@@ -177,7 +172,7 @@ fun NumberSettingsScreen(
             SpinSettingRow(
                 title = stringResource(R.string.duration),
                 trailing = {
-                    NumberStepper(
+                    SpinSettingStepper(
                         value = "${tempDuration}s",
                         onMinus = { if (tempDuration > 2) viewModel.updateTempSettings(duration = tempDuration - 1) },
                         onPlus = { if (tempDuration < 10) viewModel.updateTempSettings(duration = tempDuration + 1) },
@@ -227,51 +222,6 @@ private fun NumberValueInput(
             modifier = Modifier.width(72.dp),
             thickness = 1.dp,
             color = Color.White.copy(alpha = 0.12f),
-        )
-    }
-}
-
-@Composable
-private fun NumberStepper(
-    value: String,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        NumberStepperButton(text = "−", onClick = onMinus)
-        Text(
-            text = value,
-            modifier = Modifier.width(32.dp),
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center,
-        )
-        NumberStepperButton(text = "+", onClick = onPlus)
-    }
-}
-
-@Composable
-private fun NumberStepperButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(28.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(Color.White)
-            .clickableWithSound(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            color = Color.Black,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Black,
         )
     }
 }
