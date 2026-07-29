@@ -304,8 +304,9 @@
         <string name="edit_wheel">Modifier la roue</string>
         <string name="edit_items">Modifier les éléments</string>
         <string name="need_two_items">Au moins 2 éléments valides sont requis.</string>
-    <string name="finger_player_count_label">Players</string>
-    <string name="finger_winner_count_label">Winners</string>
-    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
+    <string name="finger_player_count_label">Joueurs</string>
+    <string name="finger_winner_count_label">Gagnants</string>
+    <string name="finger_rule_hint">%1$d joueurs placent leurs doigts • %2$d gagnant(s) choisi(s)</string>
 </resources>
+
 

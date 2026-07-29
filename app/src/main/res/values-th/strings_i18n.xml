@@ -304,8 +304,9 @@
         <string name="edit_wheel">แก้ไขวงล้อ</string>
         <string name="edit_items">แก้ไขรายการ</string>
         <string name="need_two_items">ต้องมีรายการที่ถูกต้องอย่างน้อย 2 รายการ</string>
-    <string name="finger_player_count_label">Players</string>
-    <string name="finger_winner_count_label">Winners</string>
-    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
+    <string name="finger_player_count_label">ผู้เล่น</string>
+    <string name="finger_winner_count_label">ผู้ชนะ</string>
+    <string name="finger_rule_hint">ผู้เล่น %1$d คนวางนิ้ว • เลือกผู้ชนะ %2$d คน</string>
 </resources>
+
 
