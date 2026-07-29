@@ -64,10 +64,10 @@ fun FingerScreen(
     val shareTitle = stringResource(R.string.sharereust)
     val shareText = stringResource(R.string.finger_share_text, state.points.size)
 
-    val warningText = stringResource(R.string.finger_warning_not_enough, state.winnerCount)
     LaunchedEffect(viewModel) {
         viewModel.warningEvent.collect {
-            Toast.makeText(context, warningText, Toast.LENGTH_SHORT).show()
+            val text = context.getString(R.string.finger_warning_not_enough, viewModel.uiState.value.winnerCount)
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -509,5 +509,6 @@ private val FingerMenuGreen = Color(0xFF21822F)
 private val FingerMenuBackground = Color(0xFF393347)
 private val FingerPointDark = Color(0xFF100D1F)
 private val FingerWinRed = Color(0xFFF04B55)
+
 
 
