@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lucky_team">チーム編成</string>
     <string name="background_music">背景音楽</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">ホイールを編集</string>
         <string name="edit_items">項目を編集</string>
         <string name="need_two_items">有効な項目が2つ以上必要です。</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+

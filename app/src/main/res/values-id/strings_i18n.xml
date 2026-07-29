@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="start">Mulai</string>
     <string name="permission">Izin</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">Edit roda</string>
         <string name="edit_items">Edit item</string>
         <string name="need_two_items">Perlu setidaknya 2 item valid.</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+

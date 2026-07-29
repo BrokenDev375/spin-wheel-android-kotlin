@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="spinning">घूम रहा है</string>
     <string name="lucky_team">टीम बनाएँ</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">व्हील संपादित करें</string>
         <string name="edit_items">आइटम संपादित करें</string>
         <string name="need_two_items">कम से कम 2 मान्य आइटम आवश्यक हैं।</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+

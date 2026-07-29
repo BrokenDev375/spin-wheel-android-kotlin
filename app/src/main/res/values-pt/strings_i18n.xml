@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="choose_the_winner_desc">O vencedor será escolhido aleatoriamente entre os participantes quando o jogo começar.</string>
     <string name="exciting_spin_wheel_desc">A roda apresenta cores vibrantes, efeitos dinâmicos e sons envolventes.</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">Editar roda</string>
         <string name="edit_items">Editar itens</string>
         <string name="need_two_items">São necessários pelo menos 2 itens válidos.</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+

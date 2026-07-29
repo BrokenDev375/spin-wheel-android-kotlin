@@ -240,7 +240,7 @@ private fun FingerHeader(
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     )
-                    (FingerRoundRules.MIN_WINNER_COUNT..fingerCount).forEach { count ->
+                    (FingerRoundRules.MIN_WINNER_COUNT..FingerRoundRules.MAX_WINNER_COUNT).forEach { count ->
                         DropdownMenuItem(
                             text = {
                                 Text(

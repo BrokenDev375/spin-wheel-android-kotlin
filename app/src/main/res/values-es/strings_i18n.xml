@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="team_collaboration">Colaboración en equipo</string>
     <string name="permission_guide">Para cancelar el permiso, debes ir a Configuración y desactivar el permiso manualmente.</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">Editar rueda</string>
         <string name="edit_items">Editar elementos</string>
         <string name="need_two_items">Se necesitan al menos 2 elementos válidos.</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+

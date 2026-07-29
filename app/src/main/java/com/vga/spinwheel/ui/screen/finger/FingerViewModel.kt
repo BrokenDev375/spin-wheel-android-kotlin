@@ -59,31 +59,40 @@ class FingerViewModel @Inject constructor(
     private var roundJob: Job? = null
 
     fun selectFingerCount(count: Int) {
-        val clamped = FingerRoundRules.clampFingerCount(count)
+        val clampedFinger = FingerRoundRules.clampFingerCount(count)
+        val clampedWinner = minOf(_uiState.value.winnerCount, clampedFinger)
         roundJob?.cancel()
         _uiState.update { state ->
-            FingerUiState(
-                fingerCount = clamped,
-                winnerCount = state.winnerCount,
+            state.copy(
+                fingerCount = clampedFinger,
+                winnerCount = clampedWinner,
                 runId = state.runId + 1,
             )
         }
         viewModelScope.launch {
-            settingsRepository.putInt(RandomFeature.FINGER, SETTING_FINGER_COUNT, clamped)
+            settingsRepository.putInt(RandomFeature.FINGER, SETTING_FINGER_COUNT, clampedFinger)
+            if (clampedWinner != _uiState.value.winnerCount) {
+                settingsRepository.putInt(RandomFeature.FINGER, SETTING_WINNER_COUNT, clampedWinner)
+            }
         }
     }
 
     fun selectWinnerCount(count: Int) {
-        val clamped = count.coerceIn(1, _uiState.value.fingerCount)
+        val clampedWinner = FingerRoundRules.clampWinnerCount(count)
+        val clampedFinger = maxOf(_uiState.value.fingerCount, clampedWinner)
         roundJob?.cancel()
         _uiState.update { state ->
             state.copy(
-                winnerCount = clamped,
+                fingerCount = clampedFinger,
+                winnerCount = clampedWinner,
                 runId = state.runId + 1,
             )
         }
         viewModelScope.launch {
-            settingsRepository.putInt(RandomFeature.FINGER, SETTING_WINNER_COUNT, clamped)
+            settingsRepository.putInt(RandomFeature.FINGER, SETTING_WINNER_COUNT, clampedWinner)
+            if (clampedFinger != _uiState.value.fingerCount) {
+                settingsRepository.putInt(RandomFeature.FINGER, SETTING_FINGER_COUNT, clampedFinger)
+            }
         }
     }
 

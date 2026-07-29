@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="enjoy_games_with_friends_desc">친구들과 재미있는 게임에 참여하여 누가 승자가 되는지 확인하세요.</string>
     <string name="restart">다시 시작</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">휠 편집</string>
         <string name="edit_items">항목 편집</string>
         <string name="need_two_items">유효한 항목이 2개 이상 필요합니다.</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+

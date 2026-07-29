@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="share_app">مشاركة</string>
     <string name="background_music">الموسيقى الخلفية</string>
@@ -304,4 +304,8 @@
         <string name="edit_wheel">تعديل العجلة</string>
         <string name="edit_items">تعديل العناصر</string>
         <string name="need_two_items">يلزم وجود عنصرين صالحين على الأقل.</string>
+    <string name="finger_player_count_label">Players</string>
+    <string name="finger_winner_count_label">Winners</string>
+    <string name="finger_rule_hint">%1$d players place fingers • %2$d winner(s) chosen</string>
 </resources>
+
