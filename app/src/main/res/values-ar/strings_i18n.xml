@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="share_app">مشاركة</string>
     <string name="background_music">الموسيقى الخلفية</string>
@@ -86,7 +86,7 @@
     <string name="newList">قائمة جديدة</string>
     <string name="addItem">إضافة عنصر</string>
     <string name="go_to_setting">الذهاب إلى الإعدادات</string>
-    <string name="itemsgroup">عناصر المجموعة</string>
+    <string name="itemsgroup">عدد الفرق</string>
     <string name="pleaseItem">يرجى إدخال اسم العنصر!</string>
     <string name="limit_short">نفدت الدورات</string>
     <string name="addice">إضافة نرد</string>
@@ -305,3 +305,4 @@
         <string name="edit_items">تعديل العناصر</string>
         <string name="need_two_items">يلزم وجود عنصرين صالحين على الأقل.</string>
 </resources>
+

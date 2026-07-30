@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="screen_intro">Intro</string>
         <string name="screen_home">Spin Wheel</string>
         <string name="screen_settings">Settings</string>
@@ -198,7 +198,7 @@
         <string name="hino">No options</string>
         <string name="alertai3">Unknown error from server overload!</string>
         <string name="desIntro2">Whether you’re making group decisions, picking a random winner, or playing a board game, our app brings convenience and endless fun.</string>
-        <string name="itemsgroup">Group Items</string>
+        <string name="itemsgroup">Number of Teams</string>
         <string name="Classic">Classic</string>
         <string name="titileIntro1">Random - Spin Wheel Game</string>
         <string name="teamCountExceedsItems">The number of teams cannot exceed the number of members! Please adjust in settings.</string>
@@ -312,3 +312,4 @@
         <string name="edit_items">Edit items</string>
         <string name="need_two_items">Need at least 2 valid items.</string>
 </resources>
+

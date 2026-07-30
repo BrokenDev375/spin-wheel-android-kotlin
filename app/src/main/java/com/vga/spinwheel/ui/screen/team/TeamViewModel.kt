@@ -28,9 +28,8 @@ sealed interface TeamMatchStatus {
 data class TeamUiState(
     val currentList: Wheel? = null,
     val teams: List<TeamGroup> = emptyList(),
-    val groupSize: Int = TeamViewModel.DEFAULT_GROUP_SIZE,
+    val teamCount: Int = TeamViewModel.DEFAULT_TEAM_COUNT,
     val durationSeconds: Int = TeamViewModel.DEFAULT_DURATION_SECONDS,
-    val seedEnabled: Boolean = false,
     val status: TeamMatchStatus = TeamMatchStatus.Idle,
     val runId: Long = 0L,
 )
@@ -46,11 +45,11 @@ class TeamViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         TeamUiState(
-            groupSize = TeamRoundRules.clampGroupSize(
+            teamCount = TeamRoundRules.clampTeamCount(
                 settingsRepository.getInt(
                     RandomFeature.TEAM,
-                    SETTING_GROUP_SIZE,
-                    DEFAULT_GROUP_SIZE,
+                    SETTING_TEAM_COUNT,
+                    DEFAULT_TEAM_COUNT,
                 )
             ),
             durationSeconds = TeamRoundRules.clampDuration(
@@ -59,11 +58,6 @@ class TeamViewModel @Inject constructor(
                     SETTING_DURATION,
                     DEFAULT_DURATION_SECONDS,
                 )
-            ),
-            seedEnabled = settingsRepository.getBoolean(
-                RandomFeature.TEAM,
-                SETTING_SEED_ENABLED,
-                false,
             ),
         )
     )
@@ -110,11 +104,11 @@ class TeamViewModel @Inject constructor(
         }
     }
 
-    fun updateGroupSize(value: Int) {
-        val clamped = TeamRoundRules.clampGroupSize(value)
-        _uiState.update { it.copy(groupSize = clamped) }
+    fun updateteamCount(value: Int) {
+        val clamped = TeamRoundRules.clampTeamCount(value)
+        _uiState.update { it.copy(teamCount = clamped) }
         viewModelScope.launch {
-            settingsRepository.putInt(RandomFeature.TEAM, SETTING_GROUP_SIZE, clamped)
+            settingsRepository.putInt(RandomFeature.TEAM, SETTING_TEAM_COUNT, clamped)
         }
     }
 
@@ -123,13 +117,6 @@ class TeamViewModel @Inject constructor(
         _uiState.update { it.copy(durationSeconds = clamped) }
         viewModelScope.launch {
             settingsRepository.putInt(RandomFeature.TEAM, SETTING_DURATION, clamped)
-        }
-    }
-
-    fun toggleSeedEnabled(value: Boolean) {
-        _uiState.update { it.copy(seedEnabled = value) }
-        viewModelScope.launch {
-            settingsRepository.putBoolean(RandomFeature.TEAM, SETTING_SEED_ENABLED, value)
         }
     }
 
@@ -151,31 +138,21 @@ class TeamViewModel @Inject constructor(
         matchingJob = viewModelScope.launch {
             val startAt = System.currentTimeMillis()
             val durationMs = state.durationSeconds * 1_000L
-            var tick = 0L
 
             while (System.currentTimeMillis() - startAt < durationMs) {
                 if (!isActiveRun(runId)) return@launch
-                val shuffled = TeamRoundRules.shuffledMembers(
-                    members = members,
-                    seedEnabled = false,
-                    seed = seedFor(list, tick),
-                )
+                val shuffled = TeamRoundRules.shuffledMembers(members)
                 _uiState.update {
-                    it.copy(teams = TeamRoundRules.createTeams(shuffled, it.groupSize))
+                    it.copy(teams = TeamRoundRules.createTeams(shuffled, it.teamCount))
                 }
-                tick++
                 delay(ANIMATION_TICK_MS)
             }
 
             if (!isActiveRun(runId)) return@launch
-            val finalMembers = TeamRoundRules.shuffledMembers(
-                members = members,
-                seedEnabled = _uiState.value.seedEnabled,
-                seed = seedFor(list, 0L),
-            )
+            val finalMembers = TeamRoundRules.shuffledMembers(members)
             _uiState.update {
                 it.copy(
-                    teams = TeamRoundRules.createTeams(finalMembers, it.groupSize),
+                    teams = TeamRoundRules.createTeams(finalMembers, it.teamCount),
                     status = TeamMatchStatus.ReadyForPreview,
                 )
             }
@@ -228,21 +205,18 @@ class TeamViewModel @Inject constructor(
 
     fun retryMatching() {
         resetMatching()
-        startMatching()
     }
 
     private fun isActiveRun(runId: Long): Boolean =
         _uiState.value.runId == runId
 
-    private fun seedFor(list: Wheel, offset: Long): Long =
-        list.id.hashCode().toLong() + list.updatedAt + offset
-
     companion object {
-        const val DEFAULT_GROUP_SIZE = 3
+        const val DEFAULT_TEAM_COUNT = 3
         const val DEFAULT_DURATION_SECONDS = 5
-        private const val SETTING_GROUP_SIZE = "group_size"
+        private const val SETTING_TEAM_COUNT = "group_size"
         private const val SETTING_DURATION = "duration"
-        private const val SETTING_SEED_ENABLED = "seed_enabled"
         private const val ANIMATION_TICK_MS = 140L
     }
 }
+
+
