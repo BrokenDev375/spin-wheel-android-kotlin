@@ -34,8 +34,8 @@
     <string name="rate_us">हमें रेट करें</string>
     <string name="permission_desc">उपयोगकर्ताओं को डिवाइस से सूचनाएँ प्राप्त करने के लिए अनुमति देनी होगी।</string>
     <string name="win">जीत</string>
-    <string name="premium_feature_remove_ads">सभी विज्ञापन हटाएं</string>
-    <string name="premium_feature_support">प्राथमिकता ग्राहक सेवा</string>
+    <string name="premium_feature_remove_ads">विज्ञापन हटाएं</string>
+    <string name="premium_feature_support">VIP सहायता</string>
     <string name="winner_mode_min_fingers">%1$s विजेताओं को चुनने के लिए कम से कम %2$s उंगलियों की आवश्यकता है!</string>
     <string name="team_mode_min_fingers">%1$s टीमों में बाँटने के लिए कम से कम %2$s उंगलियों की आवश्यकता है!</string>
     <string name="rank_mode_min_fingers">रैंकिंग के लिए कम से कम 2 उंगलियों की आवश्यकता है!</string>
@@ -234,9 +234,9 @@
     <string name="bgms">पृष्ठभूमि संगीत</string>
     <string name="coin">सिक्का</string>
     <string name="alertai">कृपया अगले चरण पर जाने से पहले एक विचार बनाएं!</string>
-    <string name="premium_feature_unlock_all">सभी गेम और टेम्पलेट अनलॉक करें</string>
-    <string name="premium_feature_unlimited">कस्टम व्हील बनाएं</string>
-    <string name="premium_feature_premium_skins">प्रीमियम स्किन और थीम अनलॉक करें</string>
+    <string name="premium_feature_unlock_all">सभी गेम</string>
+    <string name="premium_feature_unlimited">कस्टम व्हील</string>
+    <string name="premium_feature_premium_skins">प्रीमियम स्किन</string>
         <string name="content_description_back">पीछे</string>
         <string name="share_app_text">स्पिन व्हील और यादृच्छिक उपकरण</string>
         <string name="share_chooser_title">शेयर करना</string>
