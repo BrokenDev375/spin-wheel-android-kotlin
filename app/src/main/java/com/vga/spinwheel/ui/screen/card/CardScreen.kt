@@ -73,6 +73,8 @@ import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinSettingRow
+import com.vga.spinwheel.ui.components.SpinSettingStepper
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.components.SpinRetryButton
 import com.vga.spinwheel.ui.components.SpinShareButton
@@ -190,10 +192,10 @@ fun CardSettingsScreen(
                 .padding(top = 22.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.duration),
                 trailing = {
-                    CardStepper(
+                    SpinSettingStepper(
                         value = "${state.settings.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.settings.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.settings.durationSeconds + 1) },
@@ -201,10 +203,10 @@ fun CardSettingsScreen(
                 },
             )
 
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.numbercard),
                 trailing = {
-                    CardStepper(
+                    SpinSettingStepper(
                         value = state.settings.totalCards.toString(),
                         onMinus = { viewModel.updateTotalCards(state.settings.totalCards - 1) },
                         onPlus = { viewModel.updateTotalCards(state.settings.totalCards + 1) },
@@ -212,10 +214,10 @@ fun CardSettingsScreen(
                 },
             )
 
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.numberwin),
                 trailing = {
-                    CardStepper(
+                    SpinSettingStepper(
                         value = state.settings.winners.toString(),
                         onMinus = { viewModel.updateWinners(state.settings.winners - 1) },
                         onPlus = { viewModel.updateWinners(state.settings.winners + 1) },
@@ -224,7 +226,7 @@ fun CardSettingsScreen(
             )
 
             val currentTheme = CardThemes.get(state.settings.themeIndex)
-            CardSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.Temlatecard),
                 onClick = {
                     viewModel.beginThemeSelection()
