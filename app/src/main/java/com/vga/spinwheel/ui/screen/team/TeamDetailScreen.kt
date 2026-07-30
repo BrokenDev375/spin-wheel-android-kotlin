@@ -1,9 +1,8 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +49,7 @@ import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.components.WheelItemsEditDialog
 import com.vga.spinwheel.ui.components.WheelPickerDialog
 import com.vga.spinwheel.ui.components.WheelSelectorChip
+import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -98,9 +98,9 @@ fun TeamDetailScreen(
         TeamRoundRules.memberNames(list?.items.orEmpty())
     }
     val showBoards = state.status != TeamMatchStatus.Idle || state.teams.isNotEmpty()
-    val visibleTeams = remember(state.teams, members, state.groupSize) {
+    val visibleTeams = remember(state.teams, members, state.teamCount) {
         state.teams.ifEmpty {
-            TeamRoundRules.createTeams(members, state.groupSize)
+            TeamRoundRules.createTeams(members, state.teamCount)
         }
     }
     val requestBack = {
@@ -201,7 +201,7 @@ fun TeamDetailScreen(
                         contentPadding = PaddingValues(
                             start = 16.dp,
                             end = 16.dp,
-                            bottom = 44.dp,
+                            bottom = 72.dp,
                         ),
                     )
                 }
@@ -211,7 +211,11 @@ fun TeamDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 28.dp,
+                        ),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
                         itemsIndexed(members, key = { index, name -> "$index-$name" }) { index, name ->
@@ -333,7 +337,7 @@ private fun TeamDetailBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 68.dp),
+            .padding(top = 24.dp, bottom = 68.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -371,7 +375,7 @@ private fun TeamToolButton(
             .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFF373246))
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickableWithSound(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(
@@ -394,7 +398,7 @@ private fun TeamPrimaryActionButton(
             .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFF373246))
-            .clickable(enabled = enabled, onClick = onClick)
+            .clickableWithSound(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -409,3 +413,4 @@ private fun TeamPrimaryActionButton(
         )
     }
 }
+

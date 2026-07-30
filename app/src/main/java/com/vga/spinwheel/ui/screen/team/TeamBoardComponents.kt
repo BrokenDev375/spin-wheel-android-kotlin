@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -45,15 +46,17 @@ fun TeamBoardStrip(
     titleFontSize: TextUnit = 16.sp,
     memberFontSize: TextUnit = 17.sp,
 ) {
-    LazyRow(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(18.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(teams, key = { it.index }) { team ->
             TeamBoard(
                 team = team,
-                modifier = Modifier.width(boardWidth),
+                modifier = Modifier,
                 showEditIcon = showEditIcon,
                 headerHeight = headerHeight,
                 titleFontSize = titleFontSize,
@@ -133,3 +136,4 @@ private fun TeamBoard(
         }
     }
 }
+

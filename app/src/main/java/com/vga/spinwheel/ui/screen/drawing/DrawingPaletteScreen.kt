@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +29,8 @@ import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -49,7 +50,7 @@ fun DrawingPaletteScreen(
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         actions = {
-            TextButton(onClick = onSave) {
+            TextButton(onClick = rememberClickWithSound(onSave)) {
                 Text(
                     text = stringResource(R.string.save),
                     color = SpinColors.Action,
@@ -100,7 +101,7 @@ private fun DrawingThemeOption(
                 color = if (selected) SpinColors.Action else Color.White.copy(alpha = 0.06f),
                 shape = shape,
             )
-            .clickable(onClick = onClick)
+            .clickableWithSound(onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

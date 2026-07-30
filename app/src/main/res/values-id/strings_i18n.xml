@@ -182,7 +182,7 @@
     <string name="Templatedice">Template Dadu</string>
     <string name="color">Palet Warna</string>
     <string name="edit">Edit</string>
-    <string name="itemsgroup">Item Grup</string>
+    <string name="itemsgroup">Jumlah Tim</string>
     <string name="shareDescription">Keberuntungan adalah kuncinya! Siapa di tim mana? Biarkan nasib yang memutuskan! ✨ Berani mencoba? Tandai teman Anda untuk memutar bersama! 🎯</string>
     <string name="coinsample">Contoh Koin</string>
     <string name="bgms">Musik latar</string>
@@ -269,9 +269,4 @@
     <string name="finger_rule_hint">Letakkan jari di layar • %1$d pemenang dipilih</string>
     <string name="finger_warning_not_enough">Harap letakkan setidaknya %1$d jari.</string>
 </resources>
-
-
-
-
-
 

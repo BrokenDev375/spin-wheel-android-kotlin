@@ -111,7 +111,7 @@ class DiceViewModel @Inject constructor(
 
             while (System.currentTimeMillis() < endTime) {
                 _currentResults.value = List(count) { Random.nextInt(1, 7) }
-                delay(100)
+                delay(150)
             }
 
             // Final result

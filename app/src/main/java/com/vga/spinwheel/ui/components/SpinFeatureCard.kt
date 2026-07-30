@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +28,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
@@ -62,7 +62,7 @@ fun SpinFeatureCard(
         modifier = modifier
             .clip(RoundedCornerShape(SpinRadius.Card))
             .background(SpinColors.BackgroundDeep)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
     ) {
         Image(
             painter = painterResource(style.backgroundRes),
@@ -90,13 +90,15 @@ fun SpinFeatureCard(
                 .fillMaxWidth()
                 .padding(SpinSpacing.CardPadding),
             color = style.titleColor,
-            style = MaterialTheme.typography.titleLarge.copy(
+            style = MaterialTheme.typography.titleMedium.copy(
                 shadow = Shadow(
                     color = Color.Black.copy(alpha = 0.55f),
                     offset = Offset(0f, 3f),
                     blurRadius = 6f,
                 )
             ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

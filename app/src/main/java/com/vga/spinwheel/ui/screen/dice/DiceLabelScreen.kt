@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.screen.dice
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +28,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
 
 @Composable
 fun DiceLabelScreen(
@@ -51,7 +51,7 @@ fun DiceLabelScreen(
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Black,
                 modifier = Modifier
-                    .clickable {
+                    .clickableWithSound {
                         viewModel.saveStyleIndex()
                         onBack()
                     }
@@ -84,7 +84,7 @@ fun DiceLabelScreen(
                             color = if (isSelected) DiceLabelAccent else Color.Transparent,
                             shape = RoundedCornerShape(16.dp),
                         )
-                        .clickable { viewModel.setTempStyleIndex(index) }
+                        .clickableWithSound { viewModel.setTempStyleIndex(index) }
                         .padding(2.dp),
                 ) {
                     DiceTile(

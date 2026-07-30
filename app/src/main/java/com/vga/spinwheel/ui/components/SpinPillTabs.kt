@@ -3,7 +3,6 @@ package com.vga.spinwheel.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -69,7 +68,7 @@ fun SpinPillTabs(
                         color = if (isSelected) activeColor else SpinColors.CardBorder,
                         shape = RoundedCornerShape(SpinRadius.Button),
                     )
-                    .clickable { onSelect(index) },
+                    .clickableWithSound { onSelect(index) },
                 contentAlignment = Alignment.Center,
             ) {
                 Text(

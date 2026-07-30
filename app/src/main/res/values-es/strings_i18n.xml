@@ -125,7 +125,7 @@
     <string name="choose">Elegir</string>
     <string name="save">Guardar</string>
     <string name="diceRoller">Lanzador de Dados</string>
-    <string name="itemsgroup">Elementos de Grupo</string>
+    <string name="itemsgroup">Número de equipos</string>
     <string name="taptospin">Toca para girar</string>
     <string name="bgms">Música de fondo</string>
     <string name="cb0af4">por mes</string>
@@ -269,9 +269,4 @@
     <string name="finger_rule_hint">Coloque los dedos en la pantalla • %1$d ganador(es) elegido(s)</string>
     <string name="finger_warning_not_enough">Por favor, coloca al menos %1$d dedo(s).</string>
 </resources>
-
-
-
-
-
 

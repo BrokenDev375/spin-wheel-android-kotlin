@@ -86,7 +86,7 @@
     <string name="newList">قائمة جديدة</string>
     <string name="addItem">إضافة عنصر</string>
     <string name="go_to_setting">الذهاب إلى الإعدادات</string>
-    <string name="itemsgroup">عناصر المجموعة</string>
+    <string name="itemsgroup">عدد الفرق</string>
     <string name="pleaseItem">يرجى إدخال اسم العنصر!</string>
     <string name="limit_short">نفدت الدورات</string>
     <string name="addice">إضافة نرد</string>
@@ -269,9 +269,3 @@
     <string name="finger_rule_hint">ضع أصابعك على الشاشة • تم اختيار %1$d من الفائزين</string>
     <string name="finger_warning_not_enough">الرجاء وضع %1$d من إصبعك على الأقل.</string>
 </resources>
-
-
-
-
-
-

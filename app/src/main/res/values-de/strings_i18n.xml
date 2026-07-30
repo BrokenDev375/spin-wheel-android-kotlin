@@ -141,7 +141,7 @@
     <string name="diceRoller">Würfel</string>
     <string name="confirm">Bestätigen</string>
     <string name="layout_thanks">Danke für dein Feedback!</string>
-    <string name="itemsgroup">Gruppenelemente</string>
+    <string name="itemsgroup">Anzahl der Teams</string>
     <string name="spinwheel">Glücksrad</string>
     <string name="numbercard">Anzahl der Karten</string>
     <string name="General">Allgemein</string>
@@ -269,9 +269,3 @@
     <string name="finger_rule_hint">Finger auf den Bildschirm legen • %1$d Gewinner ausgewählt</string>
     <string name="finger_warning_not_enough">Bitte platzieren Sie mindestens %1$d Finger.</string>
 </resources>
-
-
-
-
-
-

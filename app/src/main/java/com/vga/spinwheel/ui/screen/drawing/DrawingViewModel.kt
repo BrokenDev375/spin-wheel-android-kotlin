@@ -35,20 +35,6 @@ class DrawingViewModel @Inject constructor(
     companion object {
         const val SETTING_DURATION = "drawing_duration"
         const val SETTING_THEME = "drawing_theme"
-
-        val DRAWING_FALLBACK_WHEEL = Wheel(
-            id = "drawing-demo",
-            name = "demo",
-            items = listOf(
-                WheelItem(id = "1", name = "Vòng quay miễn phí", priority = 1),
-                WheelItem(id = "2", name = "Bảng màu", priority = 1),
-                WheelItem(id = "3", name = "Chọn ngẫu nhiên", priority = 1),
-                WheelItem(id = "4", name = "Chủ đề vui", priority = 1),
-                WheelItem(id = "5", name = "Ý tưởng mới", priority = 1),
-            ),
-            createdAt = 0L,
-            updatedAt = 0L
-        )
     }
 
     val wheels: StateFlow<List<Wheel>> = wheelRepository.observeWheels()
@@ -65,6 +51,9 @@ class DrawingViewModel @Inject constructor(
 
     private val _lastResult = MutableStateFlow<WheelItem?>(null)
     val lastResult = _lastResult.asStateFlow()
+
+    private val _showLastResultOnSpin = MutableStateFlow(false)
+    val showLastResultOnSpin = _showLastResultOnSpin.asStateFlow()
     
     // For temp settings
     private val _tempDuration = MutableStateFlow(2)
@@ -80,7 +69,7 @@ class DrawingViewModel @Inject constructor(
     fun loadWheelForDrawing(wheelId: String) {
         viewModelScope.launch {
             val wheel = wheelRepository.getWheel(wheelId)
-            _currentWheel.value = wheel ?: DRAWING_FALLBACK_WHEEL
+            _currentWheel.value = wheel
         }
     }
 
@@ -120,6 +109,19 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    fun requestShowLastResultOnSpin() {
+        _showLastResultOnSpin.value = true
+    }
+
+    fun consumeShowLastResultOnSpinRequest() {
+        _showLastResultOnSpin.value = false
+    }
+
+    fun clearLastResult() {
+        _lastResult.value = null
+        _showLastResultOnSpin.value = false
+    }
+
     fun saveCurrentWheelItems(
         name: String,
         items: List<WheelItem>,
@@ -141,14 +143,8 @@ class DrawingViewModel @Inject constructor(
         viewModelScope.launch {
             val existing = wheelRepository.getWheel(current.id)
             val now = System.currentTimeMillis()
-            val savedId = if (current.id == DRAWING_FALLBACK_WHEEL.id && existing == null) {
-                UUID.randomUUID().toString()
-            } else {
-                current.id
-            }
             val saved = wheelRepository.upsertWheel(
                 current.copy(
-                    id = savedId,
                     name = cleanedName,
                     items = cleanedItems,
                     createdAt = existing?.createdAt ?: current.createdAt.takeIf { it > 0L } ?: now,
@@ -165,8 +161,8 @@ class DrawingViewModel @Inject constructor(
             id = UUID.randomUUID().toString(),
             name = "",
             items = listOf(
-                WheelItem(id = UUID.randomUUID().toString(), name = "Tùy chọn 1", priority = 1),
-                WheelItem(id = UUID.randomUUID().toString(), name = "Tùy chọn 2", priority = 1),
+                WheelItem(id = UUID.randomUUID().toString(), name = "", priority = 1),
+                WheelItem(id = UUID.randomUUID().toString(), name = "", priority = 1),
             )
         )
     }
@@ -265,9 +261,7 @@ class DrawingViewModel @Inject constructor(
 
     fun cloneWheel(id: String) {
         viewModelScope.launch {
-            val existing = wheelRepository.getWheel(id)
-                ?: DRAWING_FALLBACK_WHEEL.takeIf { id == it.id }
-                ?: return@launch
+            val existing = wheelRepository.getWheel(id) ?: return@launch
             val now = System.currentTimeMillis()
             val cloned = existing.copy(
                 id = UUID.randomUUID().toString(),

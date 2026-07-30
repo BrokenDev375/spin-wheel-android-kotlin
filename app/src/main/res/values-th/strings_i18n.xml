@@ -87,7 +87,7 @@
     <string name="numberwin">จำนวนผู้ชนะ</string>
     <string name="cancelPermission">ยกเลิกการอนุญาต</string>
     <string name="templateball">เทมเพลตบอล</string>
-    <string name="itemsgroup">รายการกลุ่ม</string>
+    <string name="itemsgroup">จำนวนทีม</string>
     <string name="caner">ยกเลิก</string>
     <string name="deschosse1">รอ 2 วินาทีหรือแตะปุ่มเริ่มด้านล่าง</string>
     <string name="stop">หยุด</string>
@@ -269,9 +269,4 @@
     <string name="finger_rule_hint">วางนิ้วบนหน้าจอ • เลือกผู้ชนะแล้ว %1$d ราย</string>
     <string name="finger_warning_not_enough">กรุณาวางอย่างน้อย %1$d นิ้ว</string>
 </resources>
-
-
-
-
-
 

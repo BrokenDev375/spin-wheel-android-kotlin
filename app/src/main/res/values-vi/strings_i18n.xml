@@ -1,4 +1,20 @@
 ﻿<resources>
+    <string name="screen_intro">Giới thiệu</string>
+    <string name="screen_home">Spin Wheel</string>
+    <string name="screen_settings">Cài đặt</string>
+    <string name="screen_language">Ngôn ngữ</string>
+
+    <string name="feature_wheel">Bánh xe</string>
+    <string name="feature_finger">Chọn ngón tay</string>
+    <string name="feature_coin">Đồng xu</string>
+    <string name="feature_team">Đội</string>
+    <string name="feature_number">Số ngẫu nhiên</string>
+    <string name="feature_drawing">Rút thăm</string>
+    <string name="feature_bottle">Quay chai</string>
+    <string name="feature_dice">Xúc xắc</string>
+    <string name="feature_card">Lật thẻ</string>
+
+    <string name="content_description_settings">Cài đặt</string>
     <string name="content_description_back">Quay lại</string>
 
     <string name="share_app_text">Bánh xe quay &amp; Công cụ ngẫu nhiên</string>
@@ -145,7 +161,7 @@
     <string name="Lose">Kẻ thua</string>
     <string name="history">Lịch sử</string>
     <string name="coinsample">Mẫu tiền xu</string>
-    <string name="drawn">Vẽ</string>
+    <string name="drawn">Rút thăm</string>
     <string name="ai_prompt_ensure">Đảm bảo danh sách có đúng 1 tên và 8 mục, mỗi dòng chứa tên hoặc
         mục với emoji phù hợp.</string>
     <string name="item">Mục</string>
@@ -262,7 +278,7 @@
     <string name="duplicate_failed">Nhân bản bánh xe thất bại</string>
     <string name="to">Đến</string>
     <string name="diceRoller">Xúc Xắc</string>
-    <string name="itemsgroup">Các mục của nhóm</string>
+    <string name="itemsgroup">Số lượng đội</string>
     <string name="create">Tạo Bánh xe mới</string>
     <string name="list">Danh sách</string>
     <string name="next">Tiếp</string>
@@ -302,6 +318,4 @@
     <string name="premium_feature_premium_skins">Mở khóa giao diện</string>
     <string name="finger_warning_not_enough">Vui lòng đặt ít nhất %1$d ngón tay.</string>
 </resources>
-
-
 

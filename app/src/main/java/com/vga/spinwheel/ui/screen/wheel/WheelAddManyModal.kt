@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.vga.spinwheel.R
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 import androidx.compose.foundation.layout.PaddingValues
@@ -62,7 +63,7 @@ fun WheelAddManyModal(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TextButton(
-                        onClick = onDismiss,
+                        onClick = rememberClickWithSound(onDismiss),
                         contentPadding = PaddingValues(horizontal = 8.dp),
                     ) {
                         Text(
@@ -83,7 +84,7 @@ fun WheelAddManyModal(
                         modifier = Modifier.weight(1f),
                     )
                     TextButton(
-                        onClick = {
+                        onClick = rememberClickWithSound {
                             if (textInput.isNotBlank()) {
                                 onAdd(textInput)
                                 onDismiss()

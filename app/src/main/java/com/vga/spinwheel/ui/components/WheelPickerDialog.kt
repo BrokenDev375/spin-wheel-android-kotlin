@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,7 +63,7 @@ fun WheelSelectorChip(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
-            .clickable(enabled = enabled, onClick = onClick)
+            .clickableWithSound(enabled = enabled, onClick = onClick)
             .padding(horizontal = horizontalPadding, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -293,7 +292,7 @@ fun WheelItemsEditDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = {
+                    onClick = rememberClickWithSound {
                         errorMessage = null
                         draftItems = draftItems + newDraftItem(draftItems.size + 1)
                     },
@@ -325,7 +324,7 @@ fun WheelItemsEditDialog(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(onClick = onDismiss) {
+                    TextButton(onClick = rememberClickWithSound(onDismiss)) {
                         Text(
                             text = stringResource(R.string.cancel),
                             color = SpinColors.TextPrimary,
@@ -334,7 +333,7 @@ fun WheelItemsEditDialog(
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
-                        onClick = {
+                        onClick = rememberClickWithSound {
                             val cleanedName = draftWheelName.trim()
                             val cleaned = draftItems
                                 .map {
@@ -379,7 +378,7 @@ private fun WheelPickerEditRow(
             .height(46.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFFEC9213))
-            .clickable(onClick = onClick)
+            .clickableWithSound(onClick = onClick)
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -420,7 +419,7 @@ private fun WheelPickerRow(
                 color = if (selected) Color(0xFFEC9213) else Color.White.copy(alpha = 0.06f),
                 shape = shape,
             )
-            .clickable(onClick = onClick)
+            .clickableWithSound(onClick = onClick)
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),

@@ -112,7 +112,7 @@
     <string name="tapto">Toque para parear</string>
     <string name="duration">Duração da Animação</string>
     <string name="newList">Nova Lista</string>
-    <string name="itemsgroup">Itens de Grupo</string>
+    <string name="itemsgroup">Número de equipes</string>
     <string name="card">Virar Carta</string>
     <string name="deschosse">Todos colocam um dedo na tela</string>
     <string name="caner">Cancelar</string>
@@ -269,9 +269,4 @@
     <string name="finger_rule_hint">Coloque os dedos na tela • %1$d vencedor(es) escolhido(s)</string>
     <string name="finger_warning_not_enough">Por favor coloque pelo menos %1$d dedo(s).</string>
 </resources>
-
-
-
-
-
 

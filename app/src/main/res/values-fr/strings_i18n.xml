@@ -107,7 +107,7 @@
     <string name="share_cancel">Annuler le partage</string>
     <string name="taptospin">Touchez pour tourner</string>
     <string name="color">Palette de Couleurs</string>
-    <string name="itemsgroup">Éléments de Groupe</string>
+    <string name="itemsgroup">Nombre d\'équipes</string>
     <string name="Emojiwin">Emoji Gagnant</string>
     <string name="policy">Politique de Confidentialité</string>
     <string name="pleaseIn">Veuillez entrer des options, une par ligne, par exemple : </string>
@@ -269,9 +269,4 @@
     <string name="finger_rule_hint">Placez les doigts sur l\'écran • %1$d gagnant(s) choisi(s)</string>
     <string name="finger_warning_not_enough">Veuillez placer au moins %1$d doigt(s).</string>
 </resources>
-
-
-
-
-
 

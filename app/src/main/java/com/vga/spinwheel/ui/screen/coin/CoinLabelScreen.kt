@@ -3,7 +3,6 @@ package com.vga.spinwheel.ui.screen.coin
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -69,7 +69,7 @@ fun CoinLabelScreen(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
-                            .clickable {
+                            .clickableWithSound {
                                 viewModel.saveSkinIndex()
                                 navController.popBackStack()
                             }
@@ -104,7 +104,7 @@ fun CoinLabelScreen(
                             color = if (isSelected) SpinColors.Action else Color.Transparent,
                             shape = RoundedCornerShape(14.dp)
                         )
-                        .clickable { viewModel.setTempSkinIndex(index) }
+                        .clickableWithSound { viewModel.setTempSkinIndex(index) }
                 ) {
                     Row(
                         modifier = Modifier

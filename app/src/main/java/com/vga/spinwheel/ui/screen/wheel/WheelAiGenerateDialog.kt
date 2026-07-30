@@ -31,6 +31,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -121,7 +122,7 @@ fun WheelAiGenerateDialog(
                         }
                     }
                     Button(
-                        onClick = {
+                        onClick = rememberClickWithSound {
                             if (prompt.isNotBlank()) {
                                 onCustomPrompt(prompt)
                             } else {

@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.screen.wheel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +42,8 @@ import com.vga.spinwheel.data.model.WheelItem
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -77,7 +78,7 @@ fun WheelAddEditScreen(
                 centerTitle = false,
                 actions = {
                     TextButton(
-                        onClick = { viewModel.validateAndSave(onSuccess = onSaveSuccess) }
+                        onClick = rememberClickWithSound { viewModel.validateAndSave(onSuccess = onSaveSuccess) }
                     ) {
                         Text(
                             text = stringResource(R.string.save),
@@ -151,7 +152,7 @@ fun WheelAddEditScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Button(
-                        onClick = viewModel::addSingleItem,
+                        onClick = rememberClickWithSound(viewModel::addSingleItem),
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp),
@@ -173,7 +174,7 @@ fun WheelAddEditScreen(
                     }
 
                     Button(
-                        onClick = { viewModel.showAddManyModal(true) },
+                        onClick = rememberClickWithSound { viewModel.showAddManyModal(true) },
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp),
@@ -296,7 +297,7 @@ private fun WheelItemRow(
                             .size(20.dp)
                             .clip(CircleShape)
                             .background(Color(0xFFE60000))
-                            .clickable { onPriorityChange(-1) },
+                            .clickableWithSound { onPriorityChange(-1) },
                         contentAlignment = Alignment.Center,
                     ) {
                         SpinIcon(
@@ -319,7 +320,7 @@ private fun WheelItemRow(
                             .size(20.dp)
                             .clip(CircleShape)
                             .background(Color(0xFF0033CC))
-                            .clickable { onPriorityChange(1) },
+                            .clickableWithSound { onPriorityChange(1) },
                         contentAlignment = Alignment.Center,
                     ) {
                         SpinIcon(

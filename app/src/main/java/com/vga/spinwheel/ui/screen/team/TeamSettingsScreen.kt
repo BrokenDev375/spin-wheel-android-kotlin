@@ -1,34 +1,21 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
+import com.vga.spinwheel.ui.components.SpinSettingRow
+import com.vga.spinwheel.ui.components.SpinSettingStepper
 import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -65,34 +52,24 @@ fun TeamSettingsScreen(
                 .padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            TeamSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.itemsgroup),
                 trailing = {
                     TeamStepper(
-                        value = state.groupSize.toString(),
-                        onMinus = { viewModel.updateGroupSize(state.groupSize - 1) },
-                        onPlus = { viewModel.updateGroupSize(state.groupSize + 1) },
+                        value = state.teamCount.toString(),
+                        onMinus = { viewModel.updateteamCount(state.teamCount - 1) },
+                        onPlus = { viewModel.updateteamCount(state.teamCount + 1) },
                     )
                 },
             )
 
-            TeamSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.duration),
                 trailing = {
-                    TeamStepper(
+                    SpinSettingStepper(
                         value = "${state.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.durationSeconds + 1) },
-                    )
-                },
-            )
-
-            TeamSettingRow(
-                title = stringResource(R.string.Seeding),
-                trailing = {
-                    SpinToggle(
-                        checked = state.seedEnabled,
-                        onCheckedChange = viewModel::toggleSeedEnabled,
                     )
                 },
             )
@@ -159,7 +136,7 @@ private fun TeamStepperButton(
             .size(28.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -170,3 +147,4 @@ private fun TeamStepperButton(
         )
     }
 }
+

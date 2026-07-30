@@ -254,7 +254,7 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 - Bóng hiển thị số rõ.
 - Hiệu ứng tuỳ chọn nếu làm thì không gây lag/crash.
 
-## 8. Phase 6: Rút thăm
+## [x] 8. Phase 6: Rút thăm
 
 Đầu việc từ txt:
 
@@ -283,6 +283,11 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 ### Done
 
 - Kết quả chính hiển thị tên mục được chọn, không phải số thứ tự.
+- Thay doi thuc te (branch `phase-6-drawing-result-name`):
+  - Quick result va final result dung ten item thang lam noi dung chinh.
+  - So thu tu duoc giu thanh subtitle nho dang `#N`.
+  - Share text chi gui ten item thang, khong con dinh kem index.
+  - Fallback an toan khi chua co winner la `-`.
 
 ## 9. Phase 7: Xúc xắc
 

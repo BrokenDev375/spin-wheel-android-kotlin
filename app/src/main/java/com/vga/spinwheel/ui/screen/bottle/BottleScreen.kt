@@ -13,7 +13,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +64,11 @@ import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinResultScreen
+import com.vga.spinwheel.ui.components.SpinSettingRow
+import com.vga.spinwheel.ui.components.SpinSettingStepper
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
@@ -161,10 +164,10 @@ fun BottleSettingsScreen(
                 .padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            BottleSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.duration),
                 trailing = {
-                    BottleStepper(
+                    SpinSettingStepper(
                         value = "${state.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.durationSeconds + 1) },
@@ -172,7 +175,7 @@ fun BottleSettingsScreen(
                 },
             )
 
-            BottleSettingRow(
+            SpinSettingRow(
                 title = stringResource(R.string.spinBottle),
                 onClick = {
                     viewModel.beginStyleSelection()
@@ -210,7 +213,7 @@ fun BottleLabelScreen(
                 onBack = onBack,
                 actions = {
                     TextButton(
-                        onClick = {
+                        onClick = rememberClickWithSound {
                             viewModel.saveSelectedStyle()
                             onBack()
                         },
@@ -399,7 +402,7 @@ private fun BottleToolButton(
             .alpha(if (enabled) 1f else 0.62f)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickableWithSound(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(
@@ -423,7 +426,7 @@ private fun BottlePrimaryActionButton(
             .alpha(if (enabled) 1f else 0.62f)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .clickable(enabled = enabled, onClick = onClick)
+            .clickableWithSound(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -435,85 +438,6 @@ private fun BottlePrimaryActionButton(
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-
-@Composable
-private fun BottleSettingRow(
-    title: String,
-    trailing: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFF393347))
-            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
-            .padding(horizontal = 18.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.weight(1f),
-            color = Color.White,
-            fontSize = 18.sp,
-            lineHeight = 20.sp,
-            fontWeight = FontWeight.ExtraBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        trailing()
-    }
-}
-
-@Composable
-private fun BottleStepper(
-    value: String,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        BottleStepperButton(text = "-", onClick = onMinus)
-        Text(
-            text = value,
-            modifier = Modifier.width(36.dp),
-            color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center,
-        )
-        BottleStepperButton(text = "+", onClick = onPlus)
-    }
-}
-
-@Composable
-private fun BottleStepperButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(36.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(Color.White)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            color = Color.Black,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 24.sp,
         )
     }
 }
@@ -535,7 +459,7 @@ private fun BottleLabelCard(
                 color = if (selected) SpinColors.Action else Color.White,
                 shape = RoundedCornerShape(14.dp),
             )
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         BottleArt(

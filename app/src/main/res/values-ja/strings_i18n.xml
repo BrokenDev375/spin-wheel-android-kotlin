@@ -185,7 +185,7 @@
     <string name="remove">削除</string>
     <string name="ranking">ランキング</string>
     <string name="i874505">月額</string>
-    <string name="itemsgroup">グループ項目</string>
+    <string name="itemsgroup">チーム数</string>
     <string name="pleai">アイデアを入力してください、例：衣類の項目</string>
     <string name="titleRate3">私たちもあなたを愛しています！</string>
     <string name="error">エラー</string>
@@ -269,9 +269,4 @@
     <string name="finger_rule_hint">画面上に指を置きます • %1$d 人の勝者が選ばれました</string>
     <string name="finger_warning_not_enough">少なくとも %1$d 本の指を配置してください。</string>
 </resources>
-
-
-
-
-
 

@@ -1,7 +1,6 @@
 package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
 
@@ -129,14 +130,14 @@ fun DrawingAiFormScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color(0xFF3B3754))
-                            .clickable { prompt = topic }
+                            .clickableWithSound { prompt = topic }
                             .padding(horizontal = 12.dp, vertical = 6.dp),
                     )
                 }
             }
 
             Button(
-                onClick = {
+                onClick = rememberClickWithSound {
                     val finalTopic = prompt.ifBlank { topics.first() }
                     viewModel.generateAiWheel(finalTopic)
                     onGenerateSuccess()
