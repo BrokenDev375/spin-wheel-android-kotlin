@@ -1,7 +1,6 @@
 package com.vga.spinwheel.ui.screen.coin
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -112,7 +112,7 @@ fun CoinSettingsScreen(
                     .height(56.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFF393347))
-                    .clickable { navController.navigate(Screen.CoinLabel.route) }
+                    .clickableWithSound { navController.navigate(Screen.CoinLabel.route) }
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -143,7 +143,7 @@ private fun DurationButton(
             .size(28.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(

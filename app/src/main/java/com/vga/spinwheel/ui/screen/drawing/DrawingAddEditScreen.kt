@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.screen.drawing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +42,8 @@ import com.vga.spinwheel.data.model.WheelItem
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -75,7 +76,9 @@ fun DrawingAddEditScreen(
                 onNavigationClick = onBack,
                 actions = {
                     TextButton(
-                        onClick = { viewModel.saveWheel(onSuccess = onSaveSuccess, onError = {}) }
+                        onClick = rememberClickWithSound {
+                            viewModel.saveWheel(onSuccess = onSaveSuccess, onError = {})
+                        }
                     ) {
                         Text(
                             text = stringResource(R.string.save),
@@ -133,7 +136,7 @@ fun DrawingAddEditScreen(
 
             item {
                 Button(
-                    onClick = viewModel::addItem,
+                    onClick = rememberClickWithSound(viewModel::addItem),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -210,7 +213,7 @@ private fun DrawingItemRow(
                 .size(48.dp)
                 .clip(RoundedCornerShape(SpinRadius.Control))
                 .background(Color(0xFF3B3754))
-                .clickable(onClick = onDelete),
+                .clickableWithSound(onClick = onDelete),
             contentAlignment = Alignment.Center,
         ) {
             SpinIcon(

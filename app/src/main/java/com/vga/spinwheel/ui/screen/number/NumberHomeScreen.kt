@@ -11,7 +11,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +55,8 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
 import kotlinx.coroutines.delay
@@ -223,7 +224,7 @@ fun NumberHomeScreen(
                         .size(36.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
-                        .clickable(enabled = !isSpinning) {
+                        .clickableWithSound(enabled = !isSpinning) {
                             navController.navigate(Screen.NumberSettings.route)
                         },
                     contentAlignment = Alignment.Center
@@ -236,7 +237,7 @@ fun NumberHomeScreen(
                 }
 
                 Button(
-                    onClick = { isSpinning = true },
+                    onClick = rememberClickWithSound { isSpinning = true },
                     enabled = !isSpinning,
                     modifier = Modifier
                         .weight(1f)
@@ -263,7 +264,7 @@ fun NumberHomeScreen(
                         .size(36.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color(0xFF393347))
-                        .clickable(enabled = !isSpinning) {
+                        .clickableWithSound(enabled = !isSpinning) {
                             viewModel.clearHistory()
                             viewModel.clearLastResult()
                         },

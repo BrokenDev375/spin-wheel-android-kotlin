@@ -3,7 +3,6 @@ package com.vga.spinwheel.ui.screen.finger
 import android.content.Intent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -46,6 +45,8 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinResultScreen
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -155,7 +156,7 @@ private fun FingerHeader(
                         .size(32.dp)
                         .clip(CircleShape)
                         .background(FingerMenuGreen)
-                        .clickable { expanded = true },
+                        .clickableWithSound { expanded = true },
                     contentAlignment = Alignment.Center,
                 ) {
                     SpinIcon(
@@ -181,7 +182,7 @@ private fun FingerHeader(
                                     fontWeight = FontWeight.Medium,
                                 )
                             },
-                            onClick = {
+                            onClick = rememberClickWithSound {
                                 expanded = false
                                 onFingerCountSelected(count)
                             },

@@ -9,16 +9,16 @@ plugins {
 }
 
 android {
-    namespace 'com.vga.spinwheel'
-    compileSdk 35
+    namespace = 'com.vga.spinwheel'
+    compileSdk = 35
 
     defaultConfig {
-        applicationId 'com.vga.spinwheel'
-        minSdk 28
-        targetSdk 35
-        versionCode 1
-        versionName '1.0.0'
-        multiDexEnabled true
+        applicationId = 'com.vga.spinwheel'
+        minSdk = 28
+        targetSdk = 35
+        versionCode = 1
+        versionName = '1.0.0'
+        multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -27,8 +27,8 @@ android {
             manifestPlaceholders = [crashlyticsCollectionEnabled: 'false']
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders = [crashlyticsCollectionEnabled: 'true']
         }
@@ -44,9 +44,9 @@ android {
     }
 
     buildFeatures {
-        buildConfig true
-        compose true
-        viewBinding true
+        buildConfig = true
+        compose = true
+        viewBinding = true
     }
 
     ksp {

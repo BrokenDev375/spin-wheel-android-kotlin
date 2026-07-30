@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +46,8 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.nav.Screen
 import kotlinx.coroutines.delay
@@ -223,7 +224,9 @@ fun CoinHomeScreen(
                         .size(35.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
-                        .clickable { if (!isFlipping) navController.navigate(Screen.CoinSettings.route) },
+                        .clickableWithSound(enabled = !isFlipping) {
+                            navController.navigate(Screen.CoinSettings.route)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     SpinIcon(
@@ -234,7 +237,8 @@ fun CoinHomeScreen(
                 }
 
                 Button(
-                    onClick = { if (!isFlipping) isFlipping = true },
+                    onClick = rememberClickWithSound { isFlipping = true },
+                    enabled = !isFlipping,
                     modifier = Modifier
                         .weight(1f)
                         .height(35.dp),
@@ -256,11 +260,7 @@ fun CoinHomeScreen(
                         .size(35.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF393347))
-                        .clickable {
-                            if (!isFlipping) {
-                                viewModel.resetScore()
-                            }
-                        },
+                        .clickableWithSound(enabled = !isFlipping, onClick = viewModel::resetScore),
                     contentAlignment = Alignment.Center
                 ) {
                     SpinIcon(

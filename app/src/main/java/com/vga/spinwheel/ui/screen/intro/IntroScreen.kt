@@ -5,7 +5,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +44,7 @@ import com.vga.spinwheel.advertisement.NativeAdSlot
 import com.vga.spinwheel.advertisement.NativeInterController
 import com.vga.spinwheel.firebase.Remote
 import com.vga.spinwheel.ui.components.SpinPrimaryButton
+import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -180,7 +180,7 @@ private fun PageIndicator(
                     .size(width = if (index == activeIndex) 34.dp else 14.dp, height = 14.dp)
                     .clip(CircleShape)
                     .background(if (index == activeIndex) SpinColors.Action else Color(0xFF45515D))
-                    .clickable { onPageClick(index) },
+                    .clickableWithSound { onPageClick(index) },
             )
         }
     }

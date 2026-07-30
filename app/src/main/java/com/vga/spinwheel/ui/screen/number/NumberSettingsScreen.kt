@@ -1,7 +1,6 @@
 package com.vga.spinwheel.ui.screen.number
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +42,8 @@ import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.SpinSettingRow
 import com.vga.spinwheel.ui.components.SpinToggle
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -102,7 +103,7 @@ fun NumberSettingsScreen(
         centerTitle = false,
         topBarTitleStartPadding = 39.dp,
         actions = {
-            TextButton(onClick = saveAndBack) {
+            TextButton(onClick = rememberClickWithSound(saveAndBack)) {
                 Text(
                     text = stringResource(R.string.save),
                     color = SpinColors.Action,
@@ -263,7 +264,7 @@ private fun NumberStepperButton(
             .size(28.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

@@ -45,23 +45,23 @@ object SpinRadius {
 
 private val SpinTypography = Typography(
     headlineLarge = TextStyle(
-        fontSize = 34.sp,
-        lineHeight = 40.sp,
+        fontSize = 32.sp,
+        lineHeight = 38.sp,
         fontWeight = FontWeight.ExtraBold,
     ),
     headlineSmall = TextStyle(
         fontSize = 20.sp,
-        lineHeight = 34.sp,
+        lineHeight = 26.sp,
         fontWeight = FontWeight.ExtraBold,
     ),
     titleLarge = TextStyle(
-        fontSize = 24.sp,
-        lineHeight = 30.sp,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
         fontWeight = FontWeight.ExtraBold,
     ),
     titleMedium = TextStyle(
-        fontSize = 18.sp,
-        lineHeight = 24.sp,
+        fontSize = 17.sp,
+        lineHeight = 23.sp,
         fontWeight = FontWeight.Bold,
     ),
     titleSmall = TextStyle(
@@ -74,9 +74,19 @@ private val SpinTypography = Typography(
         lineHeight = 20.sp,
         fontWeight = FontWeight.Medium,
     ),
+    bodySmall = TextStyle(
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Medium,
+    ),
     labelLarge = TextStyle(
         fontSize = 15.sp,
         lineHeight = 20.sp,
+        fontWeight = FontWeight.Bold,
+    ),
+    labelMedium = TextStyle(
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
         fontWeight = FontWeight.Bold,
     ),
 )

@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.screen.wheel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +36,8 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinTopBar
+import com.vga.spinwheel.ui.components.clickableWithSound
+import com.vga.spinwheel.ui.components.rememberValueChangeWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinRadius
 import com.vga.spinwheel.ui.theme.SpinSpacing
@@ -102,7 +103,7 @@ fun WheelSettingsScreen(
                                 .size(32.dp)
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(Color.White)
-                                .clickable { viewModel.updateDuration(duration - 1) },
+                                .clickableWithSound { viewModel.updateDuration(duration - 1) },
                             contentAlignment = Alignment.Center,
                         ) {
                             SpinIcon(glyph = SpinIconGlyph.Minus, tint = Color.Black, modifier = Modifier.size(16.dp))
@@ -121,7 +122,7 @@ fun WheelSettingsScreen(
                                 .size(32.dp)
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(Color.White)
-                                .clickable { viewModel.updateDuration(duration + 1) },
+                                .clickableWithSound { viewModel.updateDuration(duration + 1) },
                             contentAlignment = Alignment.Center,
                         ) {
                             SpinIcon(glyph = SpinIconGlyph.Plus, tint = Color.Black, modifier = Modifier.size(16.dp))
@@ -137,7 +138,7 @@ fun WheelSettingsScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(SpinRadius.Card))
                         .background(Color(0xFF3B3754))
-                        .clickable(onClick = onOpenPalette)
+                        .clickableWithSound(onClick = onOpenPalette)
                         .padding(horizontal = 16.dp, vertical = 18.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -173,7 +174,7 @@ fun WheelSettingsScreen(
                     )
                     Switch(
                         checked = removeWinner,
-                        onCheckedChange = viewModel::toggleRemoveWinner,
+                        onCheckedChange = rememberValueChangeWithSound(viewModel::toggleRemoveWinner),
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.White,
                             checkedTrackColor = Color(0xFF00E676),

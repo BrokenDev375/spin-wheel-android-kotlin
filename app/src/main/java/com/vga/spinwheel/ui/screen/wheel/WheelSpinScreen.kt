@@ -46,6 +46,7 @@ import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.components.WheelItemsEditDialog
 import com.vga.spinwheel.ui.components.WheelPickerDialog
 import com.vga.spinwheel.ui.components.WheelSelectorChip
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 import com.vga.spinwheel.ui.components.SpinScreen
@@ -188,10 +189,7 @@ fun WheelSpinScreen(
             ) {
                 // Settings / Sliders Icon Button
                 Button(
-                    onClick = {
-                        gameSoundPlayer.playButtonClick()
-                        onOpenSettings()
-                    },
+                    onClick = rememberClickWithSound(onOpenSettings),
                     modifier = Modifier
                         .width(48.dp)
                         .height(36.dp),
@@ -204,7 +202,7 @@ fun WheelSpinScreen(
 
                 // Primary Spin Button
                 Button(
-                    onClick = viewModel::startSpin,
+                    onClick = rememberClickWithSound(viewModel::startSpin),
                     enabled = spinStatus !is SpinStatus.Spinning && activeItems.size >= 2,
                     modifier = Modifier
                         .weight(1f)
@@ -229,10 +227,7 @@ fun WheelSpinScreen(
 
                 // Shuffle Button
                 Button(
-                    onClick = {
-                        gameSoundPlayer.playButtonClick()
-                        viewModel.shuffleActiveItems()
-                    },
+                    onClick = rememberClickWithSound(viewModel::shuffleActiveItems),
                     modifier = Modifier
                         .width(48.dp)
                         .height(36.dp),
@@ -245,10 +240,7 @@ fun WheelSpinScreen(
 
                 // Reset Button
                 Button(
-                    onClick = {
-                        gameSoundPlayer.playButtonClick()
-                        viewModel.resetSpin()
-                    },
+                    onClick = rememberClickWithSound(viewModel::resetSpin),
                     modifier = Modifier
                         .width(48.dp)
                         .height(36.dp),

@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.screen.dice
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import com.vga.spinwheel.ui.components.SpinIcon
 import com.vga.spinwheel.ui.components.SpinIconButton
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
+import com.vga.spinwheel.ui.components.clickableWithSound
 
 @Composable
 fun DiceHomeScreen(
@@ -155,7 +155,7 @@ private fun DiceCountSelector(
                             color = DiceStrokeColor,
                             shape = RoundedCornerShape(8.dp),
                         )
-                        .clickable(enabled = enabled) { onSelect(count) },
+                        .clickableWithSound(enabled = enabled) { onSelect(count) },
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -239,7 +239,7 @@ private fun DiceBottomBar(
                 .height(36.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(DicePanelColor)
-                .clickable(enabled = !isRolling, onClick = onRoll),
+                .clickableWithSound(enabled = !isRolling, onClick = onRoll),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -269,7 +269,7 @@ private fun DiceToolButton(
             .size(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(DicePanelColor)
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickableWithSound(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(

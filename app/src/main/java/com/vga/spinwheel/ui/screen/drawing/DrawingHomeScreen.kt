@@ -17,6 +17,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.WheelSelectionList
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -31,7 +32,6 @@ fun DrawingHomeScreen(
 ) {
     val wheels by viewModel.wheels.collectAsState()
     var deleteTargetId by remember { mutableStateOf<String?>(null) }
-    val displayWheels = wheels.ifEmpty { listOf(DrawingViewModel.DRAWING_FALLBACK_WHEEL) }
 
     SpinScreen(
         title = stringResource(R.string.drawn),
@@ -43,7 +43,7 @@ fun DrawingHomeScreen(
         modifier = modifier,
     ) { contentModifier ->
         WheelSelectionList(
-            wheels = displayWheels,
+            wheels = wheels,
             onAiGenerate = onAiGenerate,
             onCreateWheel = onAddWheel,
             onOpenWheel = { wheel -> onSpinWheel(wheel.id) },
@@ -51,8 +51,6 @@ fun DrawingHomeScreen(
             onDuplicateWheel = { wheel -> viewModel.cloneWheel(wheel.id) },
             onDeleteWheel = { wheel -> deleteTargetId = wheel.id },
             modifier = contentModifier,
-            canEditWheel = { wheel -> wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id },
-            canDeleteWheel = { wheel -> wheel.id != DrawingViewModel.DRAWING_FALLBACK_WHEEL.id },
         )
     }
 
@@ -68,7 +66,7 @@ fun DrawingHomeScreen(
             },
             confirmButton = {
                 TextButton(
-                    onClick = {
+                    onClick = rememberClickWithSound {
                         deleteTargetId?.let(viewModel::deleteWheel)
                         deleteTargetId = null
                     },
@@ -77,7 +75,7 @@ fun DrawingHomeScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { deleteTargetId = null }) {
+                TextButton(onClick = rememberClickWithSound { deleteTargetId = null }) {
                     Text(stringResource(R.string.cancel), color = SpinColors.TextPrimary)
                 }
             },

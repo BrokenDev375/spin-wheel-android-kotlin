@@ -4,7 +4,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +45,7 @@ import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.WheelItemsEditDialog
 import com.vga.spinwheel.ui.components.WheelPickerDialog
 import com.vga.spinwheel.ui.components.WheelSelectorChip
+import com.vga.spinwheel.ui.components.clickableWithSound
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -73,12 +73,11 @@ fun DrawingSpinScreen(
     val shakeOffset = remember { Animatable(0f) }
     val gameSoundPlayer = rememberGameSoundPlayer()
     val availableWheels = remember(wheels, wheel) {
-        val baseWheels = wheels.ifEmpty { listOf(DrawingViewModel.DRAWING_FALLBACK_WHEEL) }
         val current = wheel
-        if (current != null && baseWheels.none { it.id == current.id }) {
-            listOf(current) + baseWheels
+        if (current != null && wheels.none { it.id == current.id }) {
+            listOf(current) + wheels
         } else {
-            baseWheels
+            wheels
         }
     }
 
@@ -289,7 +288,7 @@ private fun DrawingBottomControls(
                 .background(
                     if (canStart) Color(0xFFEC9213) else Color(0xFFEC9213).copy(alpha = 0.5f),
                 )
-                .clickable(enabled = canStart, onClick = onStart),
+                .clickableWithSound(enabled = canStart, onClick = onStart),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -322,7 +321,7 @@ private fun DrawingToolButton(
             .size(36.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFF393347))
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickableWithSound(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         SpinIcon(

@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,7 +71,9 @@ fun SpinConfirmExitDialog(
                     text = resolvedTitle,
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -79,7 +82,9 @@ fun SpinConfirmExitDialog(
                     text = resolvedMessage,
                     color = Color.White.copy(alpha = 0.85f),
                     fontSize = 15.sp,
-                    lineHeight = 22.sp
+                    lineHeight = 22.sp,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Spacer(modifier = Modifier.height(28.dp))
@@ -89,23 +94,27 @@ fun SpinConfirmExitDialog(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = onDismiss) {
+                    TextButton(onClick = rememberClickWithSound(onDismiss)) {
                         Text(
                             text = resolvedCancelText,
                             color = Color(0xFFF12966),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    TextButton(onClick = onConfirm) {
+                    TextButton(onClick = rememberClickWithSound(onConfirm)) {
                         Text(
                             text = resolvedConfirmText,
                             color = Color(0xFFF5A623),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }

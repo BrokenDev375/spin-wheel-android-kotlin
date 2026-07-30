@@ -2,7 +2,6 @@ package com.vga.spinwheel.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,9 +70,9 @@ fun WheelSelectionList(
             background = Brush.horizontalGradient(
                 colors = listOf(Color(0xFF0DA8E8), Color(0xFF22F198)),
             ),
-            iconSize = 24.dp,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Black,
+            iconSize = 21.dp,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.ExtraBold,
         )
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -85,8 +84,8 @@ fun WheelSelectionList(
             background = Brush.linearGradient(
                 colors = listOf(WheelSelectionCardColor, WheelSelectionCardColor),
             ),
-            iconSize = 20.dp,
-            fontSize = 18.sp,
+            iconSize = 18.dp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             showBorder = true,
         )
@@ -146,7 +145,7 @@ private fun WheelSelectionActionButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(50.dp)
             .clip(shape)
             .background(background)
             .then(
@@ -156,7 +155,7 @@ private fun WheelSelectionActionButton(
                     Modifier
                 },
             )
-            .clickable(onClick = onClick),
+            .clickableWithSound(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -193,16 +192,28 @@ private fun WheelSelectionCard(
     var menuExpanded by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(14.dp)
     val itemLabel = stringResource(R.string.item)
+    val onEditClick = rememberClickWithSound {
+        menuExpanded = false
+        onEdit()
+    }
+    val onDuplicateClick = rememberClickWithSound {
+        menuExpanded = false
+        onDuplicate()
+    }
+    val onDeleteClick = rememberClickWithSound {
+        menuExpanded = false
+        onDelete()
+    }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(108.dp)
+            .height(92.dp)
             .clip(shape)
             .background(WheelSelectionCardColor)
             .border(1.dp, Color.White.copy(alpha = 0.06f), shape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 14.dp),
+            .clickableWithSound(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 12.dp),
     ) {
         Text(
             text = wheel.name,
@@ -211,8 +222,8 @@ private fun WheelSelectionCard(
                 .fillMaxWidth()
                 .padding(end = 42.dp),
             color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Black,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.ExtraBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -221,8 +232,8 @@ private fun WheelSelectionCard(
             text = "${wheel.items.size} $itemLabel",
             modifier = Modifier.align(Alignment.BottomStart),
             color = SpinColors.TextMuted,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Black,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -242,26 +253,17 @@ private fun WheelSelectionCard(
                 if (canEdit) {
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.edit), color = SpinColors.TextPrimary) },
-                        onClick = {
-                            menuExpanded = false
-                            onEdit()
-                        },
+                        onClick = onEditClick,
                     )
                 }
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.duplicate), color = SpinColors.TextPrimary) },
-                    onClick = {
-                        menuExpanded = false
-                        onDuplicate()
-                    },
+                    onClick = onDuplicateClick,
                 )
                 if (canDelete) {
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.delete), color = Color(0xFFFF5252)) },
-                        onClick = {
-                            menuExpanded = false
-                            onDelete()
-                        },
+                        onClick = onDeleteClick,
                     )
                 }
             }

@@ -17,6 +17,7 @@ import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
 import com.vga.spinwheel.ui.components.SpinScreen
 import com.vga.spinwheel.ui.components.WheelSelectionList
+import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 
 @Composable
@@ -60,7 +61,7 @@ fun WheelHomeScreen(
             text = { Text(stringResource(R.string.confirm_delete), color = SpinColors.TextMuted) },
             confirmButton = {
                 TextButton(
-                    onClick = {
+                    onClick = rememberClickWithSound {
                         deleteTargetId?.let { viewModel.deleteWheel(it) }
                         deleteTargetId = null
                     }
@@ -69,7 +70,7 @@ fun WheelHomeScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { deleteTargetId = null }) {
+                TextButton(onClick = rememberClickWithSound { deleteTargetId = null }) {
                     Text(stringResource(R.string.cancel), color = SpinColors.TextPrimary)
                 }
             },
