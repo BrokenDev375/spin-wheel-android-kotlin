@@ -1,5 +1,6 @@
 package com.vga.spinwheel.ui.screen.dice
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
@@ -83,21 +85,32 @@ fun DiceFace(
     borderWidth: Dp = 2.dp,
 ) {
     val style = diceStyles.getOrNull(styleIndex) ?: diceStyles[0]
-    val phaseMs = (diceIndex * 200).coerceAtMost(800)
-
     if (isShaking) {
         // Mỗi xúc xắc có 1 kiểu quay riêng: liên tục CW / liên tục CCW / lắc qua lại
         // → nhìn lộn xộn, không đều, không có 2 cái giống nhau
-        data class SpinConfig(val target: Float, val durationMs: Int, val mode: RepeatMode)
+        data class SpinConfig(
+            val target: Float,
+            val durationMs: Int,
+            val mode: RepeatMode,
+            val bounceDurationMs: Int = 360,
+            val bounceHeight: Dp = 10.dp,
+            val bounceDelayMs: Int = 0,
+        )
         val configs = listOf(
-            SpinConfig( 360f, 260, RepeatMode.Restart),  // 0: nhanh CW liên tục
-            SpinConfig(-180f, 170, RepeatMode.Reverse),  // 1: lắc nhanh CCW
-            SpinConfig(-360f, 320, RepeatMode.Restart),  // 2: vừa CCW liên tục
-            SpinConfig( 200f, 210, RepeatMode.Reverse),  // 3: lắc CW nhanh
-            SpinConfig( 360f, 280, RepeatMode.Restart),  // 4: vừa CW liên tục
-            SpinConfig(-360f, 400, RepeatMode.Restart),  // 5: chậm CCW liên tục
+            SpinConfig( 360f, 260, RepeatMode.Restart, 340, 22.dp,   0),  // 0: nhanh CW liên tục
+            SpinConfig(-180f, 170, RepeatMode.Reverse,  410, 18.dp,  95),  // 1: lắc nhanh CCW
+            SpinConfig(-360f, 320, RepeatMode.Restart, 365, 24.dp, 170),  // 2: vừa CCW liên tục
+            SpinConfig( 200f, 210, RepeatMode.Reverse,  455, 20.dp,  55),  // 3: lắc CW nhanh
+            SpinConfig( 360f, 280, RepeatMode.Restart, 390, 26.dp, 130),  // 4: vừa CW liên tục
+            SpinConfig(-360f, 400, RepeatMode.Restart, 500, 21.dp, 215),  // 5: chậm CCW liên tục
         )
         val cfg = configs[diceIndex % configs.size]
+        val rotationDurationMs = (cfg.durationMs * 1.45f).toInt()
+        val bounceDurationMs = (cfg.bounceDurationMs + (diceIndex % 3) * 35).coerceAtMost(560)
+        val bounceDelayMs = cfg.bounceDelayMs + (diceIndex % 2) * 25
+        val bounceHeight = cfg.bounceHeight + if (diceIndex % 2 == 0) 3.dp else 0.dp
+        val bounceHeightPx = with(LocalDensity.current) { bounceHeight.toPx() }
+        val startsLifted = diceIndex % 2 == 1
 
         val transition = rememberInfiniteTransition("dice_spin_$diceIndex")
 
@@ -105,16 +118,44 @@ fun DiceFace(
             initialValue = 0f,
             targetValue = cfg.target,
             animationSpec = infiniteRepeatable(
-                animation = tween(cfg.durationMs, easing = LinearEasing),
+                animation = tween(rotationDurationMs, easing = LinearEasing),
                 repeatMode = cfg.mode,
             ),
             label = "rotZ_$diceIndex"
         )
 
-        // Đổi chấm ngẫu nhiên mỗi 120ms
+        val bounceY by transition.animateFloat(
+            initialValue = if (startsLifted) -bounceHeightPx else 0f,
+            targetValue = if (startsLifted) 0f else -bounceHeightPx,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = bounceDurationMs,
+                    delayMillis = bounceDelayMs,
+                    easing = FastOutSlowInEasing,
+                ),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "bounceY_$diceIndex"
+        )
+
+        val bounceScale by transition.animateFloat(
+            initialValue = if (startsLifted) 0.57f else 0.67f,
+            targetValue = if (startsLifted) 0.67f else 0.57f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = bounceDurationMs,
+                    delayMillis = bounceDelayMs,
+                    easing = FastOutSlowInEasing,
+                ),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "bounceScale_$diceIndex"
+        )
+
+        // Refresh rolling face at a calmer pace.
         val spinValue by produceState(Random.nextInt(1, 7)) {
             while (true) {
-                delay(120L)
+                delay(170L)
                 this.value = Random.nextInt(1, 7)
             }
         }
@@ -124,10 +165,10 @@ fun DiceFace(
             value = spinValue,
             modifier = modifier.graphicsLayer {
                 rotationZ = rotZ
-                // Thu nhỏ khi quay để đường chéo không tràn ra ngoài cell
-                // (ở góc 45°: diagonal = 0.72 × √2 ≈ 1.02 × kích thước gốc)
-                scaleX = 0.72f
-                scaleY = 0.72f
+                translationY = bounceY
+                // Keep the max scale below the 45-degree diagonal so rotation does not clip.
+                scaleX = bounceScale
+                scaleY = bounceScale
             }
         )
     } else {
