@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +41,7 @@ fun NumberResultScreen(
     val context = LocalContext.current
     val numberTitle = stringResource(R.string.randerNum)
     val shareTitle = stringResource(R.string.sharereust)
+    var retryPending by remember { mutableStateOf(false) }
 
     SpinResultScreen(
         modifier = Modifier.statusBarsPadding(),
@@ -53,9 +57,11 @@ fun NumberResultScreen(
             }
             context.startActivity(Intent.createChooser(shareIntent, shareTitle))
         },
-        onRetry = {
+        onRetry = retry@{
+            if (retryPending) return@retry
+            retryPending = true
             viewModel.clearLastResult()
-            navController.popBackStack()
+            navController.popBackStack(Screen.NumberHome.route, inclusive = false)
         },
         cardHeight = 520.dp,
         cardContentPadding = 0.dp,

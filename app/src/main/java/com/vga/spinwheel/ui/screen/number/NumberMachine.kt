@@ -35,6 +35,11 @@ private class BallPhysicsState(
     var isDroppedOut: Boolean = false
 )
 
+private const val DropHoleX = 0.5f
+private const val DropStartY = 0.78f
+private const val DropOutY = 0.96f
+private const val DropSpeedY = 1.8f
+
 @Composable
 internal fun NumberMachine(
     modifier: Modifier = Modifier,
@@ -120,6 +125,11 @@ internal fun NumberMachine(
                     delay(500L) // Giãn cách 500ms cho các quả bóng tiếp theo
                 }
                 ball.number = droppedNumbers[i]
+                ball.x = DropHoleX
+                ball.y = DropStartY
+                ball.vx = 0f
+                ball.vy = DropSpeedY
+                ball.vRotation = 360f
                 ball.isDropping = true
             }
         } else {
@@ -146,10 +156,10 @@ internal fun NumberMachine(
             // Ball-to-ball repulsion
             for (i in 0 until ballStates.size) {
                 val b1 = ballStates[i]
-                if (b1.isDroppedOut) continue
+                if (b1.isDropping || b1.isDroppedOut) continue
                 for (j in i + 1 until ballStates.size) {
                     val b2 = ballStates[j]
-                    if (b2.isDroppedOut) continue
+                    if (b2.isDropping || b2.isDroppedOut) continue
                     val dx = b1.x - b2.x
                     val dy = b1.y - b2.y
                     val dist = sqrt(dx*dx + dy*dy)
@@ -158,8 +168,8 @@ internal fun NumberMachine(
                         val overlap = minDist - dist
                         val nx = dx / dist
                         val ny = dy / dist
-                        val pushX = nx * overlap * 30f * dt
-                        val pushY = ny * overlap * 30f * dt
+                        val pushX = nx * overlap * 38f * dt
+                        val pushY = ny * overlap * 38f * dt
                         b1.vx += pushX
                         b1.vy += pushY
                         b2.vx -= pushX
@@ -173,34 +183,33 @@ internal fun NumberMachine(
                 moved = true
 
                 if (isSpinning) {
-                    ball.vx += (Random.nextFloat() - 0.5f) * 10f * dt
-                    ball.vy += (Random.nextFloat() - 0.5f) * 10f * dt
+                    ball.vx += (Random.nextFloat() - 0.5f) * 15f * dt
+                    ball.vy += (Random.nextFloat() - 0.5f) * 15f * dt
                     
                     val dx = cx - ball.x
                     val dy = cy - ball.y
-                    ball.vx += dx * 5f * dt
-                    ball.vy += dy * 5f * dt
+                    ball.vx += dx * 6.5f * dt
+                    ball.vy += dy * 6.5f * dt
                     
                     val speed = sqrt(ball.vx * ball.vx + ball.vy * ball.vy)
-                    if (speed < 0.6f) {
-                        ball.vx *= 1.2f
-                        ball.vy *= 1.2f
-                    } else if (speed > 1.8f) {
-                        ball.vx *= 0.9f
-                        ball.vy *= 0.9f
+                    if (speed < 0.75f) {
+                        ball.vx *= 1.3f
+                        ball.vy *= 1.3f
+                    } else if (speed > 2.25f) {
+                        ball.vx *= 0.92f
+                        ball.vy *= 0.92f
                     }
-                    ball.vRotation = (ball.vx + ball.vy) * 200f
+                    ball.vRotation = (ball.vx + ball.vy) * 260f
                 } else if (ball.isDropping) {
-                    // Drop out of the pipe at the bottom (y = 1.0f)
-                    val hx = 0.5f
-                    val dx = hx - ball.x
+                    // Keep the falling ball locked to the outlet center.
+                    val hx = DropHoleX
                     
-                    ball.vx += dx * 15f * dt // strong pull to center
-                    ball.vx *= 0.6f // horizontal friction
+                    ball.x = hx
+                    ball.vx = 0f
                     
-                    ball.vy = 1.8f // Tốc độ trượt rơi ống CỐ ĐỊNH (nhanh hơn để rớt ra trước khi bảng kết quả hiện xong)
+                    ball.vy = DropSpeedY
                     
-                    if (ball.y > 0.96f) { // bottom of the machine image
+                    if (ball.y > DropOutY) {
                         ball.isDroppedOut = true
                     }
                 } else {
