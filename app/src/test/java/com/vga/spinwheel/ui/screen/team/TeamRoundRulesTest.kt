@@ -7,16 +7,15 @@ import org.junit.Test
 class TeamRoundRulesTest {
 
     @Test
-    fun createTeams_allowsLastTeamToHaveFewerMembers() {
+    fun createTeams_distributesMembersAcrossRequestedTeams() {
         val teams = TeamRoundRules.createTeams(
             members = listOf("1", "2", "3", "4", "5"),
-            groupSize = 2,
+            teamCount = 2,
         )
 
-        assertEquals(3, teams.size)
-        assertEquals(listOf("1", "2"), teams[0].members)
-        assertEquals(listOf("3", "4"), teams[1].members)
-        assertEquals(listOf("5"), teams[2].members)
+        assertEquals(2, teams.size)
+        assertEquals(listOf("1", "3", "5"), teams[0].members)
+        assertEquals(listOf("2", "4"), teams[1].members)
     }
 
     @Test
@@ -33,12 +32,11 @@ class TeamRoundRulesTest {
     }
 
     @Test
-    fun seedShuffle_isStableWhenSeedEnabled() {
+    fun shuffledMembers_keepsAllMembers() {
         val members = listOf("A", "B", "C", "D")
 
-        val first = TeamRoundRules.shuffledMembers(members, seedEnabled = true, seed = 42L)
-        val second = TeamRoundRules.shuffledMembers(members, seedEnabled = true, seed = 42L)
+        val shuffled = TeamRoundRules.shuffledMembers(members)
 
-        assertEquals(first, second)
+        assertEquals(members.sorted(), shuffled.sorted())
     }
 }

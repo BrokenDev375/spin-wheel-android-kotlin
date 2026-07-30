@@ -8,25 +8,25 @@ class FingerRoundRulesTest {
 
     @Test
     fun clampFingerCount_keepsSelectionWithinSupportedRange() {
-        assertEquals(1, FingerRoundRules.clampFingerCount(-5))
-        assertEquals(3, FingerRoundRules.clampFingerCount(3))
-        assertEquals(5, FingerRoundRules.clampFingerCount(99))
+        assertEquals(1, FingerRoundRules.clampWinnerCount(-5))
+        assertEquals(3, FingerRoundRules.clampWinnerCount(3))
+        assertEquals(5, FingerRoundRules.clampWinnerCount(99))
     }
 
     @Test
-    fun normalizeTouches_capsToSelectedFingerCountAndBoundsPosition() {
+    fun normalizeTouches_boundsPositionAndKeepsDistinctTouches() {
         val points = FingerRoundRules.normalizeTouches(
             touches = listOf(
                 FingerTouchInput(id = 1L, x = -10f, y = 50f),
                 FingerTouchInput(id = 2L, x = 40f, y = 220f),
                 FingerTouchInput(id = 3L, x = 80f, y = 100f),
+                FingerTouchInput(id = 2L, x = 55f, y = 120f),
             ),
             width = 100f,
             height = 200f,
-            fingerCount = 2,
         )
 
-        assertEquals(2, points.size)
+        assertEquals(3, points.size)
         assertEquals(0.04f, points[0].xRatio)
         assertEquals(0.25f, points[0].yRatio)
         assertEquals(0.40f, points[1].xRatio)
@@ -43,6 +43,6 @@ class FingerRoundRulesTest {
         val winner = FingerRoundRules.chooseWinner(points) { 1 }
 
         assertEquals(20L, winner.id)
-        assertTrue(FingerRoundRules.hasRequiredTouches(points, fingerCount = 2))
+        assertTrue(FingerRoundRules.hasRequiredTouches(points, winnerCount = 2))
     }
 }

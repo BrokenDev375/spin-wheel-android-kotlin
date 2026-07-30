@@ -166,7 +166,7 @@ private fun FingerHeader(
                         .size(32.dp)
                         .clip(CircleShape)
                         .background(FingerWinRed)
-                        .clickable { expandedWinner = true },
+                        .clickableWithSound { expandedWinner = true },
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
