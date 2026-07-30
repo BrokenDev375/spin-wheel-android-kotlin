@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="rate_us">Bewerte uns</string>
     <string name="win">Gewinnen</string>
@@ -141,7 +141,7 @@
     <string name="diceRoller">Würfel</string>
     <string name="confirm">Bestätigen</string>
     <string name="layout_thanks">Danke für dein Feedback!</string>
-    <string name="itemsgroup">Gruppenelemente</string>
+    <string name="itemsgroup">Anzahl der Teams</string>
     <string name="spinwheel">Glücksrad</string>
     <string name="numbercard">Anzahl der Karten</string>
     <string name="General">Allgemein</string>
@@ -305,3 +305,4 @@
         <string name="edit_items">Elemente bearbeiten</string>
         <string name="need_two_items">Mindestens 2 gültige Elemente erforderlich.</string>
 </resources>
+

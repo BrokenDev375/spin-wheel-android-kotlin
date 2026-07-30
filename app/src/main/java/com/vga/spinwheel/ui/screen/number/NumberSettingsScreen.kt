@@ -154,7 +154,7 @@ fun NumberSettingsScreen(
                     SpinSettingStepper(
                         value = tempCount.toString(),
                         onMinus = { if (tempCount > 1) viewModel.updateTempSettings(count = tempCount - 1) },
-                        onPlus = { if (tempCount < 99) viewModel.updateTempSettings(count = tempCount + 1) },
+                        onPlus = { if (tempCount < 5) viewModel.updateTempSettings(count = tempCount + 1) },
                     )
                 }
             )

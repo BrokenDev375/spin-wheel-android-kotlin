@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lucky_team">チーム編成</string>
     <string name="background_music">背景音楽</string>
@@ -185,7 +185,7 @@
     <string name="remove">削除</string>
     <string name="ranking">ランキング</string>
     <string name="i874505">月額</string>
-    <string name="itemsgroup">グループ項目</string>
+    <string name="itemsgroup">チーム数</string>
     <string name="pleai">アイデアを入力してください、例：衣類の項目</string>
     <string name="titleRate3">私たちもあなたを愛しています！</string>
     <string name="error">エラー</string>
@@ -305,3 +305,4 @@
         <string name="edit_items">項目を編集</string>
         <string name="need_two_items">有効な項目が2つ以上必要です。</string>
 </resources>
+
