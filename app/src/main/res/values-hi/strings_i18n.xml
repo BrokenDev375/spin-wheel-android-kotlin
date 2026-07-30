@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="spinning">घूम रहा है</string>
     <string name="lucky_team">टीम बनाएँ</string>
@@ -65,7 +65,7 @@
     <string name="Pastel">पेस्टल</string>
     <string name="g6dd514">परीक्षण अवधि के दौरान आपसे शुल्क नहीं लिया जाएगा और आप कभी भी रद्द कर सकते हैं। जारी रखने पर, आप हमारी गोपनीयता नीति और उपयोग की शर्तों से सहमत होते हैं। अपनी सदस्यता को प्रबंधित, रोकने या रद्द करने के लिए, Google Play में सेटिंग्स पर जाएं।</string>
     <string name="delete">हटाएं</string>
-    <string name="itemsgroup">ग्रुप आइटम</string>
+    <string name="itemsgroup">टीमों की संख्या</string>
     <string name="Emojilos">हारने वाला इमोजी</string>
     <string name="generatorai">एआई जनरेटर</string>
     <string name="Winner">विजेता</string>
@@ -305,3 +305,4 @@
         <string name="edit_items">आइटम संपादित करें</string>
         <string name="need_two_items">कम से कम 2 मान्य आइटम आवश्यक हैं।</string>
 </resources>
+

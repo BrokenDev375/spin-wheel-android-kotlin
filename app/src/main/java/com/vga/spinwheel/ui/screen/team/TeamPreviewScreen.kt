@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,9 +31,9 @@ fun TeamPreviewScreen(
     val members = remember(state.currentList?.items) {
         TeamRoundRules.memberNames(state.currentList?.items.orEmpty())
     }
-    val teams = remember(state.teams, members, state.groupSize) {
+    val teams = remember(state.teams, members, state.teamCount) {
         state.teams.ifEmpty {
-            TeamRoundRules.createTeams(members, state.groupSize)
+            TeamRoundRules.createTeams(members, state.teamCount)
         }
     }
     val resultTitle = stringResource(R.string.results)
@@ -85,3 +85,4 @@ fun TeamPreviewScreen(
         }
     }
 }
+

@@ -2,6 +2,7 @@ package com.vga.spinwheel.ui.screen.card
 
 import kotlin.random.Random
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -47,5 +48,30 @@ class CardRoundRulesTest {
         assertEquals(12, flags.size)
         assertEquals(5, flags.count { it })
         assertTrue(flags.any { !it })
+    }
+
+    @Test
+    fun shouldShowResult_waitsUntilAllRequiredWinnersAreFlipped() {
+        assertFalse(
+            CardRoundRules.shouldShowResult(
+                flippedWinnerCount = 1,
+                requiredWinners = 2,
+                allCardsFlipped = false,
+            )
+        )
+        assertTrue(
+            CardRoundRules.shouldShowResult(
+                flippedWinnerCount = 2,
+                requiredWinners = 2,
+                allCardsFlipped = false,
+            )
+        )
+        assertTrue(
+            CardRoundRules.shouldShowResult(
+                flippedWinnerCount = 1,
+                requiredWinners = 2,
+                allCardsFlipped = true,
+            )
+        )
     }
 }

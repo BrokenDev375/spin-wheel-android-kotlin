@@ -1,4 +1,4 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
@@ -69,9 +68,9 @@ fun TeamSettingsScreen(
                 title = stringResource(R.string.itemsgroup),
                 trailing = {
                     TeamStepper(
-                        value = state.groupSize.toString(),
-                        onMinus = { viewModel.updateGroupSize(state.groupSize - 1) },
-                        onPlus = { viewModel.updateGroupSize(state.groupSize + 1) },
+                        value = state.teamCount.toString(),
+                        onMinus = { viewModel.updateteamCount(state.teamCount - 1) },
+                        onPlus = { viewModel.updateteamCount(state.teamCount + 1) },
                     )
                 },
             )
@@ -83,16 +82,6 @@ fun TeamSettingsScreen(
                         value = "${state.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.durationSeconds + 1) },
-                    )
-                },
-            )
-
-            TeamSettingRow(
-                title = stringResource(R.string.Seeding),
-                trailing = {
-                    SpinToggle(
-                        checked = state.seedEnabled,
-                        onCheckedChange = viewModel::toggleSeedEnabled,
                     )
                 },
             )
@@ -170,3 +159,4 @@ private fun TeamStepperButton(
         )
     }
 }
+

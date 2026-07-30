@@ -37,4 +37,11 @@ object CardRoundRules {
 
         return List(total) { index -> index in selected }
     }
+
+    fun shouldShowResult(
+        flippedWinnerCount: Int,
+        requiredWinners: Int,
+        allCardsFlipped: Boolean,
+    ): Boolean =
+        allCardsFlipped || flippedWinnerCount >= requiredWinners.coerceAtLeast(1)
 }

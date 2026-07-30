@@ -6,7 +6,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -45,6 +47,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +67,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.audio.rememberGameSoundPlayer
 import com.vga.spinwheel.ui.components.SpinIcon
@@ -77,6 +81,8 @@ import com.vga.spinwheel.ui.components.clickableWithSound
 import com.vga.spinwheel.ui.components.rememberClickWithSound
 import com.vga.spinwheel.ui.theme.SpinColors
 import com.vga.spinwheel.ui.theme.SpinSpacing
+import kotlin.math.PI
+import kotlin.math.sin
 
 @Composable
 fun CardScreen(
@@ -97,6 +103,14 @@ fun CardScreen(
 
     LaunchedEffect(state.stage) {
         if (state.stage == CardStage.Result) {
+            gameSoundPlayer.stopCardShuffle()
+        }
+    }
+
+    LaunchedEffect(state.isShuffleAnimating) {
+        if (state.isShuffleAnimating) {
+            gameSoundPlayer.startCardShuffle()
+        } else {
             gameSoundPlayer.stopCardShuffle()
         }
     }
@@ -131,7 +145,6 @@ fun CardScreen(
             onBack = onBack,
             onOpenSettings = onOpenSettings,
             onShuffle = {
-                gameSoundPlayer.startCardShuffle()
                 viewModel.shuffleCards()
             },
             onReset = {
@@ -309,6 +322,26 @@ private fun CardHomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val theme = CardThemes.get(state.settings.themeIndex)
+    val density = LocalDensity.current.density
+    val shuffleDurationMillis = cardShuffleAnimationMillis(state.settings.durationSeconds)
+    val shuffleProgress = remember { Animatable(1f) }
+
+    LaunchedEffect(state.isShuffleAnimating, state.runId, state.settings.durationSeconds) {
+        if (state.isShuffleAnimating) {
+            shuffleProgress.snapTo(0f)
+            shuffleProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = shuffleDurationMillis,
+                    easing = LinearEasing,
+                ),
+            )
+        } else {
+            shuffleProgress.snapTo(1f)
+        }
+    }
+
+    val activeShuffleProgress = if (state.isShuffleAnimating) shuffleProgress.value else 1f
 
     Scaffold(
         modifier = modifier
@@ -326,6 +359,7 @@ private fun CardHomeScreen(
                 onOpenSettings = onOpenSettings,
                 onShuffle = onShuffle,
                 onReset = onReset,
+                enabled = !state.isShuffleAnimating,
             )
         },
     ) { innerPadding ->
@@ -352,9 +386,20 @@ private fun CardHomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                items(state.cards, key = { it.id }) { card ->
+                itemsIndexed(
+                    items = state.cards,
+                    key = { _, card -> card.id },
+                ) { index, card ->
+                    val shuffleMotion = cardShuffleMotion(
+                        index = index,
+                        totalCards = state.cards.size,
+                        progress = activeShuffleProgress,
+                        shuffleDurationMillis = shuffleDurationMillis,
+                    )
                     Box(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .zIndex(shuffleMotion.zIndex),
                         contentAlignment = Alignment.Center,
                     ) {
                         FlipCardView(
@@ -362,12 +407,22 @@ private fun CardHomeScreen(
                             isWinner = card.isWinner,
                             isFaceUp = card.isFlipped,
                             animationMillis = cardAnimationMillis(state.settings.durationSeconds),
-                            enabled = state.isShuffled && !card.isFlipped,
+                            enabled = state.isShuffled && !state.isShuffleAnimating && !card.isFlipped,
+                            eliminated = card.isFlipped && !card.isWinner,
+                            eliminationTilt = if (index % 2 == 0) -5f else 5f,
                             onClick = { onFlipCard(card.id) },
                             modifier = Modifier
                                 .widthIn(max = 94.dp)
                                 .fillMaxWidth()
-                                .aspectRatio(CardAspectRatio),
+                                .aspectRatio(CardAspectRatio)
+                                .graphicsLayer {
+                                    translationX = shuffleMotion.translationXDp * density
+                                    translationY = shuffleMotion.translationYDp * density
+                                    rotationZ = shuffleMotion.rotationZ
+                                    scaleX = shuffleMotion.scale
+                                    scaleY = shuffleMotion.scale
+                                    alpha = shuffleMotion.alpha
+                                },
                         )
                     }
                 }
@@ -467,6 +522,7 @@ private fun CardBottomBar(
     onOpenSettings: () -> Unit,
     onShuffle: () -> Unit,
     onReset: () -> Unit,
+    enabled: Boolean,
 ) {
     val customizeLabel = stringResource(R.string.customsize)
     val shuffleLabel = stringResource(R.string.TaptoShuffle).uppercase()
@@ -484,16 +540,19 @@ private fun CardBottomBar(
             glyph = SpinIconGlyph.Sliders,
             contentDescription = customizeLabel,
             onClick = onOpenSettings,
+            enabled = enabled,
         )
         CardPrimaryActionButton(
             text = shuffleLabel,
             onClick = onShuffle,
+            enabled = enabled,
             modifier = Modifier.weight(1f),
         )
         CardToolButton(
             glyph = SpinIconGlyph.Reset,
             contentDescription = restartLabel,
             onClick = onReset,
+            enabled = enabled,
         )
     }
 }
@@ -503,6 +562,7 @@ private fun CardToolButton(
     glyph: SpinIconGlyph,
     contentDescription: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Box(
         modifier = Modifier
@@ -524,6 +584,7 @@ private fun CardToolButton(
 private fun CardPrimaryActionButton(
     text: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -593,11 +654,14 @@ private fun CardStepper(
         CardStepperButton(text = "-", onClick = onMinus)
         Text(
             text = value,
-            modifier = Modifier.width(34.dp),
+            modifier = Modifier.width(46.dp),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Clip,
         )
         CardStepperButton(text = "+", onClick = onPlus)
     }
@@ -779,6 +843,8 @@ private fun FlipCardView(
     isFaceUp: Boolean,
     animationMillis: Int,
     enabled: Boolean,
+    eliminated: Boolean = false,
+    eliminationTilt: Float = 0f,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -791,6 +857,15 @@ private fun FlipCardView(
         ),
         label = "card-flip",
     )
+    val eliminationProgress by animateFloatAsState(
+        targetValue = if (eliminated) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = (animationMillis * 0.75f).toInt().coerceAtLeast(220),
+            delayMillis = (animationMillis * 0.35f).toInt().coerceAtLeast(90),
+            easing = FastOutSlowInEasing,
+        ),
+        label = "card-elimination",
+    )
     val clickableModifier = if (enabled) {
         Modifier.clickable(onClick = onClick)
     } else {
@@ -802,6 +877,11 @@ private fun FlipCardView(
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 12f * density
+                alpha = 1f - 0.52f * eliminationProgress
+                scaleX = 1f - 0.09f * eliminationProgress
+                scaleY = 1f - 0.09f * eliminationProgress
+                translationY = 14f * density * eliminationProgress
+                rotationZ = eliminationTilt * eliminationProgress
             }
             .then(clickableModifier),
         contentAlignment = Alignment.Center,
@@ -963,8 +1043,147 @@ private fun shareCardResult(
     }
 }
 
+private data class CardShuffleMotion(
+    val translationXDp: Float,
+    val translationYDp: Float,
+    val rotationZ: Float,
+    val scale: Float,
+    val alpha: Float,
+    val zIndex: Float,
+)
+
+private fun cardShuffleMotion(
+    index: Int,
+    totalCards: Int,
+    progress: Float,
+    shuffleDurationMillis: Int,
+): CardShuffleMotion {
+    val p = progress.coerceIn(0f, 1f)
+    if (p >= 0.999f || totalCards <= 0) {
+        return CardShuffleMotion(
+            translationXDp = 0f,
+            translationYDp = 0f,
+            rotationZ = 0f,
+            scale = 1f,
+            alpha = 1f,
+            zIndex = index.toFloat(),
+        )
+    }
+
+    val durationMillis = shuffleDurationMillis.coerceAtLeast(1).toFloat()
+    val timeMillis = p * durationMillis
+    val gatherEnd = CardGatherMillis / durationMillis
+    val remainingMillis = (durationMillis - CardGatherMillis).coerceAtLeast(1f)
+    val dealWindowMillis = (remainingMillis * CardDealDurationRatio)
+        .coerceIn(CardDealMinMillis, CardDealMaxMillis)
+        .coerceAtMost(remainingMillis * 0.45f)
+    val dealWindow = dealWindowMillis / durationMillis
+    val dealStartBase = 1f - dealWindow
+    val shuffleStart = gatherEnd
+    val shuffleEnd = dealStartBase
+    val shuffleSpan = (shuffleEnd - shuffleStart).coerceAtLeast(0.01f)
+    val horizontalStart = shuffleStart
+    val horizontalSplitEnd = shuffleStart + shuffleSpan * 0.48f
+    val verticalStart = shuffleStart + shuffleSpan * 0.52f
+    val verticalEnd = shuffleEnd
+    val verticalEase = (CardVerticalShuffleEaseMillis / durationMillis)
+        .coerceIn(0.018f, shuffleSpan * 0.16f)
+
+    val column = index % 3
+    val row = index / 3
+    val deckX = (1f - column) * CardShuffleColumnPitchDp
+    val deckY = (0.10f - row) * CardShuffleRowPitchDp
+    val stackDepth = (index - totalCards / 2f) / totalCards.coerceAtLeast(1)
+    val gather = smoothStep(0f, gatherEnd, p)
+
+    val halfSize = (totalCards + 1) / 2
+    val isLeftPacket = index < halfSize
+    val side = if (isLeftPacket) -1f else 1f
+    val halfIndex = if (isLeftPacket) index else index - halfSize
+    val halfCount = if (isLeftPacket) halfSize else totalCards - halfSize
+    val halfOrder = halfIndex / (halfCount - 1).coerceAtLeast(1).toFloat()
+
+    val horizontalSplit = smoothStep(horizontalStart, horizontalStart + shuffleSpan * 0.16f, p) *
+        (1f - smoothStep(horizontalStart + shuffleSpan * 0.34f, horizontalSplitEnd, p))
+    val horizontalShuffle = smoothStep(horizontalStart + shuffleSpan * 0.10f, horizontalStart + shuffleSpan * 0.20f, p) *
+        (1f - smoothStep(horizontalStart + shuffleSpan * 0.30f, horizontalSplitEnd, p))
+    val horizontalElapsed = (timeMillis - horizontalStart * durationMillis).coerceAtLeast(0f)
+    val horizontalWave = sin(
+        horizontalElapsed / CardHorizontalShuffleCycleMillis * PI.toFloat() * 2f +
+            halfOrder * PI.toFloat()
+    )
+    val packetX = side * (48f + halfOrder * 12f) * horizontalSplit
+    val packetY = (-8f + halfOrder * 5f) * horizontalSplit
+    val horizontalX = side * horizontalWave * 12f * horizontalShuffle
+    val horizontalRotation = side * (12f - halfOrder * 4f) * horizontalSplit +
+        side * horizontalWave * 5f * horizontalShuffle
+
+    val verticalShuffle = smoothStep(verticalStart, verticalStart + verticalEase, p) *
+        (1f - smoothStep(verticalEnd - verticalEase, verticalEnd, p))
+    val alternateDirection = if (index % 2 == 0) -1f else 1f
+    val verticalElapsed = (timeMillis - verticalStart * durationMillis).coerceAtLeast(0f)
+    val verticalCycle = sin(
+        verticalElapsed / CardVerticalShuffleCycleMillis * PI.toFloat() * 2f +
+            index * 0.28f
+    )
+    val verticalOffset = alternateDirection * verticalCycle * (34f + (index % 3) * 4f) * verticalShuffle
+    val verticalRotation = alternateDirection * verticalCycle * 4.5f * verticalShuffle
+    val deckSettle = smoothStep(verticalStart, verticalEnd, p)
+
+    val dealStep = dealWindow / totalCards.coerceAtLeast(1)
+    val dealStart = dealStartBase + index * dealStep
+    val dealDuration = dealStep * 0.9f
+    val deal = smoothStep(dealStart, dealStart + dealDuration, p)
+    val deckWeight = gather * (1f - deal)
+    val dealArc = -42f * sin(deal * PI.toFloat())
+    val dealSway = (if (index % 2 == 0) -1f else 1f) * 7f * sin(deal * PI.toFloat())
+    val squaredDeckOffsetX = stackDepth * 2f * deckSettle * (1f - deal)
+    val squaredDeckOffsetY = -stackDepth * 2.4f * deckSettle * (1f - deal)
+
+    return CardShuffleMotion(
+        translationXDp = deckX * deckWeight +
+            packetX * (1f - deal) +
+            horizontalX * (1f - deal) +
+            squaredDeckOffsetX +
+            dealSway,
+        translationYDp = deckY * deckWeight +
+            packetY * (1f - deal) +
+            verticalOffset * (1f - deal) +
+            squaredDeckOffsetY +
+            dealArc,
+        rotationZ = (-8f * stackDepth * deckWeight) +
+            horizontalRotation * (1f - deal) +
+            verticalRotation * (1f - deal),
+        scale = 1f - 0.035f * deckWeight + 0.025f * verticalShuffle + 0.035f * sin(deal * PI.toFloat()),
+        alpha = 1f,
+        zIndex = if (deal < 1f) (totalCards - index).toFloat() else index.toFloat(),
+    )
+}
+
+private fun smoothStep(
+    start: Float,
+    end: Float,
+    value: Float,
+): Float {
+    if (end <= start) return if (value >= end) 1f else 0f
+    val t = ((value - start) / (end - start)).coerceIn(0f, 1f)
+    return t * t * (3f - 2f * t)
+}
+
 private fun cardAnimationMillis(durationSeconds: Int): Int =
     (durationSeconds * 180).coerceIn(240, 1_200)
 
+private fun cardShuffleAnimationMillis(durationSeconds: Int): Int =
+    durationSeconds * 1_000
+
 private const val CardAspectRatio = 86f / 124f
+private const val CardShuffleColumnPitchDp = 108f
+private const val CardShuffleRowPitchDp = 150f
+private const val CardGatherMillis = 260f
+private const val CardDealDurationRatio = 0.28f
+private const val CardDealMinMillis = 520f
+private const val CardDealMaxMillis = 2_600f
+private const val CardHorizontalShuffleCycleMillis = 190f
+private const val CardVerticalShuffleCycleMillis = 170f
+private const val CardVerticalShuffleEaseMillis = 220f
 private val CardResultChrome = Color(0xFF3D3D3C)

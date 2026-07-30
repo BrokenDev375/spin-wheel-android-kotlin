@@ -1,16 +1,21 @@
 package com.vga.spinwheel.ui.screen.number
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -55,6 +61,7 @@ import com.vga.spinwheel.ui.nav.Screen
 import com.vga.spinwheel.ui.theme.SpinColors
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NumberHomeScreen(
     navController: NavController,
@@ -93,7 +100,8 @@ fun NumberHomeScreen(
             gameSoundPlayer.stopNumberRoll()
             
             showBalls = true
-            delay(1_000L)
+            // Đợi hiệu ứng rơi từng quả hoàn tất, bóng càng nhiều đợi càng lâu (chậm lại)
+            delay(1800L + (generatedNumbers.size * 600L))
             
             viewModel.saveResultToHistory(generatedNumbers.joinToString(", "))
             navController.navigate(Screen.NumberResult.route)
@@ -168,26 +176,30 @@ fun NumberHomeScreen(
                         isSpinning = isSpinning && !showBalls,
                         spreadBalls = showBalls || history.isNotEmpty(),
                         isDropped = isSpinning || showBalls,
+                        minNumber = min,
+                        maxNumber = max,
+                        droppedNumbers = if (showBalls) generatedNumbers else emptyList()
                     )
 
-                    if (showBalls && generatedNumbers.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    width = 1.5.dp,
-                                    color = SpinColors.Action,
-                                    shape = RoundedCornerShape(10.dp),
+                    Spacer(modifier = Modifier.height(16.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        generatedNumbers.forEachIndexed { index, num ->
+                            AnimatedVisibility(
+                                visible = showBalls,
+                                enter = slideInVertically(
+                                    initialOffsetY = { it + 50 }, // Bắt đầu từ DƯỚI (it + 50) để trồi LÊN
+                                    animationSpec = tween(durationMillis = 600, delayMillis = 150 + index * 500)
+                                ) + fadeIn(animationSpec = tween(durationMillis = 600, delayMillis = 150 + index * 500))
+                            ) {
+                                NumberBall(
+                                    number = num.toString(),
+                                    size = 56.dp
                                 )
-                                .padding(horizontal = 14.dp, vertical = 7.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = generatedNumbers.joinToString(", "),
-                                color = SpinColors.Action,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Black,
-                            )
+                            }
                         }
                     }
                 }
@@ -296,10 +308,11 @@ private fun NumberRecentResults(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Row(
+        LazyRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(end = 18.dp)
         ) {
-            results.forEach { result ->
+            items(results.size) { index ->
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
@@ -313,7 +326,7 @@ private fun NumberRecentResults(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = result,
+                        text = results[index],
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Black,

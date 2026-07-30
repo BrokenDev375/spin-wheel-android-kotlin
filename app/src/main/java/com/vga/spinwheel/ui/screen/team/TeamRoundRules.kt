@@ -1,7 +1,6 @@
-package com.vga.spinwheel.ui.screen.team
+﻿package com.vga.spinwheel.ui.screen.team
 
 import com.vga.spinwheel.data.model.WheelItem
-import kotlin.random.Random
 
 data class TeamGroup(
     val index: Int,
@@ -11,13 +10,13 @@ data class TeamGroup(
 }
 
 object TeamRoundRules {
-    const val MIN_GROUP_SIZE = 1
-    const val MAX_GROUP_SIZE = 10
+    const val MIN_TEAM_COUNT = 2
+    const val MAX_TEAM_COUNT = 10
     const val MIN_DURATION_SECONDS = 2
     const val MAX_DURATION_SECONDS = 10
 
-    fun clampGroupSize(value: Int): Int =
-        value.coerceIn(MIN_GROUP_SIZE, MAX_GROUP_SIZE)
+    fun clampTeamCount(value: Int): Int =
+        value.coerceIn(MIN_TEAM_COUNT, MAX_TEAM_COUNT)
 
     fun clampDuration(value: Int): Int =
         value.coerceIn(MIN_DURATION_SECONDS, MAX_DURATION_SECONDS)
@@ -29,26 +28,26 @@ object TeamRoundRules {
 
     fun createTeams(
         members: List<String>,
-        groupSize: Int,
+        teamCount: Int,
     ): List<TeamGroup> {
-        val normalizedGroupSize = clampGroupSize(groupSize)
-        return members
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-            .chunked(normalizedGroupSize)
-            .mapIndexed { index, names ->
-                TeamGroup(index = index + 1, members = names)
-            }
+        val normalizedTeamCount = clampTeamCount(teamCount)
+        val validMembers = members.map { it.trim() }.filter { it.isNotEmpty() }
+        if (validMembers.isEmpty()) return emptyList()
+
+        val actualTeamCount = normalizedTeamCount.coerceAtMost(validMembers.size)
+        val teams = List(actualTeamCount) { mutableListOf<String>() }
+        
+        validMembers.forEachIndexed { index, member ->
+            teams[index % actualTeamCount].add(member)
+        }
+
+        return teams.mapIndexed { index, names ->
+            TeamGroup(index = index + 1, members = names)
+        }
     }
 
-    fun shuffledMembers(
-        members: List<String>,
-        seedEnabled: Boolean,
-        seed: Long,
-    ): List<String> =
-        if (seedEnabled) {
-            members.shuffled(Random(seed))
-        } else {
-            members.shuffled()
-        }
+    fun shuffledMembers(members: List<String>): List<String> =
+        members.shuffled()
 }
+
+

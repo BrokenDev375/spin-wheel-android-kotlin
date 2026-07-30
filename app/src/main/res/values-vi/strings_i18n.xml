@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="screen_intro">Giới thiệu</string>
     <string name="screen_home">Spin Wheel</string>
     <string name="screen_settings">Cài đặt</string>
@@ -299,7 +299,7 @@
     <string name="duplicate_failed">Nhân bản bánh xe thất bại</string>
     <string name="to">Đến</string>
     <string name="diceRoller">Xúc Xắc</string>
-    <string name="itemsgroup">Các mục của nhóm</string>
+    <string name="itemsgroup">Số lượng đội</string>
     <string name="create">Tạo Bánh xe mới</string>
     <string name="list">Danh sách</string>
     <string name="next">Tiếp</string>
@@ -339,3 +339,4 @@
     <string name="premium_feature_unlimited">Tạo vòng quay tùy chỉnh</string>
     <string name="premium_feature_premium_skins">Mở khóa giao diện</string>
 </resources>
+
