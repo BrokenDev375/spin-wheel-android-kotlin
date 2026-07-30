@@ -69,6 +69,7 @@ fun DrawingSpinScreen(
 
     val scope = rememberCoroutineScope()
     var isSpinning by remember { mutableStateOf(false) }
+    var isResolvingResult by remember { mutableStateOf(false) }
     var showTempResult by remember { mutableStateOf(false) }
     var showWheelPicker by remember { mutableStateOf(false) }
     var showEditItems by remember { mutableStateOf(false) }
@@ -111,6 +112,7 @@ fun DrawingSpinScreen(
         ?.coerceAtLeast(0)
         ?: 0
     val winnerName = winner?.name?.takeIf { it.isNotBlank() } ?: "-"
+    val controlsEnabled = !isSpinning && !isResolvingResult
 
     SpinScreen(
         title = stringResource(R.string.drawn),
@@ -137,7 +139,7 @@ fun DrawingSpinScreen(
 
             WheelSelectorChip(
                 name = wheel?.name.orEmpty(),
-                enabled = !isSpinning && wheel != null,
+                enabled = controlsEnabled && wheel != null,
                 onClick = { showWheelPicker = true },
                 modifier = Modifier
                     .widthIn(min = 120.dp, max = 300.dp),
@@ -176,31 +178,39 @@ fun DrawingSpinScreen(
             }
 
             DrawingBottomControls(
-                enabled = !isSpinning,
-                canStart = !isSpinning && !wheel?.items.isNullOrEmpty(),
+                enabled = controlsEnabled,
+                canStart = controlsEnabled && !wheel?.items.isNullOrEmpty(),
                 onSettings = onOpenSettings,
                 onStart = {
+                    if (!controlsEnabled) return@DrawingBottomControls
                     showTempResult = false
                     viewModel.clearLastResult()
+                    isResolvingResult = false
                     isSpinning = true
                     scope.launch {
-                        val endTime = System.currentTimeMillis() + duration * 1_000L
-                        while (System.currentTimeMillis() < endTime) {
-                            shakeOffset.animateTo(
-                                targetValue = 12f,
-                                animationSpec = tween(120, easing = FastOutSlowInEasing),
-                            )
-                            shakeOffset.animateTo(
-                                targetValue = -12f,
-                                animationSpec = tween(120, easing = FastOutSlowInEasing),
-                            )
+                        try {
+                            val endTime = System.currentTimeMillis() + duration * 1_000L
+                            while (System.currentTimeMillis() < endTime) {
+                                shakeOffset.animateTo(
+                                    targetValue = 12f,
+                                    animationSpec = tween(120, easing = FastOutSlowInEasing),
+                                )
+                                shakeOffset.animateTo(
+                                    targetValue = -12f,
+                                    animationSpec = tween(120, easing = FastOutSlowInEasing),
+                                )
+                            }
+                            shakeOffset.snapTo(0f)
+                            viewModel.drawItem()
+                            isSpinning = false
+                            isResolvingResult = true
+                            showTempResult = true
+                            delay(DrawingResultNavigationDelayMs)
+                            onResult(wheelId)
+                        } finally {
+                            isSpinning = false
+                            isResolvingResult = false
                         }
-                        shakeOffset.snapTo(0f)
-                        viewModel.drawItem()
-                        isSpinning = false
-                        showTempResult = true
-                        delay(1_000L)
-                        onResult(wheelId)
                     }
                 },
                 onReset = {
@@ -217,7 +227,7 @@ fun DrawingSpinScreen(
             title = stringResource(R.string.select_wheel),
             wheels = availableWheels,
             selectedWheelId = wheel?.id ?: wheelId,
-            canEditSelected = !isSpinning && wheel != null,
+            canEditSelected = controlsEnabled && wheel != null,
             onSelectWheel = { selectedWheelId ->
                 showWheelPicker = false
                 showTempResult = false
@@ -371,3 +381,5 @@ private fun DrawingToolButton(
         )
     }
 }
+
+private const val DrawingResultNavigationDelayMs = 300L
