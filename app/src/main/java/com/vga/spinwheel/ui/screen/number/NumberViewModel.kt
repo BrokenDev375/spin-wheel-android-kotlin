@@ -23,19 +23,19 @@ class NumberViewModel @Inject constructor(
 ) : ViewModel() {
 
     val min: StateFlow<Int> = settingsRepository.observeMin()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     val max: StateFlow<Int> = settingsRepository.observeMax()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 10)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 10)
 
     val count: StateFlow<Int> = settingsRepository.observeCount()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     val allowDuplicates: StateFlow<Boolean> = settingsRepository.observeAllowDuplicates()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val duration: StateFlow<Int> = settingsRepository.observeDuration()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     val history: StateFlow<List<RandomResult>> = historyRepository.observeHistory(RandomFeature.NUMBER)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -83,18 +83,20 @@ class NumberViewModel @Inject constructor(
 
     fun saveSettings() {
         viewModelScope.launch {
-            var finalMin = _tempMin.value
-            var finalMax = _tempMax.value
-            if (finalMin > finalMax) {
-                val temp = finalMin
-                finalMin = finalMax
-                finalMax = temp
+            kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) {
+                var finalMin = _tempMin.value
+                var finalMax = _tempMax.value
+                if (finalMin > finalMax) {
+                    val temp = finalMin
+                    finalMin = finalMax
+                    finalMax = temp
+                }
+                settingsRepository.setMin(finalMin)
+                settingsRepository.setMax(finalMax)
+                settingsRepository.setCount(_tempCount.value)
+                settingsRepository.setAllowDuplicates(_tempAllowDuplicates.value)
+                settingsRepository.setDuration(_tempDuration.value)
             }
-            settingsRepository.setMin(finalMin)
-            settingsRepository.setMax(finalMax)
-            settingsRepository.setCount(_tempCount.value)
-            settingsRepository.setAllowDuplicates(_tempAllowDuplicates.value)
-            settingsRepository.setDuration(_tempDuration.value)
         }
     }
 
