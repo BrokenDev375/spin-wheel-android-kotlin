@@ -12,6 +12,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -105,7 +106,8 @@ fun DiceFace(
             SpinConfig(-360f, 400, RepeatMode.Restart, 500, 21.dp, 215),  // 5: chậm CCW liên tục
         )
         val cfg = configs[diceIndex % configs.size]
-        val rotationDurationMs = (cfg.durationMs * 1.45f).toInt()
+        val rotationDurationMs = (cfg.durationMs * 1.65f).toInt()
+        val rotationTarget = (cfg.target * DiceRollingRotationScale).coerceIn(-DiceRollingMaxRotation, DiceRollingMaxRotation)
         val bounceDurationMs = (cfg.bounceDurationMs + (diceIndex % 3) * 35).coerceAtMost(560)
         val bounceDelayMs = cfg.bounceDelayMs + (diceIndex % 2) * 25
         val bounceHeight = cfg.bounceHeight + if (diceIndex % 2 == 0) 3.dp else 0.dp
@@ -116,10 +118,10 @@ fun DiceFace(
 
         val rotZ by transition.animateFloat(
             initialValue = 0f,
-            targetValue = cfg.target,
+            targetValue = rotationTarget,
             animationSpec = infiniteRepeatable(
                 animation = tween(rotationDurationMs, easing = LinearEasing),
-                repeatMode = cfg.mode,
+                repeatMode = RepeatMode.Reverse,
             ),
             label = "rotZ_$diceIndex"
         )
@@ -219,26 +221,34 @@ fun DiceGrid(
     val dieSize = if (values.size <= 1) singleDieSize else gridDieSize
     val dotSize = if (values.size <= 1) 28.dp else 16.dp
     val contentPadding = if (values.size <= 1) 32.dp else 18.dp
+    val renderedDieSize = if (isShaking) dieSize * DiceRollingSizeScale else dieSize
+    val edgePadding = if (isShaking) DiceRollingGridEdgePadding else 0.dp
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
+        contentPadding = PaddingValues(edgePadding),
         horizontalArrangement = Arrangement.spacedBy(spacing),
         verticalArrangement = Arrangement.spacedBy(spacing),
         userScrollEnabled = false,
         modifier = modifier
-            .width(dieSize * columns + spacing * (columns - 1))
-            .height(dieSize * rows + spacing * (rows - 1)),
+            .width(dieSize * columns + spacing * (columns - 1) + edgePadding * 2)
+            .height(dieSize * rows + spacing * (rows - 1) + edgePadding * 2),
     ) {
         itemsIndexed(values) { index, value ->
-            DiceFace(
-                value = value,
-                styleIndex = styleIndex,
-                isShaking = isShaking,
-                diceIndex = index,
-                dotSize = dotSize,
-                contentPadding = contentPadding,
+            Box(
                 modifier = Modifier.size(dieSize),
-            )
+                contentAlignment = Alignment.Center,
+            ) {
+                DiceFace(
+                    value = value,
+                    styleIndex = styleIndex,
+                    isShaking = isShaking,
+                    diceIndex = index,
+                    dotSize = dotSize,
+                    contentPadding = contentPadding,
+                    modifier = Modifier.size(renderedDieSize),
+                )
+            }
         }
     }
 }
@@ -262,3 +272,7 @@ fun DiceTile(
 private val DicePanelColor = Color(0xFF393347)
 private val DiceAccentColor = Color(0xFFEC9213)
 private val DiceStrokeColor = Color(0xFF8C8893)
+private const val DiceRollingRotationScale = 0.58f
+private const val DiceRollingMaxRotation = 190f
+private const val DiceRollingSizeScale = 0.86f
+private val DiceRollingGridEdgePadding = 24.dp
