@@ -201,7 +201,7 @@ fun TeamDetailScreen(
                         contentPadding = PaddingValues(
                             start = 16.dp,
                             end = 16.dp,
-                            bottom = 44.dp,
+                            bottom = 72.dp,
                         ),
                     )
                 }
@@ -211,7 +211,11 @@ fun TeamDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 28.dp,
+                        ),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
                         itemsIndexed(members, key = { index, name -> "$index-$name" }) { index, name ->
@@ -333,7 +337,7 @@ private fun TeamDetailBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 68.dp),
+            .padding(top = 24.dp, bottom = 68.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
