@@ -124,7 +124,7 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
   - `textRadius` cố định tại giữa tia (~0.545r), độc lập với số item.
   - Build debug: ✅ SUCCESSFUL.
 
-## 5. Phase 3: Chọn ngón tay
+## [x] 5. Phase 3: Chọn ngón tay
 
 Đầu việc từ txt:
 
@@ -163,9 +163,11 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 
 ### Done
 
-- Số được chọn là số người thắng.
-- Có hướng dẫn luật chơi cơ bản.
-- Kết quả highlight đúng số winner.
+- [x] Số được chọn trên icon bàn tay là số người chơi.
+- [x] Thêm một dropdown menu kế bên để chọn số người thắng.
+- [x] Có hướng dẫn luật chơi cơ bản cho người mới ngay trên giao diện (text thay đổi tuỳ theo cấu hình).
+- [x] Kết quả highlight đúng số winner theo thiết lập.
+- [x] Logic `FingerRoundRules` và `FingerViewModel` hỗ trợ lưu multi-winners (`Set<Long>`).
 
 ## 6. Phase 4: Chọn đội
 

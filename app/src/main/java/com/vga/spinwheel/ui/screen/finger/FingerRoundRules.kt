@@ -16,24 +16,21 @@ data class FingerPoint(
 )
 
 object FingerRoundRules {
-    const val MIN_FINGER_COUNT = 1
-    const val MAX_FINGER_COUNT = 5
+    const val MIN_WINNER_COUNT = 1
+    const val MAX_WINNER_COUNT = 5
 
-    fun clampFingerCount(count: Int): Int =
-        count.coerceIn(MIN_FINGER_COUNT, MAX_FINGER_COUNT)
+    fun clampWinnerCount(count: Int): Int =
+        count.coerceIn(MIN_WINNER_COUNT, MAX_WINNER_COUNT)
 
     fun normalizeTouches(
         touches: List<FingerTouchInput>,
         width: Float,
         height: Float,
-        fingerCount: Int,
     ): List<FingerPoint> {
         if (width <= 0f || height <= 0f) return emptyList()
 
-        val limit = clampFingerCount(fingerCount)
         return touches
             .distinctBy { it.id }
-            .take(limit)
             .mapIndexed { index, touch ->
                 FingerPoint(
                     id = touch.id,
@@ -44,8 +41,8 @@ object FingerRoundRules {
             }
     }
 
-    fun hasRequiredTouches(points: List<FingerPoint>, fingerCount: Int): Boolean =
-        points.size >= clampFingerCount(fingerCount)
+    fun hasRequiredTouches(points: List<FingerPoint>, winnerCount: Int): Boolean =
+        points.size >= clampWinnerCount(winnerCount)
 
     fun chooseWinner(
         points: List<FingerPoint>,
@@ -54,5 +51,14 @@ object FingerRoundRules {
         require(points.isNotEmpty()) { "At least one finger point is required." }
         val index = randomIndex(points.size).coerceIn(0, points.lastIndex)
         return points[index]
+    }
+
+    fun chooseWinners(
+        points: List<FingerPoint>,
+        winnerCount: Int,
+    ): List<FingerPoint> {
+        require(points.isNotEmpty()) { "At least one finger point is required." }
+        val count = clampWinnerCount(winnerCount).coerceAtMost(points.size)
+        return points.shuffled().take(count)
     }
 }

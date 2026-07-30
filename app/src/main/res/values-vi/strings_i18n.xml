@@ -16,17 +16,8 @@
 
     <string name="content_description_settings">Cài đặt</string>
     <string name="content_description_back">Quay lại</string>
-    <string name="content_description_premium">Premium</string>
 
-    <string name="settings_overview">Tổng quan</string>
-    <string name="settings_share">Chia sẻ</string>
-    <string name="settings_language">Ngôn ngữ</string>
-    <string name="settings_rate">Đánh giá</string>
-    <string name="settings_music">Nhạc nền</string>
-    <string name="settings_game_sound">Âm thanh trò chơi</string>
-    <string name="settings_vibration">Rung</string>
-
-    <string name="share_app_text">Spin Wheel &amp; Random Tools</string>
+    <string name="share_app_text">Bánh xe quay &amp; Công cụ ngẫu nhiên</string>
     <string name="share_chooser_title">Chia sẻ</string>
     <string name="rate_unavailable">Không thể mở cửa hàng ứng dụng.</string>
 
@@ -35,23 +26,10 @@
         đặt.</string>
     <string name="language_done">Xong</string>
     <string name="language_search_hint">Tìm ở đây...</string>
-    <string name="language_option_vi_local">Tiếng Việt</string>
-    <string name="language_option_vi_english">Tiếng Việt</string>
-    <string name="language_option_en_local">English</string>
-    <string name="language_option_en_english">Tiếng Anh</string>
-
-    <string name="intro_title_1">Ngẫu nhiên - Trò chơi vòng quay</string>
-    <string name="intro_description_1">Spin Wheel nơi mỗi vòng quay đều mang đến một bất ngờ mới.</string>
-    <string name="intro_title_2">Chọn ngón tay, xu và lăn xúc xắc</string>
     <string name="intro_description_2">Đưa ra quyết định nhanh, công bằng và vui vẻ trong mọi tình
         huống.</string>
-    <string name="intro_title_3">Ghép đội công bằng và lựa chọn ngẫu nhiên</string>
     <string name="intro_description_3">Tạo đội, tạo số và chọn người chiến thắng mà không ai đoán
         trước.</string>
-    <string name="intro_title_4">Trải nghiệm hấp dẫn</string>
-    <string name="intro_description_4">Tùy chỉnh từng trò chơi để phù hợp với sở thích của bạn.</string>
-    <string name="intro_continue">Tiếp tục</string>
-    <string name="intro_start">Bắt đầu</string>
 
     <string name="dice_count">Số xúc xắc:</string>
     <string name="number_generate_count">Số lượng tạo:</string>
@@ -113,6 +91,8 @@
     <string name="rank_mode_min_fingers">Cần ít nhất 2 ngón tay để xếp hạng!</string>
     <string name="place_finger_prompt">Đặt ngón tay lên màn hình</string>
     <string name="hold_seconds_prompt">Giữ nguyên trong 2 giây để bắt đầu</string>
+    <string name="finger_winner_count_label">Người thắng</string>
+    <string name="finger_rule_hint">Chạm màn hình để bắt đầu • Chọn ra %1$d người thắng</string>
     <string name="share_message">Lười nghĩ chia team? Quăng cho app lo giùm! Chia sẻ ngay với hội
         bạn lầy 😜</string>
     <string name="cancelPermissionSub">Để hủy quyền, bạn cần vào Cài đặt và tắt quyền thủ công.</string>
@@ -135,7 +115,6 @@
     <string name="confirm">Xác nhận</string>
     <string name="titileIntro2">Chọn ngón tay, xu và lăn xúc xắc</string>
     <string name="deschosse1">Chờ 2 giây hoặc chạm vào nút bắt đầu bên dưới</string>
-    <string name="hi">Lịch sử</string>
     <string name="spin">Quay</string>
     <string name="layout_thanks">Cảm ơn bạn đã phản hồi!</string>
     <string name="alertai">Vui lòng tạo ý tưởng trước khi chuyển sang bước tiếp theo!</string>
@@ -187,7 +166,7 @@
         mục với emoji phù hợp.</string>
     <string name="item">Mục</string>
     <string name="titileIntro3">Ghép đôi công bằng và lựa chọn ngẫu nhiên</string>
-    <string name="vip">Premium</string>
+    <string name="vip">Phần thưởng</string>
     <string name="save">Lưu</string>
     <string name="sharereust">Chia sẻ kết quả</string>
     <string name="numbercard">Số lượng thẻ</string>
@@ -328,7 +307,6 @@
     <string name="randerNum">Số Ngẫu Nhiên</string>
     <string name="rateUs">Đánh giá</string>
     <string name="share_success">Chia sẻ thành công</string>
-    <string name="warning">Cảnh báo</string>
     <string name="history_spin">Lịch sử quay</string>
     <string name="select_wheel">Chọn bánh xe</string>
     <string name="change_wheel">Đổi bánh xe</string>
@@ -338,5 +316,6 @@
     <string name="premium_feature_unlock_all">Mở khóa tất cả trò chơi</string>
     <string name="premium_feature_unlimited">Tạo vòng quay tùy chỉnh</string>
     <string name="premium_feature_premium_skins">Mở khóa giao diện</string>
+    <string name="finger_warning_not_enough">Vui lòng đặt ít nhất %1$d ngón tay.</string>
 </resources>
 
