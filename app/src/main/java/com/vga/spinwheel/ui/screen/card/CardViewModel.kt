@@ -38,6 +38,7 @@ data class CardUiState(
     val cards: List<FlipCard> = emptyList(),
     val stage: CardStage = CardStage.Picking,
     val isShuffled: Boolean = false,
+    val isShuffleAnimating: Boolean = false,
     val runId: Long = 0L,
 ) {
     val allCardsFlipped: Boolean
@@ -55,9 +56,35 @@ class CardViewModel @Inject constructor(
     val uiState: StateFlow<CardUiState> = _uiState.asStateFlow()
 
     private var resultJob: Job? = null
+    private var shuffleJob: Job? = null
 
     fun shuffleCards() {
-        startNewRound(isShuffled = true)
+        val state = _uiState.value
+        if (state.isShuffleAnimating) return
+
+        resultJob?.cancel()
+        shuffleJob?.cancel()
+        val runId = state.runId + 1
+        _uiState.update {
+            it.copy(
+                cards = createCards(it.settings.totalCards, it.settings.winners),
+                stage = CardStage.Picking,
+                isShuffled = false,
+                isShuffleAnimating = true,
+                runId = runId,
+            )
+        }
+        shuffleJob = viewModelScope.launch {
+            delay(shuffleDelayMillis(state.settings.durationSeconds))
+            if (isActiveRun(runId)) {
+                _uiState.update {
+                    it.copy(
+                        isShuffled = true,
+                        isShuffleAnimating = false,
+                    )
+                }
+            }
+        }
     }
 
     fun resetCards() {
@@ -66,7 +93,7 @@ class CardViewModel @Inject constructor(
 
     fun flipCard(cardId: Int) {
         val state = _uiState.value
-        if (!state.isShuffled || state.stage != CardStage.Picking) return
+        if (!state.isShuffled || state.isShuffleAnimating || state.stage != CardStage.Picking) return
 
         val target = state.cards.firstOrNull { it.id == cardId } ?: return
         if (target.isFlipped) return
@@ -84,10 +111,15 @@ class CardViewModel @Inject constructor(
             )
         }
 
-        val isWinFound = target.isWinner || nextCards.count { it.isFlipped && it.isWinner } >= state.settings.winners || nextCards.all { it.isFlipped }
-        if (isWinFound) {
+        val shouldShowResult = CardRoundRules.shouldShowResult(
+            flippedWinnerCount = nextCards.count { it.isFlipped && it.isWinner },
+            requiredWinners = state.settings.winners,
+            allCardsFlipped = nextCards.all { it.isFlipped },
+        )
+        if (shouldShowResult) {
+            _uiState.update { it.copy(isShuffled = false) }
             resultJob = viewModelScope.launch {
-                delay(300L)
+                delay(resultDelayMillis(state.settings.durationSeconds))
                 if (isActiveRun(runId)) {
                     _uiState.update { it.copy(stage = CardStage.Result) }
                 }
@@ -160,12 +192,14 @@ class CardViewModel @Inject constructor(
         persistWinners: Boolean = false,
     ) {
         resultJob?.cancel()
+        shuffleJob?.cancel()
         _uiState.update {
             it.copy(
                 settings = settings,
                 cards = createCards(settings.totalCards, settings.winners),
                 stage = CardStage.Picking,
                 isShuffled = false,
+                isShuffleAnimating = false,
                 runId = it.runId + 1,
             )
         }
@@ -181,11 +215,13 @@ class CardViewModel @Inject constructor(
 
     private fun startNewRound(isShuffled: Boolean = false) {
         resultJob?.cancel()
+        shuffleJob?.cancel()
         _uiState.update {
             it.copy(
                 cards = createCards(it.settings.totalCards, it.settings.winners),
                 stage = CardStage.Picking,
                 isShuffled = isShuffled,
+                isShuffleAnimating = false,
                 runId = it.runId + 1,
             )
         }
@@ -247,6 +283,9 @@ class CardViewModel @Inject constructor(
 
     private fun resultDelayMillis(durationSeconds: Int): Long =
         (durationSeconds * 200L).coerceIn(700L, 1_500L)
+
+    private fun shuffleDelayMillis(durationSeconds: Int): Long =
+        (durationSeconds * 420L).coerceIn(1_100L, 2_200L)
 
     companion object {
         const val DEFAULT_DURATION_SECONDS = 2
