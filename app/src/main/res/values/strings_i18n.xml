@@ -73,11 +73,11 @@
         <string name="notification">Notification</string>
         <string name="add">Add</string>
         <string name="restart">Restart</string>
-        <string name="premium_feature_remove_ads">Remove all ads</string>
-        <string name="premium_feature_support">Priority customer support</string>
-        <string name="premium_feature_unlock_all">Unlock all games &amp; templates</string>
-        <string name="premium_feature_unlimited">Create custom wheels</string>
-        <string name="premium_feature_premium_skins">Unlock premium skins &amp; themes</string>
+        <string name="premium_feature_remove_ads">Remove ads</string>
+        <string name="premium_feature_support">Priority support</string>
+        <string name="premium_feature_unlock_all">Unlock games</string>
+        <string name="premium_feature_unlimited">Custom wheels</string>
+        <string name="premium_feature_premium_skins">Premium skins</string>
         <string name="winner_mode_min_fingers">Need at least %1$s fingers to select %2$s winners!</string>
         <string name="team_mode_min_fingers">Need at least %1$s fingers to divide into %2$s teams!</string>
         <string name="rank_mode_min_fingers">Need at least 2 fingers to rank!</string>

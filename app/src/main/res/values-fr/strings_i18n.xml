@@ -34,8 +34,8 @@
     <string name="rate_us">Évaluez-nous</string>
     <string name="permission">Permission</string>
     <string name="exciting_spin_wheel_desc">La roue présente des couleurs vives, des effets dynamiques et des sons captivants.</string>
-    <string name="premium_feature_remove_ads">Supprimer toutes les publicités</string>
-    <string name="premium_feature_support">Support client prioritaire</string>
+    <string name="premium_feature_remove_ads">Sans pubs</string>
+    <string name="premium_feature_support">Support VIP</string>
     <string name="winner_mode_min_fingers">Il faut au moins %1$s doigts pour sélectionner %2$s vainqueurs !</string>
     <string name="team_mode_min_fingers">Il faut au moins %1$s doigts pour diviser en %2$s équipes !</string>
     <string name="rank_mode_min_fingers">Il faut au moins 2 doigts pour établir un classement !</string>
@@ -236,9 +236,9 @@
     <string name="ms">Son du jeu</string>
     <string name="caner">Annuler</string>
     <string name="go_to_setting">Aller aux Paramètres</string>
-    <string name="premium_feature_unlock_all">Débloquer tous les jeux et modèles</string>
-    <string name="premium_feature_unlimited">Créer des roues personnalisées</string>
-    <string name="premium_feature_premium_skins">Débloquer les skins et thèmes premium</string>
+    <string name="premium_feature_unlock_all">Tous les jeux</string>
+    <string name="premium_feature_unlimited">Roues perso</string>
+    <string name="premium_feature_premium_skins">Skins premium</string>
         <string name="content_description_back">Dos</string>
         <string name="share_app_text">Roue rotative et outils aléatoires</string>
         <string name="share_chooser_title">Partager</string>

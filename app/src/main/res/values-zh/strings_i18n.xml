@@ -33,7 +33,7 @@
     <string name="language">语言</string>
     <string name="game_sound">游戏音效</string>
     <string name="spinning">正在旋转</string>
-    <string name="premium_feature_remove_ads">移除所有广告</string>
+    <string name="premium_feature_remove_ads">去广告</string>
     <string name="premium_feature_support">优先客户支持</string>
     <string name="winner_mode_min_fingers">至少需要 %1$s 个手指才能选择 %2$s 个赢家！</string>
     <string name="team_mode_min_fingers">至少需要 %1$s 个手指才能分成 %2$s 个团队！</string>
@@ -235,9 +235,9 @@
     <string name="Temlatecard">卡片模板</string>
     <string name="policy">隐私政策</string>
     <string name="ai_prompt_ensure">确保列表包含正好1个名称和8个项目，每行包含名称或项目以及合适的表情符号。</string>
-    <string name="premium_feature_unlock_all">解锁所有游戏与模板</string>
+    <string name="premium_feature_unlock_all">全部游戏</string>
     <string name="premium_feature_unlimited">创建自定义转盘</string>
-    <string name="premium_feature_premium_skins">解锁高级皮肤与主题</string>
+    <string name="premium_feature_premium_skins">高级皮肤</string>
         <string name="content_description_back">后退</string>
         <string name="share_app_text">旋转轮和随机工具</string>
         <string name="share_chooser_title">分享</string>

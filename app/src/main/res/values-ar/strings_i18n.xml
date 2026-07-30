@@ -34,8 +34,8 @@
     <string name="spinning">يدور</string>
     <string name="rate_us">قيمنا</string>
     <string name="win">فوز</string>
-    <string name="premium_feature_remove_ads">إزالة جميع الإعلانات</string>
-    <string name="premium_feature_support">دعم العملاء ذو الأولوية</string>
+    <string name="premium_feature_remove_ads">بلا إعلانات</string>
+    <string name="premium_feature_support">دعم VIP</string>
     <string name="winner_mode_min_fingers">تحتاج إلى %1$s أصابع على الأقل لاختيار %2$s فائزين!</string>
     <string name="team_mode_min_fingers">تحتاج إلى %1$s أصابع على الأقل لتقسيمها إلى %2$s فرق!</string>
     <string name="rank_mode_min_fingers">تحتاج إلى أصابعين على الأقل للتصنيف!</string>
@@ -236,9 +236,9 @@
     <string name="priority">الأولوية</string>
     <string name="titleRate2">أوه، لا!</string>
     <string name="done">تم</string>
-    <string name="premium_feature_unlock_all">فتح جميع الألعاب والقوالب</string>
-    <string name="premium_feature_unlimited">إنشاء عجلات مخصصة</string>
-    <string name="premium_feature_premium_skins">فتح المظاهر والسمات المميزة</string>
+    <string name="premium_feature_unlock_all">كل الألعاب</string>
+    <string name="premium_feature_unlimited">عجلات مخصصة</string>
+    <string name="premium_feature_premium_skins">مظاهر مميزة</string>
         <string name="content_description_back">خلف</string>
         <string name="share_app_text">عجلة الدوران والأدوات العشوائية</string>
         <string name="share_chooser_title">يشارك</string>

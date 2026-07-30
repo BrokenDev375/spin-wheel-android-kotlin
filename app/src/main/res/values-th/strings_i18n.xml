@@ -35,7 +35,7 @@
     <string name="spinning">กำลังหมุน</string>
     <string name="notification">การแจ้งเตือน</string>
     <string name="premium_feature_remove_ads">ลบโฆษณาทั้งหมด</string>
-    <string name="premium_feature_support">การสนับสนุนลูกค้าตามลำดับความสำคัญ</string>
+    <string name="premium_feature_support">ซัพพอร์ต VIP</string>
     <string name="winner_mode_min_fingers">ต้องใช้อย่างน้อย %1$s นิ้วเพื่อเลือก %2$s ผู้ชนะ!</string>
     <string name="team_mode_min_fingers">ต้องใช้อย่างน้อย %1$s นิ้วเพื่อแบ่งเป็น %2$s ทีม!</string>
     <string name="rank_mode_min_fingers">ต้องใช้อย่างน้อย 2 นิ้วเพื่อจัดอันดับ!</string>
@@ -236,9 +236,9 @@
     <string name="desRate1">บอกเราเกี่ยวกับประสบการณ์ของคุณ</string>
     <string name="save_failed">บันทึกล้มเหลว</string>
     <string name="aw3">โฆษณามากเกินไป</string>
-    <string name="premium_feature_unlock_all">ปลดล็อกเกมและเทมเพลตทั้งหมด</string>
-    <string name="premium_feature_unlimited">สร้างวงล้อที่กำหนดเอง</string>
-    <string name="premium_feature_premium_skins">ปลดล็อกสกินและธีมพรีเมียม</string>
+    <string name="premium_feature_unlock_all">เกมทั้งหมด</string>
+    <string name="premium_feature_unlimited">ล้อกำหนดเอง</string>
+    <string name="premium_feature_premium_skins">ธีมพรีเมียม</string>
         <string name="content_description_back">กลับ</string>
         <string name="share_app_text">วงล้อหมุนและเครื่องมือสุ่ม</string>
         <string name="share_chooser_title">แบ่งปัน</string>

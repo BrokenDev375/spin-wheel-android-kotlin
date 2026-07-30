@@ -323,7 +323,7 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 - Hiệu ứng rơi xúc xắc chạy mượt nếu được triển khai.
 - Kết quả dice không bị ảnh hưởng.
 
-## 10. Phase 8: Rút thẻ
+## [x] 10. Phase 8: Rút thẻ
 
 Đầu việc từ txt:
 
@@ -362,6 +362,12 @@ Plan này chỉ bám theo các đầu việc trong file txt. Các phần đánh 
 
 - Có hiệu ứng xào bài.
 - Thông báo chiến thắng đúng với trường hợp nhiều người thắng.
+- Thay doi thuc te (branch `phase-8-card-fixes`):
+  - Chuyen result chi khi da lat du so winner hoac tat ca card da duoc lat.
+  - Khoa lật bai trong luc shuffle animation dang chay.
+  - Them motion xao bai dich ngang/rotate nhe, data chi duoc tao lai mot lan moi shuffle.
+  - Them loser elimination effect bang fade/scale/slide nhe sau khi lat bai thua.
+  - Them unit test cho dieu kien multi-winner result.
 
 ## 11. Thứ tự commit đề xuất
 

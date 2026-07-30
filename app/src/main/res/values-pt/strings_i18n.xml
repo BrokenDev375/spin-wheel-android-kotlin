@@ -34,8 +34,8 @@
     <string name="lucky_team">Formar equipas</string>
     <string name="permission_desc">Os utilizadores precisam de conceder permissão para receber notificações do dispositivo.</string>
     <string name="notification">Notificação</string>
-    <string name="premium_feature_remove_ads">Remover todos os anúncios</string>
-    <string name="premium_feature_support">Suporte ao cliente prioritário</string>
+    <string name="premium_feature_remove_ads">Sem anúncios</string>
+    <string name="premium_feature_support">Suporte VIP</string>
     <string name="winner_mode_min_fingers">São necessários pelo menos %1$s dedos para selecionar %2$s vencedores!</string>
     <string name="team_mode_min_fingers">São necessários pelo menos %1$s dedos para dividir em %2$s equipas!</string>
     <string name="rank_mode_min_fingers">São necessários pelo menos 2 dedos para classificar!</string>
@@ -236,9 +236,9 @@
     <string name="gerai">Gerar Ideia de IA</string>
     <string name="desRate3">Obrigado pelo seu feedback!</string>
     <string name="setings">Configurações da Roda</string>
-    <string name="premium_feature_unlock_all">Desbloquear todos os jogos e modelos</string>
-    <string name="premium_feature_unlimited">Criar roletas personalizadas</string>
-    <string name="premium_feature_premium_skins">Desbloquear skins e temas premium</string>
+    <string name="premium_feature_unlock_all">Todos os jogos</string>
+    <string name="premium_feature_unlimited">Roletas custom</string>
+    <string name="premium_feature_premium_skins">Skins premium</string>
         <string name="content_description_back">Voltar</string>
         <string name="share_app_text">Roda giratória e ferramentas aleatórias</string>
         <string name="share_chooser_title">Compartilhar</string>
