@@ -1,16 +1,9 @@
 ﻿package com.vga.spinwheel.ui.screen.dice
 
-import androidx.compose.animation.core.EaseInOutSine
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -158,46 +151,26 @@ fun DiceIsometricStatic(
 }
 
 /**
- * Hình lập phương isometric QUAY — hiển thị khi đang lắc.
- * Xoay liên tục quanh trục Y. Các mặt hiện dots ngẫu nhiên thay đổi liên tục.
+ * Hình lập phương QUAY — hiển thị khi đang lắc.
+ * Xoay theo yaw/pitch với số vòng ngẫu nhiên để nhìn như xúc xắc lật nhanh trên không.
  */
 @Composable
 fun DiceRolling3D(
     style: DiceStyle,
+    value: Int,
     diceIndex: Int,
+    progress: Float,
     modifier: Modifier = Modifier,
 ) {
-    val direction = if (diceIndex % 2 == 0) 1f else -1f
-    val phaseMs = (diceIndex * 90).coerceAtMost(420)
-    val phaseDeg = diceIndex * 23f
-    val transition = rememberInfiniteTransition("dice_cube_$diceIndex")
-
-    val yawDeg by transition.animateFloat(
-        initialValue = DiceCubeRestYawDegrees + phaseDeg,
-        targetValue = DiceCubeRestYawDegrees + phaseDeg + direction * DiceCubeYawTurns,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1650 + phaseMs, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "cube_yaw_$diceIndex"
-    )
-
-    val pitchDeg by transition.animateFloat(
-        initialValue = DiceCubeRestPitchDegrees - phaseDeg * 0.35f,
-        targetValue = DiceCubeRestPitchDegrees - phaseDeg * 0.35f - direction * DiceCubePitchTurns,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1450 + phaseMs, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "cube_pitch_$diceIndex"
-    )
+    val rotationSpec = remember(diceIndex) { diceRollingRotationSpec(diceIndex) }
+    val safeProgress = progress.coerceIn(0f, 1f)
 
     Canvas(modifier = modifier) {
         drawPerspectiveDiceCube(
             style = style,
-            yawDeg = yawDeg,
-            pitchDeg = pitchDeg,
-            frontValue = 1,
+            yawDeg = rotationSpec.yawDegrees * safeProgress,
+            pitchDeg = rotationSpec.pitchDegrees * safeProgress,
+            frontValue = value,
         )
     }
 }
@@ -223,6 +196,20 @@ private data class DiceVec3(val x: Float, val y: Float, val z: Float) {
     operator fun times(scale: Float) = DiceVec3(x * scale, y * scale, z * scale)
 }
 
+private data class DiceRollingRotationSpec(
+    val yawDegrees: Float,
+    val pitchDegrees: Float,
+)
+
+private fun diceRollingRotationSpec(diceIndex: Int): DiceRollingRotationSpec {
+    val yawDirection = if (diceIndex % 2 == 0) 1f else -1f
+    val pitchDirection = if ((diceIndex / 2) % 2 == 0) -1f else 1f
+    return DiceRollingRotationSpec(
+        yawDegrees = yawDirection * (DiceYawBaseTurns + Random.nextInt(DiceYawExtraTurnsExclusive)) * 360f,
+        pitchDegrees = pitchDirection * (DicePitchBaseTurns + Random.nextInt(DicePitchExtraTurnsExclusive)) * 360f,
+    )
+}
+
 private data class PerspectiveDiceFace(
     val value: Int,
     val center: DiceVec3,
@@ -244,12 +231,24 @@ private fun DrawScope.drawPerspectiveDiceCube(
 ) {
     val yawRad = (yawDeg * PI / 180.0).toFloat()
     val pitchRad = (pitchDeg * PI / 180.0).toFloat()
+    drawPerspectiveDiceCubeTransformed(
+        style = style,
+        frontValue = frontValue,
+        rotatePoint = { rotatePerspectiveDice(it, yawRad, pitchRad) },
+    )
+}
+
+private fun DrawScope.drawPerspectiveDiceCubeTransformed(
+    style: DiceStyle,
+    frontValue: Int,
+    rotatePoint: (DiceVec3) -> DiceVec3,
+) {
     val scalePx = size.minDimension * DiceCubeScale
     val centerPx = Offset(size.width / 2f, size.height / 2f)
 
     val visibleFaces = perspectiveDiceFacesForFront(frontValue).mapNotNull { face ->
-        val rotatedCenter = rotatePerspectiveDice(face.center, yawRad, pitchRad)
-        if (rotatedCenter.z <= 0f) return@mapNotNull null
+        val rotatedCenter = rotatePoint(face.center)
+        if (rotatedCenter.z <= DiceCubeVisibleFaceEpsilon) return@mapNotNull null
 
         val corners = listOf(
             face.center + face.right * -1f + face.up * -1f,
@@ -262,7 +261,7 @@ private fun DrawScope.drawPerspectiveDiceCube(
             face = face,
             rotatedCenter = rotatedCenter,
             screenPoints = corners.map {
-                projectPerspectiveDice(rotatePerspectiveDice(it, yawRad, pitchRad), scalePx, centerPx)
+                projectPerspectiveDice(rotatePoint(it), scalePx, centerPx)
             },
         )
     }.sortedBy { it.rotatedCenter.z }
@@ -288,8 +287,7 @@ private fun DrawScope.drawPerspectiveDiceCube(
                 path = projectedPipPath(
                     face = visibleFace.face,
                     uv = uv,
-                    yawRad = yawRad,
-                    pitchRad = pitchRad,
+                    rotatePoint = rotatePoint,
                     scalePx = scalePx,
                     centerPx = centerPx,
                 ),
@@ -340,8 +338,7 @@ private fun roundedPolygonPath(points: List<Offset>, radiusPx: Float): Path {
 private fun projectedPipPath(
     face: PerspectiveDiceFace,
     uv: Offset,
-    yawRad: Float,
-    pitchRad: Float,
+    rotatePoint: (DiceVec3) -> DiceVec3,
     scalePx: Float,
     centerPx: Offset,
 ): Path {
@@ -356,7 +353,7 @@ private fun projectedPipPath(
             face.right * (cos(angle) * DiceCubePipRadius) +
             face.up * (sin(angle) * DiceCubePipRadius)
         val screenPoint = projectPerspectiveDice(
-            rotatePerspectiveDice(localPoint, yawRad, pitchRad),
+            rotatePoint(localPoint),
             scalePx,
             centerPx,
         )
@@ -444,7 +441,8 @@ private const val DiceCubePipRadius = 0.11f
 private const val DiceCubePipPathSegments = 18
 private const val DiceCubePipSpread = 1.34f
 private const val DiceCubeCornerRadiusScale = 0.5f
-private const val DiceCubeRestYawDegrees = 22f
-private const val DiceCubeRestPitchDegrees = -18f
-private const val DiceCubeYawTurns = 720f
-private const val DiceCubePitchTurns = 540f
+private const val DiceCubeVisibleFaceEpsilon = 0.001f
+private const val DiceYawBaseTurns = 3
+private const val DiceYawExtraTurnsExclusive = 2
+private const val DicePitchBaseTurns = 2
+private const val DicePitchExtraTurnsExclusive = 2

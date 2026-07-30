@@ -1,12 +1,9 @@
 package com.vga.spinwheel.ui.screen.dice
 
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +17,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +69,7 @@ fun DiceFace(
     styleIndex: Int,
     isShaking: Boolean = false,
     diceIndex: Int = 0,
+    animationMillis: Int = DiceThrowDefaultAnimationMillis,
     modifier: Modifier = Modifier.size(80.dp),
     dotSize: Dp = 16.dp,
     contentPadding: Dp = 18.dp,
@@ -78,43 +77,28 @@ fun DiceFace(
     borderWidth: Dp = 2.dp,
 ) {
     val style = diceStyles.getOrNull(styleIndex) ?: diceStyles[0]
+    val throwProgress = remember(diceIndex) { Animatable(1f) }
+
+    LaunchedEffect(isShaking, animationMillis) {
+        if (isShaking) {
+            throwProgress.snapTo(0f)
+            throwProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = animationMillis.coerceAtLeast(1),
+                    easing = LinearEasing,
+                ),
+            )
+        } else {
+            throwProgress.snapTo(1f)
+        }
+    }
+
+    val progress = if (isShaking) throwProgress.value else 1f
     val faceModifier = if (isShaking) {
-        val cycleMs = DiceThrowCycleMs + (diceIndex % 3) * DiceThrowCycleStaggerMs
         val liftHeightPx = with(LocalDensity.current) { DiceThrowLiftHeight.toPx() }
-        val transition = rememberInfiniteTransition(label = "dice_throw_$diceIndex")
-
-        val liftProgress by transition.animateFloat(
-            initialValue = 0f,
-            targetValue = 0f,
-            animationSpec = infiniteRepeatable(
-                animation = keyframes {
-                    durationMillis = cycleMs
-                    0f at 0 using FastOutSlowInEasing
-                    1f at (cycleMs * 0.26f).toInt() using FastOutSlowInEasing
-                    0.96f at (cycleMs * 0.62f).toInt() using LinearEasing
-                    0f at cycleMs using FastOutSlowInEasing
-                },
-                repeatMode = RepeatMode.Restart,
-            ),
-            label = "dice_lift_$diceIndex",
-        )
-
-        val scale by transition.animateFloat(
-            initialValue = 1f,
-            targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = keyframes {
-                    durationMillis = cycleMs
-                    1f at 0 using FastOutSlowInEasing
-                    1.22f at (cycleMs * 0.22f).toInt() using FastOutSlowInEasing
-                    1.1f at (cycleMs * 0.62f).toInt() using LinearEasing
-                    0.94f at (cycleMs * 0.88f).toInt() using FastOutSlowInEasing
-                    1f at cycleMs using FastOutSlowInEasing
-                },
-                repeatMode = RepeatMode.Restart,
-            ),
-            label = "dice_scale_$diceIndex",
-        )
+        val liftProgress = diceThrowLiftProgress(progress)
+        val scale = diceThrowScale(progress)
 
         modifier.graphicsLayer {
             translationY = -liftHeightPx * liftProgress
@@ -126,11 +110,21 @@ fun DiceFace(
     }
 
     if (isShaking) {
-        DiceRolling3D(
-            style = style,
-            diceIndex = diceIndex,
-            modifier = faceModifier,
-        )
+        if (progress < DiceThrowResultRevealProgress) {
+            DiceRolling3D(
+                style = style,
+                value = value,
+                diceIndex = diceIndex,
+                progress = (progress / DiceThrowResultRevealProgress).coerceIn(0f, 1f),
+                modifier = faceModifier,
+            )
+        } else {
+            DiceResting3D(
+                style = style,
+                value = value,
+                modifier = faceModifier,
+            )
+        }
     } else {
         DiceResting3D(
             style = style,
@@ -146,6 +140,8 @@ fun DiceGrid(
     styleIndex: Int,
     modifier: Modifier = Modifier,
     isShaking: Boolean = false,
+    reserveAnimationSpace: Boolean = isShaking,
+    animationMillis: Int = DiceThrowDefaultAnimationMillis,
     singleDieSize: Dp = 160.dp,
     gridDieSize: Dp = 104.dp,
     spacing: Dp = 16.dp,
@@ -155,9 +151,8 @@ fun DiceGrid(
     val dieSize = if (values.size <= 1) singleDieSize else gridDieSize
     val dotSize = if (values.size <= 1) 28.dp else 16.dp
     val contentPadding = if (values.size <= 1) 32.dp else 18.dp
-    val renderedDieSize = if (isShaking) dieSize * DiceRollingSizeScale else dieSize
-    val horizontalPadding = if (isShaking) DiceRollingGridHorizontalPadding else 0.dp
-    val verticalPadding = if (isShaking) DiceRollingGridVerticalPadding else 0.dp
+    val horizontalPadding = if (reserveAnimationSpace) DiceRollingGridHorizontalPadding else 0.dp
+    val verticalPadding = if (reserveAnimationSpace) DiceRollingGridVerticalPadding else 0.dp
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
@@ -182,9 +177,10 @@ fun DiceGrid(
                     styleIndex = styleIndex,
                     isShaking = isShaking,
                     diceIndex = index,
+                    animationMillis = animationMillis,
                     dotSize = dotSize,
                     contentPadding = contentPadding,
-                    modifier = Modifier.size(renderedDieSize),
+                    modifier = Modifier.size(dieSize),
                 )
             }
         }
@@ -207,9 +203,59 @@ fun DiceTile(
     )
 }
 
-private const val DiceRollingSizeScale = 0.86f
+private fun diceThrowLiftProgress(progress: Float): Float {
+    val p = progress.coerceIn(0f, 1f)
+    return when {
+        p < DiceThrowPeakProgress -> {
+            val t = (p / DiceThrowPeakProgress).coerceIn(0f, 1f)
+            FastOutSlowInEasing.transform(t)
+        }
+        p < DiceThrowResultRevealProgress -> {
+            val t = ((p - DiceThrowPeakProgress) / (DiceThrowResultRevealProgress - DiceThrowPeakProgress))
+                .coerceIn(0f, 1f)
+            lerpFloat(1f, 0.96f, t)
+        }
+        else -> {
+            val t = ((p - DiceThrowResultRevealProgress) / (1f - DiceThrowResultRevealProgress))
+                .coerceIn(0f, 1f)
+            lerpFloat(0.96f, 0f, FastOutSlowInEasing.transform(t))
+        }
+    }
+}
+
+private fun diceThrowScale(progress: Float): Float {
+    val p = progress.coerceIn(0f, 1f)
+    return when {
+        p < DiceThrowScalePeakProgress -> {
+            val t = (p / DiceThrowScalePeakProgress).coerceIn(0f, 1f)
+            lerpFloat(1f, 1.1f, FastOutSlowInEasing.transform(t))
+        }
+        p < DiceThrowResultRevealProgress -> {
+            val t = ((p - DiceThrowScalePeakProgress) / (DiceThrowResultRevealProgress - DiceThrowScalePeakProgress))
+                .coerceIn(0f, 1f)
+            lerpFloat(1.1f, 1.04f, t)
+        }
+        p < DiceThrowSquashProgress -> {
+            val t = ((p - DiceThrowResultRevealProgress) / (DiceThrowSquashProgress - DiceThrowResultRevealProgress))
+                .coerceIn(0f, 1f)
+            lerpFloat(1.04f, 0.98f, FastOutSlowInEasing.transform(t))
+        }
+        else -> {
+            val t = ((p - DiceThrowSquashProgress) / (1f - DiceThrowSquashProgress))
+                .coerceIn(0f, 1f)
+            lerpFloat(0.98f, 1f, FastOutSlowInEasing.transform(t))
+        }
+    }
+}
+
+private fun lerpFloat(start: Float, stop: Float, fraction: Float): Float =
+    start + (stop - start) * fraction.coerceIn(0f, 1f)
+
 private val DiceRollingGridHorizontalPadding = 28.dp
 private val DiceRollingGridVerticalPadding = 68.dp
-private const val DiceThrowCycleMs = 1100
-private const val DiceThrowCycleStaggerMs = 90
+private const val DiceThrowDefaultAnimationMillis = 1_000
+internal const val DiceThrowResultRevealProgress = 0.72f
+private const val DiceThrowPeakProgress = 0.26f
+private const val DiceThrowScalePeakProgress = 0.22f
+private const val DiceThrowSquashProgress = 0.88f
 private val DiceThrowLiftHeight = 48.dp

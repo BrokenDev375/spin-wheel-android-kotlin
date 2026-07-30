@@ -45,12 +45,6 @@ fun DiceHomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val gameSoundPlayer = rememberGameSoundPlayer()
 
-    LaunchedEffect(uiState.isRolling, uiState.currentResults) {
-        if (!uiState.isRolling && uiState.currentResults.isNotEmpty()) {
-            onPreview()
-        }
-    }
-
     LaunchedEffect(uiState.isRolling) {
         if (uiState.isRolling) {
             gameSoundPlayer.startDiceRoll()
@@ -110,7 +104,7 @@ fun DiceHomeScreen(
             DiceBottomBar(
                 isRolling = uiState.isRolling,
                 onSettings = onOpenSettings,
-                onRoll = { viewModel.startRoll {} },
+                onRoll = { viewModel.startRoll(onFinished = onPreview) },
                 onReset = viewModel::resetResults,
                 modifier = Modifier.padding(bottom = 58.dp),
             )
@@ -192,6 +186,8 @@ private fun DiceStage(
             values = displayResults,
             styleIndex = uiState.styleIndex,
             isShaking = uiState.isRolling,
+            reserveAnimationSpace = uiState.isRolling || uiState.currentResults.isNotEmpty(),
+            animationMillis = uiState.rollDurationMillis,
         )
     }
 }
