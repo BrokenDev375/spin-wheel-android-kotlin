@@ -168,7 +168,11 @@ fun NavGraphBuilder.drawingNavGraph(
                 wheelId = wheelId,
                 viewModel = viewModel,
                 onRetry = {
-                    navController.popBackStack(Screen.DrawingHome.route, inclusive = false)
+                    viewModel.requestShowLastResultOnSpin()
+                    navController.navigate(Screen.drawingSpin(wheelId)) {
+                        popUpTo(Screen.DrawingHome.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
                 },
                 onHome = {
                     navController.navigate(Screen.Home.route) {
