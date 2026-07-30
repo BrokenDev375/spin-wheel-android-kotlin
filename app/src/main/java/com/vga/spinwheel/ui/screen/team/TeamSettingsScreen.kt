@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
 import com.vga.spinwheel.ui.components.SpinIconGlyph
-import com.vga.spinwheel.ui.components.SpinToggle
 import com.vga.spinwheel.ui.components.SpinTopBar
 import com.vga.spinwheel.ui.theme.SpinColors
 
@@ -83,16 +82,6 @@ fun TeamSettingsScreen(
                         value = "${state.durationSeconds}s",
                         onMinus = { viewModel.updateDuration(state.durationSeconds - 1) },
                         onPlus = { viewModel.updateDuration(state.durationSeconds + 1) },
-                    )
-                },
-            )
-
-            TeamSettingRow(
-                title = stringResource(R.string.Seeding),
-                trailing = {
-                    SpinToggle(
-                        checked = state.seedEnabled,
-                        onCheckedChange = viewModel::toggleSeedEnabled,
                     )
                 },
             )

@@ -30,7 +30,6 @@ data class TeamUiState(
     val teams: List<TeamGroup> = emptyList(),
     val teamCount: Int = TeamViewModel.DEFAULT_TEAM_COUNT,
     val durationSeconds: Int = TeamViewModel.DEFAULT_DURATION_SECONDS,
-    val seedEnabled: Boolean = false,
     val status: TeamMatchStatus = TeamMatchStatus.Idle,
     val runId: Long = 0L,
 )
@@ -59,11 +58,6 @@ class TeamViewModel @Inject constructor(
                     SETTING_DURATION,
                     DEFAULT_DURATION_SECONDS,
                 )
-            ),
-            seedEnabled = settingsRepository.getBoolean(
-                RandomFeature.TEAM,
-                SETTING_SEED_ENABLED,
-                false,
             ),
         )
     )
@@ -126,13 +120,6 @@ class TeamViewModel @Inject constructor(
         }
     }
 
-    fun toggleSeedEnabled(value: Boolean) {
-        _uiState.update { it.copy(seedEnabled = value) }
-        viewModelScope.launch {
-            settingsRepository.putBoolean(RandomFeature.TEAM, SETTING_SEED_ENABLED, value)
-        }
-    }
-
     fun startMatching() {
         val state = _uiState.value
         val list = state.currentList ?: return
@@ -151,28 +138,18 @@ class TeamViewModel @Inject constructor(
         matchingJob = viewModelScope.launch {
             val startAt = System.currentTimeMillis()
             val durationMs = state.durationSeconds * 1_000L
-            var tick = 0L
 
             while (System.currentTimeMillis() - startAt < durationMs) {
                 if (!isActiveRun(runId)) return@launch
-                val shuffled = TeamRoundRules.shuffledMembers(
-                    members = members,
-                    seedEnabled = false,
-                    seed = seedFor(list, tick),
-                )
+                val shuffled = TeamRoundRules.shuffledMembers(members)
                 _uiState.update {
                     it.copy(teams = TeamRoundRules.createTeams(shuffled, it.teamCount))
                 }
-                tick++
                 delay(ANIMATION_TICK_MS)
             }
 
             if (!isActiveRun(runId)) return@launch
-            val finalMembers = TeamRoundRules.shuffledMembers(
-                members = members,
-                seedEnabled = _uiState.value.seedEnabled,
-                seed = seedFor(list, 0L),
-            )
+            val finalMembers = TeamRoundRules.shuffledMembers(members)
             _uiState.update {
                 it.copy(
                     teams = TeamRoundRules.createTeams(finalMembers, it.teamCount),
@@ -233,15 +210,11 @@ class TeamViewModel @Inject constructor(
     private fun isActiveRun(runId: Long): Boolean =
         _uiState.value.runId == runId
 
-    private fun seedFor(list: Wheel, offset: Long): Long =
-        list.id.hashCode().toLong() + list.updatedAt + offset
-
     companion object {
         const val DEFAULT_TEAM_COUNT = 3
         const val DEFAULT_DURATION_SECONDS = 5
         private const val SETTING_TEAM_COUNT = "group_size"
         private const val SETTING_DURATION = "duration"
-        private const val SETTING_SEED_ENABLED = "seed_enabled"
         private const val ANIMATION_TICK_MS = 140L
     }
 }

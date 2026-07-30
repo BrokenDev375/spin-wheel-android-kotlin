@@ -1,7 +1,6 @@
 ﻿package com.vga.spinwheel.ui.screen.team
 
 import com.vga.spinwheel.data.model.WheelItem
-import kotlin.random.Random
 
 data class TeamGroup(
     val index: Int,
@@ -47,16 +46,8 @@ object TeamRoundRules {
         }
     }
 
-    fun shuffledMembers(
-        members: List<String>,
-        seedEnabled: Boolean,
-        seed: Long,
-    ): List<String> =
-        if (seedEnabled) {
-            members.shuffled(Random(seed))
-        } else {
-            members.shuffled()
-        }
+    fun shuffledMembers(members: List<String>): List<String> =
+        members.shuffled()
 }
 
 
