@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.getValue
 import com.vga.spinwheel.data.model.WheelItem
+import kotlin.math.floor
 
 internal data class DrawingTheme(
     val name: String,
@@ -98,7 +100,7 @@ internal fun DrawingCardStack(
     val totalBack = backIndexes.size
 
     val isShuffling = shakeOffset != 0f
-    val nameShift = if (isShuffling && items.isNotEmpty()) {
+    val shufflePhase = if (isShuffling && items.isNotEmpty()) {
         val infiniteTransition = rememberInfiniteTransition(label = "shuffle_names")
         val phase by infiniteTransition.animateFloat(
             initialValue = 0f,
@@ -109,8 +111,9 @@ internal fun DrawingCardStack(
             ),
             label = "phase"
         )
-        phase.toInt() % items.size
-    } else 0
+        phase
+    } else 0f
+    val nameShift = if (isShuffling) shufflePhase.toInt() % items.size else 0
 
     val offsets = listOf(
         -34.dp to 6.dp,
@@ -128,7 +131,13 @@ internal fun DrawingCardStack(
             DrawingStackCard(
                 item = items[displayItemIndex],
                 index = itemIndex,
-                color = theme.colors[theme.colors.lastIndex - order],
+                color = drawingStackCardColor(
+                    colors = theme.colors,
+                    baseIndex = theme.colors.lastIndex - order,
+                    shufflePhase = shufflePhase,
+                    shuffleOffset = i * DrawingShuffleColorOffset,
+                    isShuffling = isShuffling,
+                ),
                 highlighted = false,
                 wheelTitle = wheelTitle,
                 modifier = Modifier.offset(
@@ -142,12 +151,36 @@ internal fun DrawingCardStack(
         DrawingStackCard(
             item = items[winnerDisplayIndex],
             index = safeWinnerIndex,
-            color = theme.colors.first(),
+            color = drawingStackCardColor(
+                colors = theme.colors,
+                baseIndex = 0,
+                shufflePhase = shufflePhase,
+                shuffleOffset = totalBack * DrawingShuffleColorOffset,
+                isShuffling = isShuffling,
+            ),
             highlighted = emphasizeWinner,
             wheelTitle = wheelTitle,
             modifier = Modifier.offset(x = 48.dp + shakeOffset.dp, y = 76.dp),
         )
     }
+}
+
+private fun drawingStackCardColor(
+    colors: List<Color>,
+    baseIndex: Int,
+    shufflePhase: Float,
+    shuffleOffset: Float,
+    isShuffling: Boolean,
+): Color {
+    if (colors.isEmpty()) return Color.White
+    val safeBaseIndex = baseIndex.mod(colors.size)
+    if (!isShuffling) return colors[safeBaseIndex]
+
+    val colorPosition = safeBaseIndex + shufflePhase * DrawingShuffleColorRate + shuffleOffset
+    val wrappedPosition = colorPosition - floor(colorPosition / colors.size) * colors.size
+    val fromIndex = floor(wrappedPosition).toInt().coerceIn(0, colors.lastIndex)
+    val toIndex = (fromIndex + 1) % colors.size
+    return lerp(colors[fromIndex], colors[toIndex], wrappedPosition - floor(wrappedPosition))
 }
 
 @Composable
@@ -226,3 +259,6 @@ internal fun DrawingThemeSwatch(
         )
     }
 }
+
+private const val DrawingShuffleColorRate = 0.72f
+private const val DrawingShuffleColorOffset = 0.48f

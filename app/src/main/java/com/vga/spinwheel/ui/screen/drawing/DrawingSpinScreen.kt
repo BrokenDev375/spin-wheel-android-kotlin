@@ -177,9 +177,11 @@ fun DrawingSpinScreen(
 
             DrawingBottomControls(
                 enabled = !isSpinning,
-                canStart = !isSpinning && !showTempResult && !wheel?.items.isNullOrEmpty(),
+                canStart = !isSpinning && !wheel?.items.isNullOrEmpty(),
                 onSettings = onOpenSettings,
                 onStart = {
+                    showTempResult = false
+                    viewModel.clearLastResult()
                     isSpinning = true
                     scope.launch {
                         val endTime = System.currentTimeMillis() + duration * 1_000L
