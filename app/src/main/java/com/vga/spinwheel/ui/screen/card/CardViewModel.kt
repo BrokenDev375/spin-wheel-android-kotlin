@@ -285,7 +285,7 @@ class CardViewModel @Inject constructor(
         (durationSeconds * 200L).coerceIn(700L, 1_500L)
 
     private fun shuffleDelayMillis(durationSeconds: Int): Long =
-        (durationSeconds * 420L).coerceIn(1_100L, 2_200L)
+        durationSeconds * 1_000L
 
     companion object {
         const val DEFAULT_DURATION_SECONDS = 2

@@ -321,6 +321,7 @@ private fun CardHomeScreen(
 ) {
     val theme = CardThemes.get(state.settings.themeIndex)
     val density = LocalDensity.current.density
+    val shuffleDurationMillis = cardShuffleAnimationMillis(state.settings.durationSeconds)
     val shuffleProgress = remember { Animatable(1f) }
 
     LaunchedEffect(state.isShuffleAnimating, state.runId, state.settings.durationSeconds) {
@@ -329,7 +330,7 @@ private fun CardHomeScreen(
             shuffleProgress.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(
-                    durationMillis = cardShuffleAnimationMillis(state.settings.durationSeconds),
+                    durationMillis = shuffleDurationMillis,
                     easing = LinearEasing,
                 ),
             )
@@ -391,6 +392,7 @@ private fun CardHomeScreen(
                         index = index,
                         totalCards = state.cards.size,
                         progress = activeShuffleProgress,
+                        shuffleDurationMillis = shuffleDurationMillis,
                     )
                     Box(
                         modifier = Modifier
@@ -652,11 +654,14 @@ private fun CardStepper(
         CardStepperButton(text = "-", onClick = onMinus)
         Text(
             text = value,
-            modifier = Modifier.width(34.dp),
+            modifier = Modifier.width(46.dp),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Clip,
         )
         CardStepperButton(text = "+", onClick = onPlus)
     }
@@ -1051,6 +1056,7 @@ private fun cardShuffleMotion(
     index: Int,
     totalCards: Int,
     progress: Float,
+    shuffleDurationMillis: Int,
 ): CardShuffleMotion {
     val p = progress.coerceIn(0f, 1f)
     if (p >= 0.999f || totalCards <= 0) {
@@ -1064,42 +1070,93 @@ private fun cardShuffleMotion(
         )
     }
 
+    val durationMillis = shuffleDurationMillis.coerceAtLeast(1).toFloat()
+    val timeMillis = p * durationMillis
+    val gatherEnd = CardGatherMillis / durationMillis
+    val remainingMillis = (durationMillis - CardGatherMillis).coerceAtLeast(1f)
+    val dealWindowMillis = (remainingMillis * CardDealDurationRatio)
+        .coerceIn(CardDealMinMillis, CardDealMaxMillis)
+        .coerceAtMost(remainingMillis * 0.45f)
+    val dealWindow = dealWindowMillis / durationMillis
+    val dealStartBase = 1f - dealWindow
+    val shuffleStart = gatherEnd
+    val shuffleEnd = dealStartBase
+    val shuffleSpan = (shuffleEnd - shuffleStart).coerceAtLeast(0.01f)
+    val horizontalStart = shuffleStart
+    val horizontalSplitEnd = shuffleStart + shuffleSpan * 0.48f
+    val verticalStart = shuffleStart + shuffleSpan * 0.52f
+    val verticalEnd = shuffleEnd
+    val verticalEase = (CardVerticalShuffleEaseMillis / durationMillis)
+        .coerceIn(0.018f, shuffleSpan * 0.16f)
+
     val column = index % 3
     val row = index / 3
-    val side = if (index % 2 == 0) -1f else 1f
-    val depth = (index % 4) - 1.5f
+    val deckX = (1f - column) * CardShuffleColumnPitchDp
+    val deckY = (0.10f - row) * CardShuffleRowPitchDp
+    val stackDepth = (index - totalCards / 2f) / totalCards.coerceAtLeast(1)
+    val gather = smoothStep(0f, gatherEnd, p)
 
-    val gatherX = (1f - column) * 108f
-    val gatherY = (-0.45f - row) * 150f
-    val collect = smoothStep(0.02f, 0.18f, p)
+    val halfSize = (totalCards + 1) / 2
+    val isLeftPacket = index < halfSize
+    val side = if (isLeftPacket) -1f else 1f
+    val halfIndex = if (isLeftPacket) index else index - halfSize
+    val halfCount = if (isLeftPacket) halfSize else totalCards - halfSize
+    val halfOrder = halfIndex / (halfCount - 1).coerceAtLeast(1).toFloat()
 
-    val order = index / (totalCards - 1).coerceAtLeast(1).toFloat()
-    val dealStart = 0.62f + 0.20f * order
-    val deal = smoothStep(dealStart, dealStart + 0.18f, p)
-    val stacked = collect * (1f - deal)
+    val horizontalSplit = smoothStep(horizontalStart, horizontalStart + shuffleSpan * 0.16f, p) *
+        (1f - smoothStep(horizontalStart + shuffleSpan * 0.34f, horizontalSplitEnd, p))
+    val horizontalShuffle = smoothStep(horizontalStart + shuffleSpan * 0.10f, horizontalStart + shuffleSpan * 0.20f, p) *
+        (1f - smoothStep(horizontalStart + shuffleSpan * 0.30f, horizontalSplitEnd, p))
+    val horizontalElapsed = (timeMillis - horizontalStart * durationMillis).coerceAtLeast(0f)
+    val horizontalWave = sin(
+        horizontalElapsed / CardHorizontalShuffleCycleMillis * PI.toFloat() * 2f +
+            halfOrder * PI.toFloat()
+    )
+    val packetX = side * (48f + halfOrder * 12f) * horizontalSplit
+    val packetY = (-8f + halfOrder * 5f) * horizontalSplit
+    val horizontalX = side * horizontalWave * 12f * horizontalShuffle
+    val horizontalRotation = side * (12f - halfOrder * 4f) * horizontalSplit +
+        side * horizontalWave * 5f * horizontalShuffle
 
-    val shuffleStrength = smoothStep(0.18f, 0.28f, p) * (1f - smoothStep(0.56f, 0.68f, p))
-    val shuffleCycle = ((p - 0.18f).coerceAtLeast(0f) / 0.5f) * (PI.toFloat() * 6f) + index * 0.65f
-    val riffleX = side * sin(shuffleCycle) * (22f + (index % 3) * 4f) * shuffleStrength
-    val riffleY = sin(shuffleCycle * 1.3f + index) * 8f * shuffleStrength
+    val verticalShuffle = smoothStep(verticalStart, verticalStart + verticalEase, p) *
+        (1f - smoothStep(verticalEnd - verticalEase, verticalEnd, p))
+    val alternateDirection = if (index % 2 == 0) -1f else 1f
+    val verticalElapsed = (timeMillis - verticalStart * durationMillis).coerceAtLeast(0f)
+    val verticalCycle = sin(
+        verticalElapsed / CardVerticalShuffleCycleMillis * PI.toFloat() * 2f +
+            index * 0.28f
+    )
+    val verticalOffset = alternateDirection * verticalCycle * (34f + (index % 3) * 4f) * verticalShuffle
+    val verticalRotation = alternateDirection * verticalCycle * 4.5f * verticalShuffle
+    val deckSettle = smoothStep(verticalStart, verticalEnd, p)
 
-    val cutStrength = smoothStep(0.34f, 0.48f, p) * (1f - smoothStep(0.50f, 0.62f, p))
-    val cutX = side * (28f + depth * 5f) * cutStrength
-    val cutY = (if (index % 2 == 0) -12f else 12f) * cutStrength
-
-    val dealArc = -34f * sin(deal * PI.toFloat())
-    val settleSway = side * 8f * sin(deal * PI.toFloat())
-    val stackRotation = (-10f + index * 1.9f).coerceIn(-14f, 14f)
-    val riffleRotation = side * sin(shuffleCycle) * 9f * shuffleStrength
-    val cutRotation = side * (8f + depth * 1.2f) * cutStrength
+    val dealStep = dealWindow / totalCards.coerceAtLeast(1)
+    val dealStart = dealStartBase + index * dealStep
+    val dealDuration = dealStep * 0.9f
+    val deal = smoothStep(dealStart, dealStart + dealDuration, p)
+    val deckWeight = gather * (1f - deal)
+    val dealArc = -42f * sin(deal * PI.toFloat())
+    val dealSway = (if (index % 2 == 0) -1f else 1f) * 7f * sin(deal * PI.toFloat())
+    val squaredDeckOffsetX = stackDepth * 2f * deckSettle * (1f - deal)
+    val squaredDeckOffsetY = -stackDepth * 2.4f * deckSettle * (1f - deal)
 
     return CardShuffleMotion(
-        translationXDp = gatherX * stacked + (riffleX + cutX) * (1f - deal) + settleSway,
-        translationYDp = gatherY * stacked + (riffleY + cutY) * (1f - deal) + dealArc,
-        rotationZ = stackRotation * stacked + (riffleRotation + cutRotation) * (1f - deal),
-        scale = 1f - 0.04f * stacked + 0.035f * sin(deal * PI.toFloat()),
+        translationXDp = deckX * deckWeight +
+            packetX * (1f - deal) +
+            horizontalX * (1f - deal) +
+            squaredDeckOffsetX +
+            dealSway,
+        translationYDp = deckY * deckWeight +
+            packetY * (1f - deal) +
+            verticalOffset * (1f - deal) +
+            squaredDeckOffsetY +
+            dealArc,
+        rotationZ = (-8f * stackDepth * deckWeight) +
+            horizontalRotation * (1f - deal) +
+            verticalRotation * (1f - deal),
+        scale = 1f - 0.035f * deckWeight + 0.025f * verticalShuffle + 0.035f * sin(deal * PI.toFloat()),
         alpha = 1f,
-        zIndex = if (p < 0.62f) (totalCards - index).toFloat() else index + deal * 20f,
+        zIndex = if (deal < 1f) (totalCards - index).toFloat() else index.toFloat(),
     )
 }
 
@@ -1117,7 +1174,16 @@ private fun cardAnimationMillis(durationSeconds: Int): Int =
     (durationSeconds * 180).coerceIn(240, 1_200)
 
 private fun cardShuffleAnimationMillis(durationSeconds: Int): Int =
-    (durationSeconds * 420).coerceIn(1_100, 2_200)
+    durationSeconds * 1_000
 
 private const val CardAspectRatio = 86f / 124f
+private const val CardShuffleColumnPitchDp = 108f
+private const val CardShuffleRowPitchDp = 150f
+private const val CardGatherMillis = 260f
+private const val CardDealDurationRatio = 0.28f
+private const val CardDealMinMillis = 520f
+private const val CardDealMaxMillis = 2_600f
+private const val CardHorizontalShuffleCycleMillis = 190f
+private const val CardVerticalShuffleCycleMillis = 170f
+private const val CardVerticalShuffleEaseMillis = 220f
 private val CardResultChrome = Color(0xFF3D3D3C)
