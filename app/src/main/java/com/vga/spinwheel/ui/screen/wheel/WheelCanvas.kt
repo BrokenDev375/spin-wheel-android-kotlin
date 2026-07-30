@@ -141,19 +141,19 @@ fun WheelCanvas(
                 color = android.graphics.Color.WHITE
                 textSize = scaledTextSize
                 isAntiAlias = true
-                textAlign = Paint.Align.CENTER
+                textAlign = Paint.Align.LEFT
                 typeface = Typeface.DEFAULT_BOLD
             }
 
             // Vị trí giữa tia: từ mép cục tâm (cap = 0.17r) đến gần rim.
             // midTextRadius = giữa đoạn [capEdge, rim] = (0.17 + 1.0) / 2 = 0.585r
             val capEdge = 0.17f       // bán kính cục trắng ở tâm
-            val rimEdge = 0.92f       // dừng trước rim để có lề
-            val textRadius = radius * (capEdge + rimEdge) / 2f   // ~0.545r
+            val rimEdge = 0.84f
+            val textRadius = radius * rimEdge
 
-            // Chiều dài tại tâm tia khả dụng cho text = (rimEdge - capEdge) * radius
-            // Nhân 0.85 để có padding 2 đầu, text không chạm cỡp tâm hay rim.
-            val availableRadialPx = (rimEdge - capEdge) * radius * 0.85f
+            // Keep labels short enough to stay clear of the center cap and wheel rim.
+            val radialTextPadding = 0.72f
+            val availableRadialPx = (rimEdge - capEdge) * radius * radialTextPadding
 
             for (i in items.indices) {
                 val midAngle = currentRotation + (i * sectorAngle) + (sectorAngle / 2f)
@@ -164,8 +164,8 @@ fun WheelCanvas(
 
                 drawIntoCanvas { canvas ->
                     canvas.nativeCanvas.save()
-                    // midAngle (không + 90) → text dọc theo tia, đọc từ tâm ra ngoài.
-                    canvas.nativeCanvas.rotate(midAngle, textX, textY)
+                    // Labels read from the rim inward so the outer edge stays inside the wheel.
+                    canvas.nativeCanvas.rotate(midAngle + 180f, textX, textY)
                     // fitLabelToWidth dùng chiều dài tia — chứa được nhiều text hơn arc
                     val label = fitLabelToWidth(items[i].name, textPaint, availableRadialPx)
                     canvas.nativeCanvas.drawText(label, textX, textY, textPaint)
