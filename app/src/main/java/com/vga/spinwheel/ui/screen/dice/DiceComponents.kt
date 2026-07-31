@@ -152,20 +152,23 @@ fun DiceGrid(
     val dotSize = if (values.size <= 1) 28.dp else 16.dp
     val contentPadding = if (values.size <= 1) 32.dp else 18.dp
     val horizontalPadding = if (reserveAnimationSpace) DiceRollingGridHorizontalPadding else 0.dp
-    val verticalPadding = if (reserveAnimationSpace) DiceRollingGridVerticalPadding else 0.dp
+    val topPadding = if (reserveAnimationSpace) DiceRollingGridTopPadding else 0.dp
+    val bottomPadding = if (reserveAnimationSpace) DiceRollingGridBottomPadding else 0.dp
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
         contentPadding = PaddingValues(
-            horizontal = horizontalPadding,
-            vertical = verticalPadding,
+            start = horizontalPadding,
+            top = topPadding,
+            end = horizontalPadding,
+            bottom = bottomPadding,
         ),
         horizontalArrangement = Arrangement.spacedBy(spacing),
         verticalArrangement = Arrangement.spacedBy(spacing),
         userScrollEnabled = false,
         modifier = modifier
             .width(dieSize * columns + spacing * (columns - 1) + horizontalPadding * 2)
-            .height(dieSize * rows + spacing * (rows - 1) + verticalPadding * 2),
+            .height(dieSize * rows + spacing * (rows - 1) + topPadding + bottomPadding),
     ) {
         itemsIndexed(values) { index, value ->
             Box(
@@ -252,7 +255,8 @@ private fun lerpFloat(start: Float, stop: Float, fraction: Float): Float =
     start + (stop - start) * fraction.coerceIn(0f, 1f)
 
 private val DiceRollingGridHorizontalPadding = 28.dp
-private val DiceRollingGridVerticalPadding = 68.dp
+private val DiceRollingGridTopPadding = 56.dp
+private val DiceRollingGridBottomPadding = 12.dp
 private const val DiceThrowDefaultAnimationMillis = 1_000
 internal const val DiceThrowResultRevealProgress = 0.72f
 private const val DiceThrowPeakProgress = 0.26f

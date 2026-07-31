@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vga.spinwheel.R
@@ -93,11 +94,11 @@ fun DiceHomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.TopCenter,
             ) {
                 DiceStage(
                     uiState = uiState,
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier = Modifier.padding(top = 28.dp, bottom = 12.dp),
                 )
             }
 
@@ -126,7 +127,7 @@ private fun DiceCountSelector(
             .background(DicePanelColor)
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(
             text = stringResource(R.string.dice_count),
@@ -134,6 +135,8 @@ private fun DiceCountSelector(
             fontSize = 16.sp,
             fontWeight = FontWeight.Black,
             maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -186,7 +189,7 @@ private fun DiceStage(
             values = displayResults,
             styleIndex = uiState.styleIndex,
             isShaking = uiState.isRolling,
-            reserveAnimationSpace = uiState.isRolling || uiState.currentResults.isNotEmpty(),
+            reserveAnimationSpace = true,
             animationMillis = uiState.rollDurationMillis,
         )
     }
