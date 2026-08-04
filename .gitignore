@@ -45,3 +45,17 @@ screenshot-sample/
 /untranslated_report.json
 /base-application/HUONG_DAN_TICH_HOP.md
 /base-application/HUONG_DAN_TICH_HOP.docx
+
+# Keep only the numbered project guides and README (00-10); other Markdown stays local
+*.md
+!/00_*.md
+!/01_*.md
+!/02_*.md
+!/03_*.md
+!/04_*.md
+!/05_*.md
+!/06_*.md
+!/07_*.md
+!/08_*.md
+!/09_*.md
+!/10_*.md
