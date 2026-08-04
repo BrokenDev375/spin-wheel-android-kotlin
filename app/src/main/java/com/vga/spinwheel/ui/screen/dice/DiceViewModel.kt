@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 data class DiceUiState(
     val diceCount: Int = 1,
-    val duration: Int = 2,
+    val rollDurationMillis: Int = DiceRollDurationMillis,
     val styleIndex: Int = 0,
     val tempStyleIndex: Int = 0,
     val currentResults: List<Int> = emptyList(),
@@ -38,16 +38,15 @@ class DiceViewModel @Inject constructor(
     val uiState: StateFlow<DiceUiState> = combine(
         combine(
             settingsRepository.observeInt(RandomFeature.DICE, "count", 1),
-            settingsRepository.observeInt(RandomFeature.DICE, "duration", 2),
             settingsRepository.observeInt(RandomFeature.DICE, "style", 0)
-        ) { count, duration, style -> Triple(count, duration, style) },
+        ) { count, style -> count to style },
         _tempStyleIndex,
         _currentResults,
         _isRolling
-    ) { (count, duration, style), tempStyle, results, isRolling ->
+    ) { (count, style), tempStyle, results, isRolling ->
         DiceUiState(
             diceCount = count,
-            duration = duration,
+            rollDurationMillis = DiceRollDurationMillis,
             styleIndex = style,
             tempStyleIndex = tempStyle,
             currentResults = results,
@@ -76,13 +75,6 @@ class DiceViewModel @Inject constructor(
         }
     }
 
-    fun setDuration(duration: Int) {
-        val validDuration = duration.coerceIn(1, 15)
-        viewModelScope.launch {
-            settingsRepository.putInt(RandomFeature.DICE, "duration", validDuration)
-        }
-    }
-
     fun setTempStyleIndex(index: Int) {
         _tempStyleIndex.value = index
     }
@@ -106,19 +98,32 @@ class DiceViewModel @Inject constructor(
         rollJob = viewModelScope.launch {
             _isRolling.value = true
             val count = uiState.value.diceCount
-            val duration = uiState.value.duration
-            val endTime = System.currentTimeMillis() + (duration * 1000L)
+            val durationMillis = uiState.value.rollDurationMillis.toLong()
+            val finalResults = randomDiceResults(count)
+            val revealDelayMillis = (durationMillis * DiceThrowResultRevealProgress).toLong()
+            val endTime = System.currentTimeMillis() + durationMillis
+            val revealAt = System.currentTimeMillis() + revealDelayMillis
 
-            while (System.currentTimeMillis() < endTime) {
-                _currentResults.value = List(count) { Random.nextInt(1, 7) }
+            while (System.currentTimeMillis() < revealAt) {
+                _currentResults.value = randomDiceResults(count)
                 delay(150)
             }
 
-            // Final result
-            _currentResults.value = List(count) { Random.nextInt(1, 7) }
+            _currentResults.value = finalResults
+            val remainingDelayMillis = endTime - System.currentTimeMillis()
+            if (remainingDelayMillis > 0L) {
+                delay(remainingDelayMillis)
+            }
+
             _isRolling.value = false
-            delay(500)
+            delay(DicePreviewDelayMillis)
             onFinished()
         }
     }
 }
+
+private fun randomDiceResults(count: Int): List<Int> =
+    List(count) { Random.nextInt(1, 7) }
+
+internal const val DiceRollDurationMillis = 1_200
+private const val DicePreviewDelayMillis = 220L

@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,8 +38,15 @@ fun DicePreviewScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    val results = uiState.currentResults.ifEmpty { List(uiState.diceCount) { 1 } }
-    val total = uiState.currentResults.sum()
+    var previewResults by remember { mutableStateOf(uiState.currentResults) }
+    LaunchedEffect(uiState.currentResults) {
+        if (uiState.currentResults.isNotEmpty()) {
+            previewResults = uiState.currentResults
+        }
+    }
+
+    val results = previewResults.ifEmpty { List(uiState.diceCount) { 1 } }
+    val total = results.sum()
     val diceTitle = stringResource(R.string.diceRoller)
     val appTitle = stringResource(R.string.spinwheel)
     val shareTitle = stringResource(R.string.share)

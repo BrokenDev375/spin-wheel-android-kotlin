@@ -27,6 +27,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.getValue
 import com.vga.spinwheel.data.model.WheelItem
+import kotlin.math.floor
 
 internal data class DrawingTheme(
     val name: String,
@@ -98,19 +99,22 @@ internal fun DrawingCardStack(
     val totalBack = backIndexes.size
 
     val isShuffling = shakeOffset != 0f
-    val nameShift = if (isShuffling && items.isNotEmpty()) {
+    val shufflePhase = if (isShuffling && items.isNotEmpty()) {
         val infiniteTransition = rememberInfiniteTransition(label = "shuffle_names")
         val phase by infiniteTransition.animateFloat(
             initialValue = 0f,
-            targetValue = items.size.toFloat(),
+            targetValue = DrawingShufflePhaseLoop,
             animationSpec = infiniteRepeatable(
-                animation = tween(items.size * 240, easing = LinearEasing),
+                animation = tween(
+                    durationMillis = (DrawingShufflePhaseLoop * DrawingShufflePhaseFrameMs).toInt(),
+                    easing = LinearEasing,
+                ),
                 repeatMode = RepeatMode.Restart
             ),
             label = "phase"
         )
-        phase.toInt() % items.size
-    } else 0
+        phase
+    } else 0f
 
     val offsets = listOf(
         -34.dp to 6.dp,
@@ -118,6 +122,20 @@ internal fun DrawingCardStack(
         8.dp to 38.dp,
         32.dp to 54.dp,
     )
+
+    val activeCardColors = if (theme.colors.isEmpty()) {
+        listOf(Color.White)
+    } else {
+        List(totalBack) { i ->
+            val order = offsets.size - totalBack + i
+            theme.colors[(theme.colors.lastIndex - order).mod(theme.colors.size)]
+        } + theme.colors.first()
+    }
+
+    val shuffleStep = if (isShuffling) {
+        drawingShuffleStep(shufflePhase, activeCardColors.size)
+    } else 0
+    val nameShift = if (isShuffling) shuffleStep.mod(items.size) else 0
 
     Box(modifier = modifier.size(width = 336.dp, height = 250.dp)) {
         backIndexes.forEachIndexed { i, itemIndex ->
@@ -128,7 +146,12 @@ internal fun DrawingCardStack(
             DrawingStackCard(
                 item = items[displayItemIndex],
                 index = itemIndex,
-                color = theme.colors[theme.colors.lastIndex - order],
+                color = drawingStackCardColor(
+                    colors = activeCardColors,
+                    baseIndex = i,
+                    shuffleStep = shuffleStep,
+                    isShuffling = isShuffling,
+                ),
                 highlighted = false,
                 wheelTitle = wheelTitle,
                 modifier = Modifier.offset(
@@ -142,12 +165,69 @@ internal fun DrawingCardStack(
         DrawingStackCard(
             item = items[winnerDisplayIndex],
             index = safeWinnerIndex,
-            color = theme.colors.first(),
+            color = drawingStackCardColor(
+                colors = activeCardColors,
+                baseIndex = totalBack,
+                shuffleStep = shuffleStep,
+                isShuffling = isShuffling,
+            ),
             highlighted = emphasizeWinner,
             wheelTitle = wheelTitle,
             modifier = Modifier.offset(x = 48.dp + shakeOffset.dp, y = 76.dp),
         )
     }
+}
+
+private fun drawingStackCardColor(
+    colors: List<Color>,
+    baseIndex: Int,
+    shuffleStep: Int,
+    isShuffling: Boolean,
+): Color {
+    if (colors.isEmpty()) return Color.White
+    val safeBaseIndex = baseIndex.mod(colors.size)
+    if (!isShuffling) return colors[safeBaseIndex]
+    if (colors.size == 1) return colors[0]
+
+    val colorIndex = drawingWaveColorIndex(
+        cardIndex = safeBaseIndex,
+        colorCount = colors.size,
+        swapStep = shuffleStep,
+    )
+    return colors[colorIndex]
+}
+
+private fun drawingShuffleStep(shufflePhase: Float, colorCount: Int): Int =
+    floor(shufflePhase * drawingShuffleColorRate(colorCount)).toInt()
+
+private fun drawingWaveColorIndex(
+    cardIndex: Int,
+    colorCount: Int,
+    swapStep: Int,
+): Int {
+    val swapPeriod = (colorCount - 1) * 2
+    val appliedSwaps = swapStep.mod(swapPeriod)
+    val colorOrder = IntArray(colorCount) { it }
+
+    repeat(appliedSwaps) { step ->
+        val left = if (step < colorCount - 1) {
+            step
+        } else {
+            (colorCount - 2) - (step - (colorCount - 1))
+        }
+        val right = left + 1
+        val previous = colorOrder[left]
+        colorOrder[left] = colorOrder[right]
+        colorOrder[right] = previous
+    }
+
+    return colorOrder[cardIndex.mod(colorCount)]
+}
+
+private fun drawingShuffleColorRate(colorCount: Int): Float {
+    val visibleRatio = ((colorCount - 1).toFloat() / (DrawingShuffleReferenceColorCount - 1))
+        .coerceIn(DrawingShuffleMinColorRateScale, 1f)
+    return DrawingShuffleColorRate * visibleRatio
 }
 
 @Composable
@@ -226,3 +306,9 @@ internal fun DrawingThemeSwatch(
         )
     }
 }
+
+private const val DrawingShufflePhaseLoop = 12f
+private const val DrawingShufflePhaseFrameMs = 240
+private const val DrawingShuffleColorRate = 0.72f
+private const val DrawingShuffleReferenceColorCount = 5f
+private const val DrawingShuffleMinColorRateScale = 0.25f
